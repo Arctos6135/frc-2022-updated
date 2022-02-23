@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -45,7 +46,9 @@ public final class Constants {
 	public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 	public static final double GEARBOX_RATIO = 0;
 	public static final double POSITION_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO;
+	public static final double POSITION_CONVERSION_FACTOR_METERS = Units.inchesToMeters(POSITION_CONVERSION_FACTOR); 
 	public static final double VELOCITY_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO / 60;
+	public static final double VELOCITY_CONVERSION_FACTOR_METERS = Units.inchesToMeters(VELOCITY_CONVERSION_FACTOR); 
 	public static final int COUNTS_PER_REVOLUTION = 42;
 	
 	// Warning and Shutoff Temperatures (in centigrade, for inconsistency)

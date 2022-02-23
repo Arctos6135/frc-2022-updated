@@ -45,7 +45,7 @@ public class AutoIntake extends CommandBase {
         intakeSubsystem.setMecanumWheelMotor(0);
 
         if (raiseArmEnd) {
-            intakeSubsystem.setIntakeArmPosition(Constants.INTAKE_ARM_RAISED); 
+            intakeSubsystem.setIntakeArmPosition(Constants.INTAKE_ARM_RAISED);
         } 
     }
 

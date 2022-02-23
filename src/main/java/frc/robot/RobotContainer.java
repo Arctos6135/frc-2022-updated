@@ -73,7 +73,7 @@ public class RobotContainer {
 
 	static final RobotLogger logger = new RobotLogger();
 
-	// contains subsystems, OI devices, and commands
+	// Contains subsystems, OI devices, and commands
 	public RobotContainer() {
 		drivetrain = new Drivetrain(Constants.RIGHT_CANSPARKMAX, Constants.LEFT_CANSPARKMAX,
 			Constants.RIGHT_CANSPARKMAX_FOLLOWER, Constants.LEFT_CANSPARKMAX_FOLLOWER);

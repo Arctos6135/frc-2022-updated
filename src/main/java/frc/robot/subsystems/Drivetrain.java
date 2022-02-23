@@ -11,13 +11,32 @@ import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MonitoredCANSparkMaxGroup;
 
+// TODO: do we want to set speed using voltage directly? 
+// If we set the motors using direct voltage, we can use 
+// TankDrive and Odometry, which is useful for autonomous 
+// commands. 
+// Use the following equation: 
+// V = kS sgn(d) + kV d1 + kA d2 
+// V -> applied voltage 
+// kS -> voltage needed to overcome static friction 
+// d -> displacement of motor 
+// kV -> voltage needed to hold constant velocity 
+// d1 -> velocity 
+// kA -> voltage needed to accelerate 
+// d2 -> acceleration 
 public class Drivetrain extends SubsystemBase {
 
   // Motor Controllers 
@@ -25,7 +44,13 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax leftMotor;
   private final CANSparkMax rightFollowerMotor;
   private final CANSparkMax leftFollowerMotor;
-  
+
+  private final MotorControllerGroup m_leftMotors; 
+  private final MotorControllerGroup m_rightMotors; 
+
+  private final DifferentialDrive m_differentialDrive; 
+  private final DifferentialDriveOdometry m_differentialOdometry; 
+
   // Encoders 
   private final RelativeEncoder rightEncoder;
   private final RelativeEncoder leftEncoder;
@@ -187,7 +212,7 @@ public class Drivetrain extends SubsystemBase {
     return leftEncoder.getVelocity();
   }
   
-  public double[] getAccelearations() {
+  public double[] getAccelerations() {
     double dt = Timer.getFPGATimestamp() - lastTime;
     double rightRate = getRightVelocity();
     double leftRate = getLeftVelocity();
@@ -240,6 +265,30 @@ public class Drivetrain extends SubsystemBase {
     ahrs.reset(); 
   }
 
+  // Autonomous Mode
+
+  /**
+   * Set the motor controllers using direct voltage. 
+   */
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    m_leftMotors.setVoltage(leftVolts); 
+    m_rightMotors.setVoltage(rightVolts);
+    m_differentialDrive.feed(); 
+  }
+
+  public void setMaxOutput(double maxOutput) {
+    m_differentialDrive.setMaxOutput(maxOutput);
+  }
+
+  /**
+   * Get the estimated pose of the robot in its current state. 
+   * 
+   * @return the pose as a Pose2d object. 
+   */
+  public Pose2d getPose() {
+    return m_differentialOdometry.getPoseMeters(); 
+  }
+
   /**
    * Get the robot's Atttude and Heading Reference System.
    * 
@@ -248,7 +297,26 @@ public class Drivetrain extends SubsystemBase {
   public AHRS getAHRS() {
     return this.ahrs;
   }
-  
+
+  /**
+   * Get the current wheel speeds of the robot (in m/s). 
+   * 
+   * @return the current wheel speeds. 
+   */
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity()); 
+  }
+
+  /**
+   * Resets the odometry to the specified pose. 
+   * 
+   * @param pose the pose to which to set the odometry. 
+   */
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    m_differentialOdometry.resetPosition(pose, ahrs.getRotation2d());
+  }
+
   /**
    * Drives the robot with forwards/backwards translation and rotation.
    * 
@@ -295,12 +363,12 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Get the motor monitor group for the drivetrain.
-   *
-   * @return the monitor group for the drivetrain motors.
+   * Get the monitor group for the drivetrain. 
+   * 
+   * @return the drivetrain's motor monitor group. 
    */
   public MonitoredCANSparkMaxGroup getMonitorGroup() {
-    return this.motorMonitorGroup;
+    return this.motorMonitorGroup; 
   }
 
   /**
@@ -324,6 +392,14 @@ public class Drivetrain extends SubsystemBase {
     leftMotor = new CANSparkMax(leftMaster, MotorType.kBrushless);
     rightFollowerMotor = new CANSparkMax(rightFollower, MotorType.kBrushless);
     leftFollowerMotor = new CANSparkMax(leftFollower, MotorType.kBrushless);
+
+    // Speed Group Initialization 
+    m_rightMotors = new MotorControllerGroup(rightMotor, rightFollowerMotor); 
+    m_leftMotors = new MotorControllerGroup(leftMotor, leftFollowerMotor); 
+
+    // Differential Drive and Odometry
+    m_differentialDrive = new DifferentialDrive(m_leftMotors, m_rightMotors);
+    m_differentialOdometry = new DifferentialDriveOdometry(ahrs.getRotation2d()); 
     
     // Encoder Instantiation 
     rightEncoder = rightMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
@@ -343,10 +419,10 @@ public class Drivetrain extends SubsystemBase {
     rightMotor.setInverted(false);
     leftMotor.setInverted(true);
     
-    rightEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR);
-    leftEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR);
-    rightEncoder.setVelocityConversionFactor(Constants.VELOCITY_CONVERSION_FACTOR);
-    leftEncoder.setVelocityConversionFactor(Constants.VELOCITY_CONVERSION_FACTOR);
+    rightEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR_METERS);
+    leftEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR_METERS);
+    rightEncoder.setVelocityConversionFactor(Constants.VELOCITY_CONVERSION_FACTOR_METERS);
+    leftEncoder.setVelocityConversionFactor(Constants.VELOCITY_CONVERSION_FACTOR_METERS);
   }
 
   @Override
@@ -356,6 +432,11 @@ public class Drivetrain extends SubsystemBase {
     if (motorMonitorGroup.getOverheatShutoff()) {
       setMotors(0, 0); 
     }
+
+    m_differentialOdometry.update(
+      ahrs.getRotation2d(), 
+      Units.inchesToMeters(leftEncoder.getPosition() * Constants.WHEEL_CIRCUMFERENCE), 
+      Units.inchesToMeters(rightEncoder.getPosition() * Constants.WHEEL_CIRCUMFERENCE));
   }
 
   @Override 
@@ -373,4 +454,3 @@ public class Drivetrain extends SubsystemBase {
     builder.addDoubleProperty("Right Motor Speed", rightMotor::get, this::setRightMotor); 
   }
 }
-
