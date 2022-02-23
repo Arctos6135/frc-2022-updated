@@ -77,6 +77,9 @@ public final class Constants {
 	public static final int DRIVE_RAISE_HALFWAY = XboxController.Button.kLeftBumper.value; 
 	public static final int DRIVE_RAISE_FULLY = XboxController.Button.kRightBumper.value; 
 
+	// Autonomous Related 
+	public static final double AUTO_INTAKE_SPEED = 0.75; 
+
 	// Robot Dimensions
 	// TODO: change these to match robot
 	public static final double ROBOT_MAX_VELOCITY = 0;
