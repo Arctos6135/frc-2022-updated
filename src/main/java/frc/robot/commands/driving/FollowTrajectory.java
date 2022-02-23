@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.driving;
 
 import java.util.function.Supplier;
 
@@ -21,48 +21,47 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 
 public class FollowTrajectory extends CommandBase {
-    
+   
     // PID Control
     private static final PIDVADPGains gains = new PIDVADPGains(0, 0, 0, 0, 0, 0);
-    private static double updateDelay = 0.25; // seconds 
+    private static double updateDelay = 0.25; // seconds
 
     private final Drivetrain drivetrain;
-    
+   
     private final TankDriveRobot tankDriveRobot;
-    
+   
     private final Followable<TankDriveMoment> profile;
     private volatile Follower<TankDriveMoment> follower;
     private final FollowerRunner runner;
-    
+   
     /**
-     * Get the set of gains used to follow trajectories. 
-     * 
+     * Get the set of gains used to follow trajectories.
+     *
      * @return the PIDVADP gains.
      */
     public static PIDVADPGains getGains() {
         return gains;
     }
-    
+   
     /**
-     * Get the update delay for dynamic trajectories. 
-     * 
-     * @return the update delay. 
+     * Get the update delay for dynamic trajectories.
+     *
+     * @return the update delay.
      */
     public static double getUpdateDelay() {
         return updateDelay;
     }
-    
+   
     /**
-     * Set the update delay for dynamic trajectories. 
-     * 
+     * Set the update delay for dynamic trajectories.
+     *
      * @param updateDelay the update delay.
      */
     public static void setUpdateDelay(double updateDelay) {
         FollowTrajectory.updateDelay = updateDelay;
     }
-    
-    /* 
-    private static TankDriveGains getRobotPathfinderGains() {
+   
+    /* private static TankDriveGains getRobotPathfinderGains() {
         return new TankDriveGains(gains.getV(), gains.getA(), gains.getP(), gains.getI(), gains.getD(), gains.getDP());
     } */ 
 
@@ -83,15 +82,15 @@ public class FollowTrajectory extends CommandBase {
         if (profile instanceof DynamicFollowable) {
             DynamicFollowable<TankDriveMoment> dynamicProfile = (DynamicFollowable<TankDriveMoment>) profile;
 
-            // follower = new DynamicTankDriveFollower(dynamicProfile, tankDriveRobot, getRobotPathfinderGains(),
+            //follower = new DynamicTankDriveFollower(dynamicProfile, tankDriveRobot, getRobotPathfinderGains(),
             //        updateDelay);
         } else {
             //follower = new TankDriveFollower(profile, tankDriveRobot, getRobotPathfinderGains());
         }
-        
+       
         drivetrain.setMotorMode(IdleMode.kBrake);
         // Run the follower at 100 Hz
-        runner.start(follower, 100); 
+        runner.start(follower, 100);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class FollowTrajectory extends CommandBase {
     }
 
     /**
-     * Called when the command has ended or is interrupted. 
+     * Called when the command has ended or is interrupted.
      */
     @Override
     public void end(boolean interrupted) {
@@ -113,40 +112,40 @@ public class FollowTrajectory extends CommandBase {
      */
     @Override
     public boolean isFinished() {
-        return runner.isFinished(); 
+        return runner.isFinished();
     }
-    
+   
     private static class FunctionAdvancedPositionSource implements AdvancedPositionSource {
 
-        // Get the real time inputs (that often change) 
+        // Get the real time inputs (that often change)
         private Supplier<Double> positionFunction;
         private Supplier<Double> velocityFunction;
-        
+       
         /**
-         * Instantiate a new FunctionAdvancedPositionSource from position and velocity suppliers. 
+         * Instantiate a new FunctionAdvancedPositionSource from position and velocity suppliers.
          * Suppliers are used instead of doubles, since these values change frequently.
-         * 
+         *
          * @param positionFunction the position supplier.
-         * @param velocityFunction the velocity supplier. 
+         * @param velocityFunction the velocity supplier.
          */
         public FunctionAdvancedPositionSource(Supplier<Double> positionFunction, Supplier<Double> velocityFunction) {
             this.positionFunction = positionFunction;
-            this.velocityFunction = velocityFunction; 
+            this.velocityFunction = velocityFunction;
         }
 
         /**
-         * Get the position from the position supplier. 
-         * 
-         * @return the double from the position supplier. 
+         * Get the position from the position supplier.
+         *
+         * @return the double from the position supplier.
          */
         @Override
         public double getPosition() {
-            return positionFunction.get(); 
+            return positionFunction.get();
         }
-        
+       
         /**
-         * Get the velocity from the velocity supplier. 
-         * 
+         * Get the velocity from the velocity supplier.
+         *
          * @return the double from the velocity supplier.
          */
         @Override
