@@ -146,7 +146,7 @@ public class TeleopDrive extends CommandBase {
         y = Math.copySign(y * y, y);
 
         // TODO: If a limelight is needed, use AUTO_ALIGN 
-        double x = applyDeadband(controller.getRawAxis(X_AXIS), Constants.CONTROLLER_DEADZONE);
+        double x = -applyDeadband(controller.getRawAxis(X_AXIS), Constants.CONTROLLER_DEADZONE);
         x = Math.copySign(x * x, x);
 
         drivetrain.arcadeDrive(y, x, precisionDrive ? precisionFactor : 1.0);
