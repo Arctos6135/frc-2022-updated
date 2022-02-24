@@ -110,4 +110,7 @@ public final class Constants {
 	// TODO: change if necessary
 	public static final Color OUR_ALLIANCE = Color.kBlue; 
 	public static final Color OPPOSING_ALLIANCE = Color.kRed; 
+
+	// Autonomous System Identification 
+	
 }

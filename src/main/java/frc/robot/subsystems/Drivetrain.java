@@ -269,6 +269,9 @@ public class Drivetrain extends SubsystemBase {
 
   /**
    * Set the motor controllers using direct voltage. 
+   * 
+   * @param leftVolts the voltage passed to the left motors.
+   * @param rightVolts the voltage passed to the right motors. 
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftMotors.setVoltage(leftVolts); 

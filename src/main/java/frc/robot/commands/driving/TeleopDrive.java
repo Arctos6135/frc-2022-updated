@@ -1,11 +1,17 @@
-package frc.robot.commands;
+package frc.robot.commands.driving;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
-// TODO: check if we need to use a Limelight for any reason (may need to align to hub)
+/**
+ * Command for driving the robot with the Xbox Controller. 
+ * The left joystick controls forwards and backwards movement. 
+ * The right joystick controls turning. 
+ * Precision driving and reverse driving is controlled using separate buttons binded in 
+ * @link{RobotContainer.java}. 
+ */
 public class TeleopDrive extends CommandBase {
     private final Drivetrain drivetrain;
     private final GenericHID controller; // a USB Human Interface Device 
