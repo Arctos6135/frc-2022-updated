@@ -250,19 +250,28 @@ public class Drivetrain extends SubsystemBase {
   // Robot Navigation 
 
   /**
+   * Get the robot's Atttude and Heading Reference System.
+   * 
+   * @return the robot's AHRS.
+   */
+  public AHRS getAHRS() {
+    return this.ahrs;
+  }
+
+  /**
    * Return the heading of the robot.
    * 
    * @return the heading of the robot in degrees.
    */
   public double getHeading() {
-    return ahrs.getFusedHeading();
+    return ahrs.getRotation2d().getDegrees();
   }
   
   /**
    * Reset the heading of the robot.
    */
   public void zeroHeading() {
-    ahrs.reset(); 
+    ahrs.reset();
   }
 
   // Autonomous Mode
@@ -279,6 +288,11 @@ public class Drivetrain extends SubsystemBase {
     m_differentialDrive.feed(); 
   }
 
+  /**
+   * Set the maximum output of the differential drive. 
+   * 
+   * @param maxOutput factor for output percentage. 
+   */
   public void setMaxOutput(double maxOutput) {
     m_differentialDrive.setMaxOutput(maxOutput);
   }
@@ -290,15 +304,6 @@ public class Drivetrain extends SubsystemBase {
    */
   public Pose2d getPose() {
     return m_differentialOdometry.getPoseMeters(); 
-  }
-
-  /**
-   * Get the robot's Atttude and Heading Reference System.
-   * 
-   * @return the robot's AHRS.
-   */
-  public AHRS getAHRS() {
-    return this.ahrs;
   }
 
   /**
@@ -438,8 +443,8 @@ public class Drivetrain extends SubsystemBase {
 
     m_differentialOdometry.update(
       ahrs.getRotation2d(), 
-      Units.inchesToMeters(leftEncoder.getPosition() * Constants.WHEEL_CIRCUMFERENCE), 
-      Units.inchesToMeters(rightEncoder.getPosition() * Constants.WHEEL_CIRCUMFERENCE));
+      Units.inchesToMeters(leftEncoder.getPosition()), 
+      Units.inchesToMeters(rightEncoder.getPosition()));
   }
 
   @Override 
