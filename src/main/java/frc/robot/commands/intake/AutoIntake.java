@@ -2,6 +2,7 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.IntakeSubsystem;
 
 /**
@@ -9,7 +10,8 @@ import frc.robot.subsystems.IntakeSubsystem;
  */
 public class AutoIntake extends CommandBase {
     
-    private final IntakeSubsystem intakeSubsystem; 
+    private final IntakeSubsystem intakeSubsystem;
+    private final IntakeArm intakeArm; 
     private final double speed; 
     private final boolean raiseArmEnd;  
 
@@ -21,18 +23,19 @@ public class AutoIntake extends CommandBase {
      * @param speed the speed of the rollers.
      * @param raiseArmEnd whether to raise the intake arm at the end of the command.
      */
-    public AutoIntake(IntakeSubsystem intakeSubsystem, double speed, boolean raiseArmEnd) {
-        this.intakeSubsystem = intakeSubsystem; 
+    public AutoIntake(IntakeSubsystem intakeSubsystem, IntakeArm intakeArm, double speed, boolean raiseArmEnd) {
+        this.intakeSubsystem = intakeSubsystem;
+        this.intakeArm = intakeArm; 
         this.speed = speed; 
         this.raiseArmEnd = raiseArmEnd; 
 
-        addRequirements(intakeSubsystem);
+        addRequirements(intakeSubsystem, intakeArm);
     }
 
     @Override 
     public void initialize() {
         intakeSubsystem.setMecanumWheelMotor(speed);
-        intakeSubsystem.setIntakeArmPosition(Constants.INTAKE_ARM_LOWERED);
+        intakeArm.setIntakeArmPosition(Constants.INTAKE_ARM_LOWERED);
     }
 
     @Override 
@@ -45,7 +48,7 @@ public class AutoIntake extends CommandBase {
         intakeSubsystem.setMecanumWheelMotor(0);
 
         if (raiseArmEnd) {
-            intakeSubsystem.setIntakeArmPosition(Constants.INTAKE_ARM_RAISED);
+            intakeArm.setIntakeArmPosition(Constants.INTAKE_ARM_RAISED);
         } 
     }
 

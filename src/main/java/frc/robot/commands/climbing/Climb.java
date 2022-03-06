@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.subsystems.ClimbSubsystem;
 
 /**
@@ -14,7 +13,8 @@ import frc.robot.subsystems.ClimbSubsystem;
 public class Climb extends CommandBase {
     
     private final ClimbSubsystem climbSubsystem; 
-    private final XboxController operatorController; 
+    private final XboxController operatorController;
+    private final int deployClimb; 
 
     private static boolean overrideTime; 
 
@@ -24,9 +24,10 @@ public class Climb extends CommandBase {
      * @param climbSubsystem the climb subsystem with the climb and hook motors. 
      * @param operatorController the controller used to interact with the climb commands. 
      */
-    public Climb(ClimbSubsystem climbSubsystem, XboxController operatorController) {
+    public Climb(ClimbSubsystem climbSubsystem, XboxController operatorController, int deployClimb) {
         this.climbSubsystem = climbSubsystem; 
-        this.operatorController = operatorController; 
+        this.operatorController = operatorController;
+        this.deployClimb = deployClimb;
 
         addRequirements(climbSubsystem);
     }
@@ -40,12 +41,9 @@ public class Climb extends CommandBase {
 
     }
 
-    // TODO: change from joystick to button 
     @Override 
     public void execute() {
-        double climbSpeed = operatorController.getRawAxis(Constants.CLIMB_SPEED_AXIS); 
-
-        climbSpeed = TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE); 
+        double climbSpeed = operatorController.getRawButton(deployClimb) ? 0.5 : 0.0;
 
         // Nearing the end of the match, climb system is activated. 
         if (!overrideTime && DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME) {

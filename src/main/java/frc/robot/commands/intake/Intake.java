@@ -2,11 +2,11 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 /**
- * Drops the intake arm and spins the motor controlling the mecanum wheel to intake a ball. 
+ * Spins the motor controlling the mecanum wheel to intake or outtake a ball.
+ * The intake arm is controlled separately by a joystick on the operator controller. 
  */
 public class Intake extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
@@ -29,13 +29,10 @@ public class Intake extends CommandBase {
 
         if (forward & !reverse) {
             intakeSubsystem.setMecanumWheelMotor(1.0);
-            intakeSubsystem.setIntakeArmPosition(Constants.INTAKE_ARM_LOWERED);
         } else if (!forward & reverse) {
             intakeSubsystem.setMecanumWheelMotor(-1.0);
-            intakeSubsystem.setIntakeArmPosition(Constants.INTAKE_ARM_RAISED); 
         } else {
             intakeSubsystem.setMecanumWheelMotor(0);
-            intakeSubsystem.setIntakeArmPosition(Constants.INTAKE_ARM_RAISED); 
         }
     }
 
@@ -45,8 +42,7 @@ public class Intake extends CommandBase {
     }
    
     @Override
-    public void end(boolean interrupted) {
-        intakeSubsystem.setIntakeArmPosition(Constants.INTAKE_ARM_RAISED); 
+    public void end(boolean interrupted) { 
         intakeSubsystem.setMecanumWheelMotor(0);
     }
    

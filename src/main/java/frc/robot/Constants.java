@@ -20,8 +20,8 @@ public final class Constants {
 
 	// Intake Motors
 	// TODO: change when attached to PDP 
-	public static final int LEFT_INTAKE_MOTOR = 7;
-	public static final int RIGHT_INTAKE_MOTOR = 8;
+	public static final int MECANUM_INTAKE_MOTOR = 7;
+	public static final int INTAKE_ARM_MOTOR = 8;
 
 	// Climb Motors 
 	public static final int HOOK_DEPLOYMENT_MOTOR = 9; 
@@ -73,12 +73,13 @@ public final class Constants {
 	public static final int XBOX_OPERATOR = 1;
 	public static final int DEPLOY_SHOOTER_LOWER_BUTTON = XboxController.Button.kX.value;
 	public static final int DEPLOY_SHOOTER_UPPER_BUTTON = XboxController.Button.kY.value;
-	public static final int PREPARE_SHOOTER_BUTTON = XboxController.Button.kB.value; 
-	public static final int CLIMB_SPEED_AXIS = XboxController.Axis.kLeftY.value; 
+	public static final int DEPLOY_CLIMB = XboxController.Button.kB.value; 
 	public static final int CLIMB_TIME_OVERRIDE = XboxController.Button.kA.value; 
 	public static final int ROLL = XboxController.Axis.kLeftY.value; 
+	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
+	public static final int INTAKE_ARM_REVERSE = XboxController.Button.kRightStick.value; 
 	public static final int DRIVE_RAISE_HALFWAY = XboxController.Button.kLeftBumper.value; 
-	public static final int DRIVE_RAISE_FULLY = XboxController.Button.kRightBumper.value; 
+	public static final int DRIVE_RAISE_FULLY = XboxController.Button.kRightBumper.value;
 
 	// Autonomous Related 
 	public static final double AUTO_INTAKE_SPEED = 0.75; 

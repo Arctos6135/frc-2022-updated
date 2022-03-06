@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.driving.DriveDistance;
 import frc.robot.commands.intake.AutoIntake;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterFeederSubsystem;
@@ -115,8 +116,8 @@ public class Autonomous {
         return this.chooser; 
     }
 
-    public Command getAuto(AutoMode mode, Drivetrain drivetrain, IntakeSubsystem intake, 
-        Shooter shooter, ShooterFeederSubsystem shooterFeeder) {
+    public Command getAuto(AutoMode mode, Drivetrain drivetrain, IntakeSubsystem intake,
+        IntakeArm intakeArm, Shooter shooter, ShooterFeederSubsystem shooterFeeder) {
         
         // Measurements in Inches 
         switch(mode) {
@@ -131,7 +132,7 @@ public class Autonomous {
             case INIT_REVERSE:
                 return new DriveDistance(drivetrain, -72);
             case INTAKE:
-                return new AutoIntake(intake, Constants.AUTO_INTAKE_SPEED, false);
+                return new AutoIntake(intake, intakeArm, Constants.AUTO_INTAKE_SPEED, false);
             case PATH_WEAVER:
                 return null;
             default:
