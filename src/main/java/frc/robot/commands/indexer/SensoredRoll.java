@@ -5,6 +5,7 @@ import com.revrobotics.ColorMatchResult;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 
 /**
@@ -42,11 +43,11 @@ public class SensoredRoll extends CommandBase {
         matchedColor = colorMatch.matchClosestColor(detectedColor); 
         
         // Assumes that we are in allicance BLUE 
-        if (matchedColor.color == Color.kBlue) {
+        if (matchedColor.color == Constants.OUR_ALLIANCE) {
             // Shoot the ball 
             shooterFeederSubsystem.setBallInShotPosition(true);
             shooterFeederSubsystem.incrementBallCount();
-        } else if (matchedColor.color == Color.kRed) {
+        } else if (matchedColor.color == Constants.OPPOSING_ALLIANCE) {
             // Outtake the ball 
             shooterFeederSubsystem.setRollDirection(false);
             shooterFeederSubsystem.startRoller(); 

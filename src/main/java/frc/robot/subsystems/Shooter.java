@@ -18,7 +18,6 @@ public class Shooter extends SubsystemBase {
 	private final SparkMaxPIDController pidController;
 
 	public static final double BASE_SPEED = 0;
-	public boolean shooterReady = false;
 	public double shooterDist;
 	private double velocity = 0;
 
@@ -70,15 +69,13 @@ public class Shooter extends SubsystemBase {
 	public RelativeEncoder getEncoder() {
 		return this.shooterEncoder;
 	}
-
-	// angular velocities must be converted from rpm
 	
 	/**
 	 * Get the velocity that the shooter wheels are spinning at. 
 	 *
 	 * @return the shooter velocity measured by the encoder. 
 	 */
-	public double getVelocity() {
+	public double getActualVelocity() {
 		return this.shooterEncoder.getVelocity();
 	}
 
@@ -99,7 +96,7 @@ public class Shooter extends SubsystemBase {
 	public void setVelocity(double rpm) {
 		this.pidController.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
 		? 0 : rpm, CANSparkMax.ControlType.kVelocity);
-		this.velocity = rpm*Math.PI/180;
+		this.velocity = rpm;
 	}
 
 	/**

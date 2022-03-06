@@ -35,6 +35,7 @@ import frc.robot.subsystems.ShooterFeederSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -96,7 +97,7 @@ public class RobotContainer {
 
 		shooterFeederSubsystem = new ShooterFeederSubsystem(Constants.ROLLER_MOTOR); 
 		shooterFeederSubsystem.setDefaultCommand(
-			new TeleopRoll(shooterFeederSubsystem, operatorController) 
+			new TeleopRoll(shooterFeederSubsystem, operatorController, Constants.ROLL_AXIS) 
 		);
 
 		shooterSubsystem = new Shooter(Constants.MAIN_SHOOTER_MOTOR, Constants.AUXILLIARY_SHOOTER_MOTOR);
@@ -188,12 +189,12 @@ public class RobotContainer {
 		precisionDriveEntry = driveTab.add("Precision", TeleopDrive.isPrecisionDrive()).withWidget(BuiltInWidgets.kBooleanBox)
 		.withPosition(4, 0).withSize(4, 4).getEntry();
 
-		shooterTab.add("Shooter RPM", shooterSubsystem.getVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
+		shooterTab.add("Shooter RPM", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
 		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 5000)).getEntry()
 		.addListener(notif -> {
 			shooterSubsystem.setVelocity(notif.value.getDouble());
-				}, EntryListenerFlags.kUpdate); 
-
+		}, EntryListenerFlags.kUpdate);
+				
 		InstantCommand climbOverrideCommand = new InstantCommand(() -> {
 			Climb.toggleOverride();
 		});
@@ -234,10 +235,6 @@ public class RobotContainer {
 		});
 	}
 
-	public void updateDashboard() {
-		shooterRPMEntry.setNumber(shooterSubsystem.getVelocity()); 
-	}
-
 	private void configureButtonBindings() {
 		// Driving Related 
 		Button reverseDriveButton = new JoystickButton(driverController, Constants.REVERSE_DRIVE_DIRECTION);
@@ -247,7 +244,6 @@ public class RobotContainer {
 		AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, Constants.PRECISION_DRIVE_HOLD, 0.5);
 		
 		// Shooter Related 
-		// Button prepareShooterButton = new JoystickButton(operatorController, Constants.PREPARE_SHOOTER_BUTTON);
 		Button deployShooterLowerButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_LOWER_BUTTON);
 		Button deployShooterUpperButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON);
 		Button reverseRollerButton = new JoystickButton(operatorController, Constants.REVERSE_ROLL_BUTTON); 
@@ -278,7 +274,7 @@ public class RobotContainer {
 	        }, (interrupted) -> {
 			TeleopDrive.togglePrecisionDrive();
 			precisionDriveEntry.setBoolean(TeleopDrive.isPrecisionDrive()); 
-	    	}, () -> false));
+	    }, () -> false));
 
 		dtOverheatOverrideButton.whenPressed(() -> {
 			// Toggle overheat shutoff override
@@ -291,12 +287,6 @@ public class RobotContainer {
 				getLogger().logInfo("Drivetrain motor temperature protection re-enabled.");
 			}
 		});
-
-		// Shooter Button Bindings 
-		// TODO: prepare shooter
-		// prepareShooterButton.whenPressed(() -> {
-		// 	shooterSubsystem.shooterReady = true;
-		// });
 
 		deployShooterLowerButton.whenActive(() -> {
 			new Shoot(shooterSubsystem, shooterFeederSubsystem, true); 
@@ -332,7 +322,7 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return new InstantCommand();
+		return new SequentialCommandGroup();
 	}
 
 	private void initLogger() {

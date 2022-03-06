@@ -22,7 +22,8 @@ public class Shoot extends CommandBase {
         this.shooter = shooter; 
         this.shooterFeederSubsystem = shooterFeederSubsystem; 
         shooterFeederSubsystem.setRollDirection(true);
-        this.lowerHub = lowerHub; 
+        this.lowerHub = lowerHub;
+        this.targetVelocity = this.shooter.getVelocitySetpoint(); 
 
         addRequirements(shooter, shooterFeederSubsystem);
     }
@@ -32,7 +33,6 @@ public class Shoot extends CommandBase {
         finished = false; 
         velocityReached = false; 
 
-        // TODO: check for aiming via Limelight 
         if (!shooter.getOverheatShutoffOverride() && shooter.getMonitorGroup().getOverheatShutoff()) {
             finished = true; 
             RobotContainer.getLogger().logError("Shooter is overheating, cannot shoot."); 
@@ -41,28 +41,23 @@ public class Shoot extends CommandBase {
 
     @Override 
     public void execute() {
-        if (Math.abs(shooter.getVelocity() - targetVelocity) < VELOCITY_TOLERANCE && shooterFeederSubsystem.getBallInShotPosition()) {
+        if (Math.abs(shooter.getActualVelocity() - targetVelocity) < VELOCITY_TOLERANCE && shooterFeederSubsystem.getBallInShotPosition()) {
             // Shoot the ball 
             velocityReached = true; 
+            shooterFeederSubsystem.startRoller();
 
-            if (shooter.shooterReady) {
-                shooterFeederSubsystem.startRoller();
-
-                if (lowerHub) {
-                    try {
-                        shooter.fire(false); 
-                    } catch (Shooter.PowerException exception) {
-                        RobotContainer.getLogger().logError("The shooter motor cannot support the lower hub shot!");
-                    }
-                } else {
-                    try {
-                        shooter.fire(true); 
-                    } catch (Shooter.PowerException exception) {
-                        RobotContainer.getLogger().logError("The shooter motor cannot support the upper hub shot!"); 
-                    }
+            if (lowerHub) {
+                try {
+                    shooter.fire(false); 
+                } catch (Shooter.PowerException exception) {
+                    RobotContainer.getLogger().logError("The shooter motor cannot support the lower hub shot!");
                 }
             } else {
-                RobotContainer.getLogger().logError("The shooter is not ready to shoot any shot!"); 
+                try {
+                    shooter.fire(true); 
+                } catch (Shooter.PowerException exception) {
+                    RobotContainer.getLogger().logError("The shooter motor cannot support the upper hub shot!"); 
+                }
             }
         } else {
             shooterFeederSubsystem.stopRoller(); 

@@ -75,7 +75,7 @@ public final class Constants {
 	public static final int DEPLOY_SHOOTER_UPPER_BUTTON = XboxController.Button.kY.value;
 	public static final int DEPLOY_CLIMB_BUTTON = XboxController.Button.kB.value; 
 	public static final int CLIMB_TIME_OVERRIDE_BUTTON = XboxController.Button.kA.value; 
-	public static final int ROLL = XboxController.Axis.kLeftY.value;
+	public static final int ROLL_AXIS = XboxController.Axis.kLeftY.value;
 	public static final int REVERSE_ROLL_BUTTON = XboxController.Button.kLeftStick.value; 
 	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
 	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value; 

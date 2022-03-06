@@ -1,6 +1,6 @@
 package frc.robot.commands.driving;
 
-import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
@@ -14,7 +14,7 @@ import frc.robot.subsystems.Drivetrain;
  */
 public class TeleopDrive extends CommandBase {
     private final Drivetrain drivetrain;
-    private final GenericHID controller; // a USB Human Interface Device 
+    private final XboxController controller; 
 
     // X-Box Controller related variables 
     private final int X_AXIS;
@@ -22,7 +22,7 @@ public class TeleopDrive extends CommandBase {
 
     // Steering and Movement
     private static boolean reverseDrive = false;
-    private static boolean precisionDrive = false;
+    private static boolean precisionDrive = true;
     
     // Percentage of steering input when driving in precision drive mode
     private static double precisionFactor = 0.5; 
@@ -30,7 +30,7 @@ public class TeleopDrive extends CommandBase {
     // Ramping
     private static double rampingRate = 0.375; // time (seconds) it takes to go from 0 to max speed. 
 
-    public TeleopDrive(Drivetrain drivetrain, GenericHID controller, int fwdRevAxis, int leftRightAxis) {
+    public TeleopDrive(Drivetrain drivetrain, XboxController controller, int fwdRevAxis, int leftRightAxis) {
         this.drivetrain = drivetrain;
         this.controller = controller;
 

@@ -17,7 +17,8 @@ import frc.robot.subsystems.ShooterFeederSubsystem;
 public class TeleopRoll extends CommandBase {
     
     private final ShooterFeederSubsystem shooterFeederSubsystem; 
-    private final XboxController operatorController; 
+    private final XboxController operatorController;
+    private final int Y_AXIS; 
 
     private ColorMatch colorMatch; 
     private Color detectedColor; 
@@ -29,9 +30,10 @@ public class TeleopRoll extends CommandBase {
      * @param shooterFeederSubsystem the shooter feeder subsystem with the roller motor. 
      * @param operatorController the controller interacting with the shooter feeder subsystem. 
      */
-    public TeleopRoll(ShooterFeederSubsystem shooterFeederSubsystem, XboxController operatorController) {
+    public TeleopRoll(ShooterFeederSubsystem shooterFeederSubsystem, XboxController operatorController, int rollAxis) {
         this.shooterFeederSubsystem = shooterFeederSubsystem; 
-        this.operatorController = operatorController; 
+        this.operatorController = operatorController;
+        this.Y_AXIS = rollAxis; 
 
         addRequirements(shooterFeederSubsystem);
 
@@ -43,7 +45,7 @@ public class TeleopRoll extends CommandBase {
 
     @Override 
     public void execute() {
-        double rollSpeed = TeleopDrive.applyDeadband(operatorController.getRawAxis(Constants.ROLL), Constants.CONTROLLER_DEADZONE);
+        double rollSpeed = TeleopDrive.applyDeadband(operatorController.getRawAxis(Y_AXIS), Constants.CONTROLLER_DEADZONE);
         rollSpeed = Math.copySign(rollSpeed * rollSpeed, rollSpeed); 
 
         shooterFeederSubsystem.setRollSpeed(rollSpeed);
