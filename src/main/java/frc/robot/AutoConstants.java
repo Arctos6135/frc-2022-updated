@@ -18,7 +18,7 @@ public class AutoConstants {
         new DifferentialDriveKinematics(kTrackWidthMeters);
             
     public static final double kMaxSpeedMetersPerSecond = 0;
-    public static final double kMaxAccelertaionMetersPerSecondSquared = 0;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0;
     
     public static final double kRamseteB = 2; 
     public static final double kRamseteZeta = 0.7;

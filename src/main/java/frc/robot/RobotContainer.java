@@ -38,7 +38,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-// Contains all commands and subsystems
+// Contains all commands and subsystems.
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain drivetrain;
@@ -107,7 +107,7 @@ public class RobotContainer {
 
 		climbSubsystem = new ClimbSubsystem(Constants.HOOK_DEPLOYMENT_MOTOR, Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR); 
 		climbSubsystem.setDefaultCommand(
-			new Climb(climbSubsystem, operatorController, Constants.DEPLOY_CLIMB)
+			new Climb(climbSubsystem, operatorController, Constants.DEPLOY_CLIMB_BUTTON)
 		);
 
 		// Shuffle Board Tabs
@@ -250,14 +250,15 @@ public class RobotContainer {
 		// Button prepareShooterButton = new JoystickButton(operatorController, Constants.PREPARE_SHOOTER_BUTTON);
 		Button deployShooterLowerButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_LOWER_BUTTON);
 		Button deployShooterUpperButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON);
+		Button reverseRollerButton = new JoystickButton(operatorController, Constants.REVERSE_ROLL_BUTTON); 
 
 		// Climb Related
-		Button overrideClimbTime = new JoystickButton(operatorController, Constants.CLIMB_TIME_OVERRIDE); 
+		Button overrideClimbTimeButton = new JoystickButton(operatorController, Constants.CLIMB_TIME_OVERRIDE_BUTTON); 
 		Button driveRaiseHalfway = new JoystickButton(operatorController, Constants.DRIVE_RAISE_HALFWAY); 
 		Button driveRaiseFully = new JoystickButton(operatorController, Constants.DRIVE_RAISE_FULLY);
 		
 		// Intake Related 
-		Button reverseIntakeArm = new JoystickButton(operatorController, Constants.INTAKE_ARM_REVERSE); 
+		Button reverseIntakeArmButton = new JoystickButton(operatorController, Constants.INTAKE_ARM_REVERSE_BUTTON); 
 
 		// Driver Button Bindings
 		reverseDriveButton.whenPressed(() -> {
@@ -305,8 +306,12 @@ public class RobotContainer {
 			new Shoot(shooterSubsystem, shooterFeederSubsystem, false); 
 		});
 
+		reverseRollerButton.whenPressed(() -> {
+			shooterFeederSubsystem.toggleRollDirection();
+		});  
+
 		// Climber Button Bindings 
-		overrideClimbTime.whenPressed(() -> {
+		overrideClimbTimeButton.whenPressed(() -> {
 			Climb.toggleOverride();
 		});
 
@@ -319,7 +324,7 @@ public class RobotContainer {
 		);
 		
 		// Intake Button Bindings 
-		reverseIntakeArm.whenPressed(() -> {
+		reverseIntakeArmButton.whenPressed(() -> {
 			RotateArm.toggleReverseRotation();
 			getLogger().logInfo("Intake arm direction set to " + RotateArm.isRotationReversed());
 		});

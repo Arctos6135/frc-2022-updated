@@ -19,25 +19,24 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoConstants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 
-public class MotionProfile {
+public class MotionProfile extends CommandBase {
     private final Drivetrain drivetrain;
     private final Trajectory trajectory;
     private final RamseteController ramseteController;
     private final Timer timer;
     private final RamseteCommand autoCommand;
 
-    public MotionProfile(Drivetrain drivetrain, double initialVelocity, 
-        double finalVelocity, List<Pose2d> checkpoints, boolean reversed) {
-        this(drivetrain, initialVelocity, finalVelocity, checkpoints, reversed, null); 
+    public MotionProfile(Drivetrain drivetrain, double initialVelocity,
+            double finalVelocity, List<Pose2d> checkpoints, boolean reversed) {
+        this(drivetrain, initialVelocity, finalVelocity, checkpoints, reversed, null);
     }
-    
-    public MotionProfile(Drivetrain drivetrain, double initialVelocity, 
-    double finalVelocity, List<Pose2d> checkpoints, boolean reversed, 
+
+    public MotionProfile(Drivetrain drivetrain, double initialVelocity,
+            double finalVelocity, List<Pose2d> checkpoints, boolean reversed,
             List<TrajectoryConstraint> constraints) {
         this.drivetrain = drivetrain;
         this.ramseteController = new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta);
@@ -53,13 +52,13 @@ public class MotionProfile {
 
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
                 AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelertaionMetersPerSecondSquared)
-                        .setKinematics(AutoConstants.kDriveKinematics)
-                        .addConstraint(autoVoltageConstraint)
-                        .addConstraints(constraints)
-                        .setStartVelocity(initialVelocity)
-                        .setEndVelocity(finalVelocity)
-                        .setReversed(reversed);
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                .setKinematics(AutoConstants.kDriveKinematics)
+                .addConstraint(autoVoltageConstraint)
+                .addConstraints(constraints)
+                .setStartVelocity(initialVelocity)
+                .setEndVelocity(finalVelocity)
+                .setReversed(reversed);
 
         Trajectory autoTrajectory;
 
@@ -86,12 +85,14 @@ public class MotionProfile {
 
         this.drivetrain.resetOdometry(autoTrajectory.getInitialPose());
     }
-    
+
+    @Override
     public void initialize() {
         timer.reset();
-        timer.start(); 
+        timer.start();
     }
 
+    @Override
     public void execute() {
         State setpoint = trajectory.sample(timer.get());
         RobotContainer.getLogger().logInfo("Setpoint X: " + Double.toString(setpoint.poseMeters.getX()));
@@ -100,6 +101,28 @@ public class MotionProfile {
                 .logInfo("Rotation: " + Double.toString(setpoint.poseMeters.getRotation().getRadians()));
         ChassisSpeeds chassisSpeeds = ramseteController.calculate(drivetrain.getPose(), setpoint);
         DifferentialDriveWheelSpeeds wheelSpeeds = AutoConstants.kDriveKinematics.toWheelSpeeds(chassisSpeeds);
-        
+        drivetrain.setMotors(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
+        // TODO: convert from m/s to SPARK MAX [-1.0, 1.0]
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        timer.stop();
+        drivetrain.setMotors(0, 0);
+    }
+
+    @Override 
+    public boolean isFinished() {
+        return timer.hasElapsed(trajectory.getTotalTimeSeconds());
+    }
+
+    public double getElapsedTime() {
+        return trajectory.getTotalTimeSeconds();
+    }
+
+    public RamseteCommand getRamseteCommand() {
+        return this.autoCommand;
     }
 }
+
+
