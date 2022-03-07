@@ -23,10 +23,14 @@ public final class Constants {
 	public static final int MECANUM_INTAKE_MOTOR = 7;
 	public static final int INTAKE_ARM_MOTOR = 8;
 
+	// Shooter Feeder Motors
+	// TODO: change when electrical is done
+	public static final int ROLLER_MOTOR = 9;
+
 	// Climb Motors 
-	public static final int HOOK_DEPLOYMENT_MOTOR = 9; 
-	public static final int LEFT_CLIMB_MOTOR = 10; 
-	public static final int RIGHT_CLIMB_MOTOR = 11; 
+	public static final int HOOK_DEPLOYMENT_MOTOR = 10; 
+	public static final int LEFT_CLIMB_MOTOR = 11; 
+	public static final int RIGHT_CLIMB_MOTOR = 12; 
 
 	// Climb Related Constants
 	public static final int START_CLIMB_TIME = 20; // seconds
@@ -35,11 +39,6 @@ public final class Constants {
 
 	public static final double INTAKE_ARM_LOWERED = 1.2; 
 	public static final double INTAKE_ARM_RAISED = 0; 
-
-	// Shooter Feeder Motors 
-	// TODO: change when electrical is done 
-	public static final int ROLLER_MOTOR = 0; 
-	public static final double ROLL_SPEED = 0.5; 
 
 	// SPARK MAX Encoders (in inches)
 	public static final double WHEEL_DIAMETER = 4.0;
@@ -102,7 +101,6 @@ public final class Constants {
 	public static final int COLOR_MOTOR_OVERRIDDEN = 0xA72DFFFF;
 
 	// hub heights 
-	// TODO: check if Limelight does measurements in inches 
 	public static final double LOWER_HUB = 48.;
 	public static final double UPPER_HUB = 120.;
 

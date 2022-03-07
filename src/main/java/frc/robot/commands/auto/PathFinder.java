@@ -11,7 +11,9 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.AutoConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -31,9 +33,9 @@ public class PathFinder extends CommandBase {
         AutoConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(AutoConstants.kDriveKinematics)
         .addConstraint(voltageConstraint);
             
-    private Trajectory autoTrajectory; 
+    private static Trajectory autoTrajectory; 
     private RamseteCommand autoCommand;
-    private Drivetrain drivetrain; 
+    private static Drivetrain drivetrain; 
     
     /**
      * Creates a new instance of the Path Finder autonomous drive command. 
@@ -44,10 +46,10 @@ public class PathFinder extends CommandBase {
      * @param endPosition the ending position of the autonomous command.
      */
     public PathFinder(Drivetrain drivetrain, Pose2d startPosition, List<Translation2d> waypoints, Pose2d endPosition) {
-        this.drivetrain = drivetrain;
+        PathFinder.drivetrain = drivetrain;
         addRequirements(drivetrain);
 
-        this.autoTrajectory = TrajectoryGenerator.generateTrajectory(
+        PathFinder.autoTrajectory = TrajectoryGenerator.generateTrajectory(
                 startPosition, waypoints, endPosition, this.config);
         
         this.autoCommand = new RamseteCommand(autoTrajectory, drivetrain::getPose,
@@ -68,8 +70,10 @@ public class PathFinder extends CommandBase {
     /**
      * Reset the robot to the starting position of the trajectory. 
      */
-    public void resetInitialPosition() {
-        drivetrain.resetOdometry(this.autoTrajectory.getInitialPose());
+    public static Command resetInitialPosition() {
+        return new InstantCommand(() -> {
+            drivetrain.resetOdometry(autoTrajectory.getInitialPose());
+        });
     }
      
     /**

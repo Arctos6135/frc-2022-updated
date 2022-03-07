@@ -41,7 +41,7 @@ public class Shooter extends SubsystemBase {
 		this.masterShooterMotor, this.followerShooterMotor);
 
 		this.shooterEncoder = masterShooterMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
-		this.shooterEncoder.setVelocityConversionFactor(2 * Math.PI / 60); // TODO: may not need conversion from RPM
+		// this.shooterEncoder.setVelocityConversionFactor(2 * Math.PI / 60); 
 
 		this.pidController = masterShooterMotor.getPIDController();
 

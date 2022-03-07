@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 public class ShooterFeederSubsystem extends SubsystemBase {
     
@@ -26,7 +25,6 @@ public class ShooterFeederSubsystem extends SubsystemBase {
         this.rollerMotor.setIdleMode(IdleMode.kBrake); 
 
         this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard); 
-        this.rollSpeed = Constants.ROLL_SPEED; 
         this.ballCount = 0; 
     }
 

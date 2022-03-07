@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.climbing.Climb;
 import frc.robot.commands.climbing.DriveRaise;
@@ -35,7 +36,6 @@ import frc.robot.subsystems.ShooterFeederSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -76,7 +76,11 @@ public class RobotContainer {
 	SimpleWidget shooterFeederStatus;
 	SimpleWidget climbStatus;
 
+	private SendableChooser<Integer> preloadedBalls = new SendableChooser<>(); 
+
 	public static final RobotLogger logger = new RobotLogger();
+
+	private Autonomous autonomous; 
 
 	// Contains subsystems, OI devices, and commands
 	public RobotContainer() {
@@ -110,6 +114,8 @@ public class RobotContainer {
 		climbSubsystem.setDefaultCommand(
 			new Climb(climbSubsystem, operatorController, Constants.DEPLOY_CLIMB_BUTTON)
 		);
+
+		autonomous = new Autonomous(); 
 
 		// Shuffle Board Tabs
 		configTab = Shuffleboard.getTab("Config");
@@ -233,6 +239,20 @@ public class RobotContainer {
 				shooterMotorStatus.withProperties(Map.of("color when false", Constants.COLOR_MOTOR_WARNING)).getEntry().setBoolean(false);
 			getLogger().logWarning("Shooter motor " + motor.getDeviceId() + " reached overheat warning at " + temp + " C!");
 		});
+
+		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(9, 5);
+		preloadedBalls.setDefaultOption("0", 0);
+		preloadedBalls.addOption("1", 1);
+		prematchTab.add("Preloaded Balls", preloadedBalls).withPosition(9, 0).withSize(5, 5); 
+		
+		lastError = driveTab.add("Last Error", "").withPosition(0, 12).withSize(20, 4).getEntry();
+		lastWarning = driveTab.add("Last Warning", "").withPosition(4, 12).withSize(20, 4).getEntry();
+		
+		debugTab.add(drivetrain).withPosition(0, 0).withSize(19, 15); 
+	}
+
+	public void updateDashboard() {
+		shooterRPMEntry.setNumber(shooterSubsystem.getActualVelocity());
 	}
 
 	private void configureButtonBindings() {
@@ -240,7 +260,6 @@ public class RobotContainer {
 		Button reverseDriveButton = new JoystickButton(driverController, Constants.REVERSE_DRIVE_DIRECTION);
 		Button dtOverheatOverrideButton = new JoystickButton(driverController, Constants.OVERRIDE_MOTOR_PROTECTION);
 		Button precisionDriveButton = new JoystickButton(driverController, Constants.PRECISION_DRIVE_TOGGLE);
-
 		AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, Constants.PRECISION_DRIVE_HOLD, 0.5);
 		
 		// Shooter Related 
@@ -322,7 +341,7 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return new SequentialCommandGroup();
+		return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, intakeSubsystem, intakeArm, shooterSubsystem, shooterFeederSubsystem); 
 	}
 
 	private void initLogger() {

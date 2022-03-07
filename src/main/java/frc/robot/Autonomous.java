@@ -1,7 +1,15 @@
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.auto.PathFinder;
 import frc.robot.commands.driving.DriveDistance;
 import frc.robot.commands.intake.AutoIntake;
 import frc.robot.subsystems.Drivetrain;
@@ -80,25 +88,15 @@ public class Autonomous {
          */
         INTAKE("Intake Ball"), 
         /**
-         * Drive towards a ball and intake.
+         * Intake 2 balls and shoot them.
          * 
          * <ul> 
          * <li>Starts: Anywhere</li> 
-         * <li>Ends: The ball's location</li> 
-         * <li>Scores: None</li> 
-         * <li>Preload: No Balls</li>
+         * <li>Ends: Near Hub</li> 
+         * <li>Scores: 2 Balls</li> 
+         * <li>Preload: 1 Ball</li>
          */
-        DRIVE_INTAKE("Drive & Intake"), 
-        /**
-         * Uses path weaver and trajectory to drive along a path. 
-         * 
-         * <ul> 
-         * <li>Starts: Anywhere</li> 
-         * <li>Ends: N/A</li> 
-         * <li>Scores: N/A</li> 
-         * <li>Preload: No Balls</li>
-         */
-        PATH_WEAVER("Path Weaver Auto");  
+        TWO_BALL_AUTO("Two Ball Auto");  
 
         String autoName; 
 
@@ -123,18 +121,42 @@ public class Autonomous {
         switch(mode) {
             case NONE:
                 return null;
-            case DRIVE_INTAKE:
-                return null; // TODO: change 
             case FORWARD_SHOOT_LOW_HUB:
-                return new DriveDistance(drivetrain, 60);
+                return new SequentialCommandGroup(
+                    new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)),
+                        null, new Pose2d(2, 0, new Rotation2d(0)))
+                    .andThen(new Shoot(shooter, shooterFeeder, true))
+                    .andThen(PathFinder.resetInitialPosition())
+                );
             case INIT_FORWARD:
                 return new DriveDistance(drivetrain, 72); 
             case INIT_REVERSE:
                 return new DriveDistance(drivetrain, -72);
             case INTAKE:
                 return new AutoIntake(intake, intakeArm, Constants.AUTO_INTAKE_SPEED, false);
-            case PATH_WEAVER:
-                return null;
+            case TWO_BALL_AUTO:
+                return new SequentialCommandGroup(
+                    new PathFinder(
+                        drivetrain,
+                        new Pose2d(0, 0, new Rotation2d(0)), 
+                        null,
+                        new Pose2d(0, 2, new Rotation2d(0)))
+                    .andThen(new Shoot(shooter, shooterFeeder, true))
+                    .andThen(new PathFinder(
+                        drivetrain,
+                        new Pose2d(0, 0, new Rotation2d(0)), 
+                        List.of(new Translation2d(0, -2), new Translation2d(1.5, -3)),
+                        new Pose2d(3, -6, new Rotation2d(0))
+                    ))
+                    .andThen(new AutoIntake(intake, intakeArm, 0.75, false))
+                    .andThen(new PathFinder(
+                        drivetrain, 
+                        new Pose2d(0, 0, new Rotation2d(0)),
+                        List.of(new Translation2d(-3, 4)), 
+                        new Pose2d(-3, 6, new Rotation2d(0))
+                    ))
+                    .andThen(new Shoot(shooter, shooterFeeder, true))
+                );
             default:
                 return null;
         }
