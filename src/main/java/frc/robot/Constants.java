@@ -80,6 +80,8 @@ public final class Constants {
 	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value; 
 	public static final int DRIVE_RAISE_HALFWAY = XboxController.Button.kLeftBumper.value; 
 	public static final int DRIVE_RAISE_FULLY = XboxController.Button.kRightBumper.value;
+	public static final int SHOOT_LOW_RPM_BUTTON = XboxController.Button.kBack.value;
+	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Button.kStart.value; 
 
 	// Autonomous Related 
 	public static final double AUTO_INTAKE_SPEED = 0.75; 

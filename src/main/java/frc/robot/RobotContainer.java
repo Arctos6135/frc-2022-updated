@@ -265,7 +265,9 @@ public class RobotContainer {
 		// Shooter Related 
 		Button deployShooterLowerButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_LOWER_BUTTON);
 		Button deployShooterUpperButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON);
-		Button reverseRollerButton = new JoystickButton(operatorController, Constants.REVERSE_ROLL_BUTTON); 
+		Button reverseRollerButton = new JoystickButton(operatorController, Constants.REVERSE_ROLL_BUTTON);
+		Button shootLowHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_LOW_RPM_BUTTON);
+		Button shootHighHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_HIGH_RPM_BUTTON); 
 
 		// Climb Related
 		Button overrideClimbTimeButton = new JoystickButton(operatorController, Constants.CLIMB_TIME_OVERRIDE_BUTTON); 
@@ -307,12 +309,22 @@ public class RobotContainer {
 			}
 		});
 
+		// Shooting 
 		deployShooterLowerButton.whenActive(() -> {
 			new Shoot(shooterSubsystem, shooterFeederSubsystem, true); 
 		});
 
 		deployShooterUpperButton.whenActive(() -> {
 			new Shoot(shooterSubsystem, shooterFeederSubsystem, false); 
+		});
+
+		// Setting RPM 
+		shootLowHubRPMButton.whenPressed(() -> {
+			shooterSubsystem.setVelocity(Constants.LOW_HUB_RPM);
+		});
+
+		shootHighHubRPMButton.whenPressed(() -> {
+			shooterSubsystem.setVelocity(Constants.HIGH_HUB_RPM); 
 		});
 
 		reverseRollerButton.whenPressed(() -> {
@@ -337,6 +349,7 @@ public class RobotContainer {
 			RotateArm.toggleReverseRotation();
 			getLogger().logInfo("Intake arm direction set to " + RotateArm.isRotationReversed());
 		});
+
 
 	}
 

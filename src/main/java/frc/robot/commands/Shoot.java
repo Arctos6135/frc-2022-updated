@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterFeederSubsystem;
@@ -37,6 +38,12 @@ public class Shoot extends CommandBase {
             finished = true; 
             RobotContainer.getLogger().logError("Shooter is overheating, cannot shoot."); 
         }
+
+        if (lowerHub) {
+            shooter.setVelocity(Constants.LOW_HUB_RPM); 
+        } else {
+            shooter.setVelocity(Constants.HIGH_HUB_RPM); 
+        }
     }
 
     @Override 
@@ -46,19 +53,21 @@ public class Shoot extends CommandBase {
             velocityReached = true; 
             shooterFeederSubsystem.startRoller();
 
-            if (lowerHub) {
+            /* if (lowerHub) {
                 try {
                     shooter.fire(false); 
                 } catch (Shooter.PowerException exception) {
                     RobotContainer.getLogger().logError("The shooter motor cannot support the lower hub shot!");
-                }
+                } 
+                
             } else {
                 try {
                     shooter.fire(true); 
                 } catch (Shooter.PowerException exception) {
                     RobotContainer.getLogger().logError("The shooter motor cannot support the upper hub shot!"); 
-                }
-            }
+                } 
+            } */
+
         } else {
             shooterFeederSubsystem.stopRoller(); 
 
