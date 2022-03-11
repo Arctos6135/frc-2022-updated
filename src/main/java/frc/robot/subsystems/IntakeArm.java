@@ -7,6 +7,10 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+/**
+ * The intake arm for the intake subsystem. The arm is rotated up and down 
+ * to intake balls from the ground, using mecanum wheels.
+ */
 public class IntakeArm extends SubsystemBase {
     private final CANSparkMax intakeArmMotor;
     private final SparkMaxPIDController intakeArmPIDController;
@@ -14,6 +18,7 @@ public class IntakeArm extends SubsystemBase {
     private boolean intakeArmLowered = false;
     private double intakeArmPosition = 0;
     
+    // TODO: tune these constants
     public final static double kP = 0, kI = 0, kD = 0, kF = 0;
 
     /**

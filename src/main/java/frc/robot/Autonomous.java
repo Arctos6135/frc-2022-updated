@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.auto.PathFinder;
-import frc.robot.commands.driving.DriveDistance;
 import frc.robot.commands.intake.AutoIntake;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeArm;
@@ -96,7 +95,17 @@ public class Autonomous {
          * <li>Scores: 2 Balls</li> 
          * <li>Preload: 1 Ball</li>
          */
-        TWO_BALL_AUTO("Two Ball Auto");  
+        TWO_BALL_AUTO_PRELOAD("Two Ball Auto Preload"), 
+        /**
+         * Intake 2 balls and shoot them.
+         * 
+         * <ul> 
+         * <li>Starts: Anywhere</li> 
+         * <li>Ends: Near Hub</li> 
+         * <li>Scores: 2 Balls</li> 
+         * <li>Preload: 0 Balls</li>
+         */
+        TWO_BALL_AUTO("Two Ball Auto"); 
 
         String autoName; 
 
@@ -129,12 +138,12 @@ public class Autonomous {
                     .andThen(PathFinder.resetInitialPosition())
                 );
             case INIT_FORWARD:
-                return new DriveDistance(drivetrain, 72); 
+                return new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)), null, new Pose2d(2, 0, new Rotation2d(0)));
             case INIT_REVERSE:
-                return new DriveDistance(drivetrain, -72);
+                return new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)), null, new Pose2d(-2, 0, new Rotation2d(0)));
             case INTAKE:
                 return new AutoIntake(intake, intakeArm, Constants.AUTO_INTAKE_SPEED, false);
-            case TWO_BALL_AUTO:
+            case TWO_BALL_AUTO_PRELOAD:
                 return new SequentialCommandGroup(
                     new PathFinder(
                         drivetrain,
@@ -157,6 +166,10 @@ public class Autonomous {
                     ))
                     .andThen(new Shoot(shooter, shooterFeeder, true))
                 );
+            case TWO_BALL_AUTO: 
+                return new SequentialCommandGroup(
+
+                ); 
             default:
                 return null;
         }
