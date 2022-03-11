@@ -24,7 +24,7 @@ public class ShooterFeederSubsystem extends SubsystemBase {
 
         this.rollerMotor.setIdleMode(IdleMode.kBrake); 
 
-        this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard); 
+        this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         this.ballCount = 0; 
     }
 

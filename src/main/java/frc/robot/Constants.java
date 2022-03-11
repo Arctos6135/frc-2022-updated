@@ -43,7 +43,7 @@ public final class Constants {
 	// SPARK MAX Encoders (in inches)
 	public static final double WHEEL_DIAMETER = 4.0;
 	public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
-	public static final double GEARBOX_RATIO = 0;
+	public static final double GEARBOX_RATIO = 1/6.1;
 	public static final double POSITION_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO;
 	public static final double POSITION_CONVERSION_FACTOR_METERS = Units.inchesToMeters(POSITION_CONVERSION_FACTOR); 
 	public static final double VELOCITY_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE * GEARBOX_RATIO / 60;
@@ -110,4 +110,8 @@ public final class Constants {
 	// TODO: change if necessary
 	public static final Color OUR_ALLIANCE = Color.kBlue; 
 	public static final Color OPPOSING_ALLIANCE = Color.kRed; 
+
+	// TODO: test values for shooter RPM
+	public static final double LOW_HUB_RPM = 0; 
+	public static final double HIGH_HUB_RPM = 0; 
 }

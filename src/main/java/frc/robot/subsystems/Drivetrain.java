@@ -39,57 +39,58 @@ import frc.robot.util.MonitoredCANSparkMaxGroup;
 // d2 -> acceleration 
 public class Drivetrain extends SubsystemBase {
 
-  // Motor Controllers 
+  // Motor Controllers
   private final CANSparkMax rightMotor;
   private final CANSparkMax leftMotor;
   private final CANSparkMax rightFollowerMotor;
   private final CANSparkMax leftFollowerMotor;
 
-  private final MotorControllerGroup m_leftMotors; 
-  private final MotorControllerGroup m_rightMotors; 
+  private final MotorControllerGroup m_leftMotors;
+  private final MotorControllerGroup m_rightMotors;
 
-  private final DifferentialDrive m_differentialDrive; 
-  private final DifferentialDriveOdometry m_differentialOdometry; 
+  private final DifferentialDrive m_differentialDrive;
+  private final DifferentialDriveOdometry m_differentialOdometry;
 
-  // Encoders 
+  // Encoders
   private final RelativeEncoder rightEncoder;
   private final RelativeEncoder leftEncoder;
-  
-  // Motor Controller Monitors 
+
+  // Motor Controller Monitors
   private final MonitoredCANSparkMaxGroup motorMonitorGroup;
-  
-  // Whether to protect against overheating. 
+
+  // Whether to protect against overheating.
   private boolean protectionOverridden = false;
-  
+
   // Acceleration of Motors
   private double leftMotorLastRate, rightMotorLastRate = 0;
-  private double lastTime = 0; // TODO: does this have to be initialized?  
+  private double lastTime = 0; // TODO: does this have to be initialized?
 
-  // Robot Navigation System 
-  private final AHRS ahrs; 
+  // Robot Navigation System
+  private final AHRS ahrs;
 
-  // Break Mode: motors are brought to a quick stop (motor wires are shorted together). 
+  // Break Mode: motors are brought to a quick stop (motor wires are shorted
+  // together).
   // Coast Mode: motors can spin at their own rates (motor wires disconnected).
   private IdleMode idleMode = IdleMode.kCoast;
 
   // Adjusts speeds.
   private double speedMultiplier = 1.0;
-  
+
   /**
-   * Set the speed multiplier. 
+   * Set the speed multiplier.
    * 
    * <p>
    * Speeds passed to the motors are multiplied by this.
-   * </p> 
+   * </p>
    * 
    * @param speedMultiplier the speed multiplier.
    */
   public void setSpeedMultiplier(double speedMultiplier) {
     this.speedMultiplier = speedMultiplier;
   }
-  
+
   /**
-   * Get the speed multiplier. 
+   * Get the speed multiplier.
    * 
    * @return the speed multiplier.
    */
@@ -105,24 +106,24 @@ public class Drivetrain extends SubsystemBase {
   public void setRightMotor(double motorOutput) {
     rightMotor.set(motorMonitorGroup.getOverheatShutoff() && !protectionOverridden ? 0 : motorOutput * speedMultiplier);
   }
-  
+
   /**
-   * Set percentage output of the left motor. 
+   * Set percentage output of the left motor.
    * 
    * @param motorOutput the motor output.
    */
   public void setLeftMotor(double motorOutput) {
     leftMotor.set(motorMonitorGroup.getOverheatShutoff() && !protectionOverridden ? 0 : motorOutput * speedMultiplier);
   }
-  
+
   /**
    * Set the left and right side motors of the drivetrain.
    * 
-   * Inputs to the motors are multiplied by the speed multiplier. 
-   * Motor outputs are constrained to [-1, 1]. 
+   * Inputs to the motors are multiplied by the speed multiplier.
+   * Motor outputs are constrained to [-1, 1].
    * 
-   * @param leftOutput (inverted) percent output of left side motors.
-   * @param rightOutput percent output of right side motors. 
+   * @param leftOutput  (inverted) percent output of left side motors.
+   * @param rightOutput percent output of right side motors.
    */
   public void setMotors(double leftOutput, double rightOutput) {
     setLeftMotor(leftOutput);
@@ -130,10 +131,11 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Set the ramping rate of the motors. 
-   * The ramping rate is the number of seconds it takes to go from 0 to maximum speed. 
+   * Set the ramping rate of the motors.
+   * The ramping rate is the number of seconds it takes to go from 0 to maximum
+   * speed.
    * 
-   * @param rampRate number of seconds to go from 0 to full throttle. 
+   * @param rampRate number of seconds to go from 0 to full throttle.
    */
   public void setRamping(double rampRate) {
     leftMotor.setOpenLoopRampRate(rampRate);
@@ -141,17 +143,18 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Set the overheat shutoff. 
+   * Set the overheat shutoff.
    * 
-   * When overridden, motors are still active after shutoff limits. 
-   * Callbacks will be called and the motors will be in a "shutoff" or "warning" state. 
+   * When overridden, motors are still active after shutoff limits.
+   * Callbacks will be called and the motors will be in a "shutoff" or "warning"
+   * state.
    * 
    * @param override
    */
   public void setOverheatShutoffOverride(boolean override) {
     this.protectionOverridden = override;
   }
-  
+
   /**
    * Return the overheat shutoff override boolean.
    * 
@@ -164,16 +167,16 @@ public class Drivetrain extends SubsystemBase {
   public boolean getOverheatShutoffOverride() {
     return this.protectionOverridden;
   }
-  
+
   // Drivetrain Encoder Methods
   /**
-   * Reset the left and right encoders. 
+   * Reset the left and right encoders.
    */
   public void resetEncoders() {
     leftEncoder.setPosition(0.0);
     rightEncoder.setPosition(0.0);
   }
-  
+
   /**
    * Get the distance that the right encoder has travelled.
    * Position conversion factors are already considered.
@@ -185,33 +188,33 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Get the distance that the left encoder has travelled. 
-   * Position conversion factors are already considered. 
+   * Get the distance that the left encoder has travelled.
+   * Position conversion factors are already considered.
    * 
-   * @return distance travelled by left encoder (inches). 
+   * @return distance travelled by left encoder (inches).
    */
   public double getLeftDistance() {
     return leftEncoder.getPosition();
   }
 
   /**
-   * Get velocity of the right encoder. 
+   * Get velocity of the right encoder.
    * 
-   * @return velocity of the right encoder (inches / second). 
+   * @return velocity of the right encoder (inches / second).
    */
   public double getRightVelocity() {
     return rightEncoder.getVelocity();
   }
-  
+
   /**
-   * Get velocity of the left encoder. 
+   * Get velocity of the left encoder.
    * 
-   * @return velocity of the left encoder (inches / second). 
+   * @return velocity of the left encoder (inches / second).
    */
   public double getLeftVelocity() {
     return leftEncoder.getVelocity();
   }
-  
+
   public double[] getAccelerations() {
     double dt = Timer.getFPGATimestamp() - lastTime;
     double rightRate = getRightVelocity();
@@ -227,27 +230,28 @@ public class Drivetrain extends SubsystemBase {
 
     return new double[] { leftAccel, rightAccel };
   }
-  
+
   /**
    * Get the Idle Mode of the Drivetrain.
    * 
-   * @return the idle mode. 
+   * @return the idle mode.
    */
   public IdleMode getIdleMode() {
     return this.idleMode;
   }
-  
+
   /**
-   * Set the Idle Mode (brake/coast) of the drivetrain motors. 
+   * Set the Idle Mode (brake/coast) of the drivetrain motors.
+   * 
    * @param mode
    */
   public void setMotorMode(IdleMode mode) {
     idleMode = mode;
     leftMotor.setIdleMode(mode);
-    rightMotor.setIdleMode(mode); 
+    rightMotor.setIdleMode(mode);
   }
-  
-  // Robot Navigation 
+
+  // Robot Navigation
 
   /**
    * Get the robot's Atttude and Heading Reference System.
@@ -266,7 +270,7 @@ public class Drivetrain extends SubsystemBase {
   public double getHeading() {
     return ahrs.getRotation2d().getDegrees();
   }
-  
+
   /**
    * Reset the heading of the robot.
    */
@@ -277,48 +281,48 @@ public class Drivetrain extends SubsystemBase {
   // Autonomous Mode
 
   /**
-   * Set the motor controllers using direct voltage. 
+   * Set the motor controllers using direct voltage.
    * 
-   * @param leftVolts the voltage passed to the left motors.
-   * @param rightVolts the voltage passed to the right motors. 
+   * @param leftVolts  the voltage passed to the left motors.
+   * @param rightVolts the voltage passed to the right motors.
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    m_leftMotors.setVoltage(leftVolts); 
+    m_leftMotors.setVoltage(leftVolts);
     m_rightMotors.setVoltage(rightVolts);
-    m_differentialDrive.feed(); 
+    m_differentialDrive.feed();
   }
 
   /**
-   * Set the maximum output of the differential drive. 
+   * Set the maximum output of the differential drive.
    * 
-   * @param maxOutput factor for output percentage. 
+   * @param maxOutput factor for output percentage.
    */
   public void setMaxOutput(double maxOutput) {
     m_differentialDrive.setMaxOutput(maxOutput);
   }
 
   /**
-   * Get the estimated pose of the robot in its current state. 
+   * Get the estimated pose of the robot in its current state.
    * 
-   * @return the pose as a Pose2d object. 
+   * @return the pose as a Pose2d object.
    */
   public Pose2d getPose() {
-    return m_differentialOdometry.getPoseMeters(); 
+    return m_differentialOdometry.getPoseMeters();
   }
 
   /**
-   * Get the current wheel speeds of the robot (in m/s). 
+   * Get the current wheel speeds of the robot (in m/s).
    * 
-   * @return the current wheel speeds. 
+   * @return the current wheel speeds.
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity()); 
+    return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity());
   }
 
   /**
-   * Resets the odometry to the specified pose. 
+   * Resets the odometry to the specified pose.
    * 
-   * @param pose the pose to which to set the odometry. 
+   * @param pose the pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
@@ -335,15 +339,16 @@ public class Drivetrain extends SubsystemBase {
    * A negative rotation value will turn the robot counterclockwise (rightwards),
    * as the right output will be larger than the left output.
    * 
-   * @param translation the translation, constrained in the interval [-1.0, 1.0].
-   * @param rotation the rotation, constrained in the interval [-1.0, 1.0].
+   * @param translation   the translation, constrained in the interval [-1.0,
+   *                      1.0].
+   * @param rotation      the rotation, constrained in the interval [-1.0, 1.0].
    * @param scalingFactor scales the motor output.
    */
   public void arcadeDrive(double translation, double rotation, double scalingFactor) {
     double left = (translation + rotation) * scalingFactor;
     double right = (translation - rotation) * scalingFactor;
-    
-    setMotors(left, right); 
+
+    setMotors(left, right);
   }
 
   /**
@@ -352,31 +357,32 @@ public class Drivetrain extends SubsystemBase {
    * The overloaded arcadeDrive performs turning.
    * 
    * @param translation the translation, constrained in the interval [-1.0, 1.0]
-   * @param rotation the rotation, constrained in the interval [-1.0, 1.0]
+   * @param rotation    the rotation, constrained in the interval [-1.0, 1.0]
    */
   public void arcadeDrive(double translation, double rotation) {
     arcadeDrive(translation, rotation, 1.0);
   }
 
   /**
-   * Writes all settings of SPARK MAX motor controllers to flash. 
+   * Writes all settings of SPARK MAX motor controllers to flash.
    * 
-   * This allows SPARK MAX controllers to remember their configuration throughout a power cycle. 
+   * This allows SPARK MAX controllers to remember their configuration throughout
+   * a power cycle.
    */
   public void burnFlash() {
     rightMotor.burnFlash();
     leftMotor.burnFlash();
     rightFollowerMotor.burnFlash();
-    leftFollowerMotor.burnFlash(); 
+    leftFollowerMotor.burnFlash();
   }
 
   /**
-   * Get the monitor group for the drivetrain. 
+   * Get the monitor group for the drivetrain.
    * 
-   * @return the drivetrain's motor monitor group. 
+   * @return the drivetrain's motor monitor group.
    */
   public MonitoredCANSparkMaxGroup getMonitorGroup() {
-    return this.motorMonitorGroup; 
+    return this.motorMonitorGroup;
   }
 
   /**
@@ -392,8 +398,8 @@ public class Drivetrain extends SubsystemBase {
    *                      controller.
    */
   public Drivetrain(int rightMaster, int leftMaster, int rightFollower, int leftFollower) {
-    // Robot Navigation 
-    ahrs = new AHRS(I2C.Port.kOnboard); 
+    // Robot Navigation (on the MXP port)
+    ahrs = new AHRS(I2C.Port.kMXP);
 
     // Motor Instantiation
     rightMotor = new CANSparkMax(rightMaster, MotorType.kBrushless);
@@ -401,33 +407,34 @@ public class Drivetrain extends SubsystemBase {
     rightFollowerMotor = new CANSparkMax(rightFollower, MotorType.kBrushless);
     leftFollowerMotor = new CANSparkMax(leftFollower, MotorType.kBrushless);
 
-    // Speed Group Initialization 
-    m_rightMotors = new MotorControllerGroup(rightMotor, rightFollowerMotor); 
-    m_leftMotors = new MotorControllerGroup(leftMotor, leftFollowerMotor); 
+    // Speed Group Initialization
+    m_rightMotors = new MotorControllerGroup(rightMotor, rightFollowerMotor);
+    m_leftMotors = new MotorControllerGroup(leftMotor, leftFollowerMotor);
 
     // Differential Drive and Odometry
     m_differentialDrive = new DifferentialDrive(m_leftMotors, m_rightMotors);
-    m_differentialOdometry = new DifferentialDriveOdometry(ahrs.getRotation2d()); 
-    
-    // Encoder Instantiation 
+    m_differentialOdometry = new DifferentialDriveOdometry(ahrs.getRotation2d());
+
+    // Encoder Instantiation
     // TODO: check to see if kQuadrature should be replaced with kHallSensor
     rightEncoder = rightMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, Constants.COUNTS_PER_REVOLUTION);
     leftEncoder = leftMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, Constants.COUNTS_PER_REVOLUTION);
 
-    // Motor Monitor Group 
-    motorMonitorGroup = new MonitoredCANSparkMaxGroup("Drivetrain", Constants.MOTOR_WARNING_TEMP, Constants.MOTOR_SHUTOFF_TEMP, 
-      rightMotor, leftMotor, rightFollowerMotor, leftFollowerMotor); 
+    // Motor Monitor Group
+    motorMonitorGroup = new MonitoredCANSparkMaxGroup("Drivetrain", Constants.MOTOR_WARNING_TEMP,
+        Constants.MOTOR_SHUTOFF_TEMP,
+        rightMotor, leftMotor, rightFollowerMotor, leftFollowerMotor);
 
     rightFollowerMotor.follow(rightMotor);
     leftFollowerMotor.follow(leftMotor);
-    
+
     rightMotor.stopMotor();
     leftMotor.stopMotor();
-    
-    // Invert master motors to drive in the correct direction. 
+
+    // Invert master motors to drive in the correct direction.
     rightMotor.setInverted(false);
     leftMotor.setInverted(true);
-    
+
     rightEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR_METERS);
     leftEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR_METERS);
     rightEncoder.setVelocityConversionFactor(Constants.VELOCITY_CONVERSION_FACTOR_METERS);
@@ -437,29 +444,29 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     motorMonitorGroup.monitorOnce();
-    
+
     if (motorMonitorGroup.getOverheatShutoff()) {
-      setMotors(0, 0); 
+      setMotors(0, 0);
     }
 
     m_differentialOdometry.update(
-      ahrs.getRotation2d(), 
-      Units.inchesToMeters(leftEncoder.getPosition()), 
-      Units.inchesToMeters(rightEncoder.getPosition()));
+        ahrs.getRotation2d(),
+        Units.inchesToMeters(leftEncoder.getPosition()),
+        Units.inchesToMeters(rightEncoder.getPosition()));
   }
 
-  @Override 
+  @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
     builder.setSmartDashboardType("DifferentialDrive");
     builder.setActuator(true);
     builder.setSafeState(() -> {
-      setMotors(0, 0); 
+      setMotors(0, 0);
     });
-    
+
     // Adds getter and setter properties for the left and right motor speeds.
     builder.addDoubleProperty("Left Motor Speed", leftMotor::get, this::setLeftMotor);
-    builder.addDoubleProperty("Right Motor Speed", rightMotor::get, this::setRightMotor); 
+    builder.addDoubleProperty("Right Motor Speed", rightMotor::get, this::setRightMotor);
   }
 }

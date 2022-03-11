@@ -162,6 +162,10 @@ public class Autonomous {
         }
     }
 
+    /**
+     * Creates a new sendable chooser for autonomous mode. 
+     * Autonomous can be selected prior to the match. 
+     */
     public Autonomous() {
         chooser = new SendableChooser<>(); 
 
