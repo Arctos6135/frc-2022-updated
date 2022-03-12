@@ -1,14 +1,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 
+/**
+ * Shoots a ball (mostly to the low hub). 
+ * When initialized, the shooter motors are set to a constant RPM depending on low or high hub. 
+ * After the velocity of the shooter motors are set using PID control, the command waits until 
+ * the motors reach the required RPM to start rolling the shooter feeder subsystem. 
+ */
 public class Shoot extends CommandBase {
     
-    private static final double VELOCITY_TOLERANCE = 100; // TODO: will probably change 
+    private static final double VELOCITY_TOLERANCE = 100; 
     
     private final Shooter shooter; 
     private final ShooterFeederSubsystem shooterFeederSubsystem; 
@@ -19,14 +25,22 @@ public class Shoot extends CommandBase {
 
     private boolean finished = false; 
 
+    /**
+     * 
+     * @param shooter the shooter subsystem with shooter wheels and motors.
+     * @param shooterFeederSubsystem the shooter feeder subsystem with belts. 
+     * @param lowerHub whether to shoot high or low hub. 
+     */
     public Shoot(Shooter shooter, ShooterFeederSubsystem shooterFeederSubsystem, boolean lowerHub) {
         this.shooter = shooter; 
         this.shooterFeederSubsystem = shooterFeederSubsystem; 
-        shooterFeederSubsystem.setRollDirection(true);
         this.lowerHub = lowerHub;
         this.targetVelocity = this.shooter.getVelocitySetpoint(); 
 
         addRequirements(shooter, shooterFeederSubsystem);
+
+        this.shooterFeederSubsystem.setRollDirection(true);
+        this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED); 
     }
 
     @Override 
@@ -51,7 +65,7 @@ public class Shoot extends CommandBase {
         if (Math.abs(shooter.getActualVelocity() - targetVelocity) < VELOCITY_TOLERANCE && shooterFeederSubsystem.getBallInShotPosition()) {
             // Shoot the ball 
             velocityReached = true; 
-            shooterFeederSubsystem.startRoller();
+            shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
 
             /* if (lowerHub) {
                 try {

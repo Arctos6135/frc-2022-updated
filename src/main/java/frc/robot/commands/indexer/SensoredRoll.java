@@ -5,7 +5,7 @@ import com.revrobotics.ColorMatchResult;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 
 /**
@@ -34,7 +34,6 @@ public class SensoredRoll extends CommandBase {
     @Override 
     public void initialize() {
         shooterFeederSubsystem.setRollDirection(true);
-        shooterFeederSubsystem.startRoller(); 
     }
 
     @Override 
@@ -50,7 +49,7 @@ public class SensoredRoll extends CommandBase {
         } else if (matchedColor.color == Constants.OPPOSING_ALLIANCE) {
             // Outtake the ball 
             shooterFeederSubsystem.setRollDirection(false);
-            shooterFeederSubsystem.startRoller(); 
+            shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED); 
         } else {
             shooterFeederSubsystem.setBallInShotPosition(false); 
         }

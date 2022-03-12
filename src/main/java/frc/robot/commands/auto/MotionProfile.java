@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import frc.robot.AutoConstants;
 import frc.robot.RobotContainer;
+import frc.robot.constants.AutoConstants;
 import frc.robot.subsystems.Drivetrain;
 
 public class MotionProfile extends CommandBase {

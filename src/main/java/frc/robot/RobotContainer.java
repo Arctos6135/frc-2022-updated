@@ -25,6 +25,8 @@ import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RotateArm;
+import frc.robot.constants.Autonomous;
+import frc.robot.constants.Constants;
 import frc.robot.commands.indexer.SensoredRoll;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.Drivetrain;
@@ -265,7 +267,7 @@ public class RobotContainer {
 		// Shooter Related 
 		Button deployShooterLowerButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_LOWER_BUTTON);
 		Button deployShooterUpperButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON);
-		Button reverseRollerButton = new JoystickButton(operatorController, Constants.REVERSE_ROLL_BUTTON);
+		Button constantRollSpeedButton = new JoystickButton(operatorController, Constants.CONSTANT_ROLL_SPEED_BUTTON);
 		Button shootLowHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_LOW_RPM_BUTTON);
 		Button shootHighHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_HIGH_RPM_BUTTON); 
 
@@ -327,8 +329,8 @@ public class RobotContainer {
 			shooterSubsystem.setVelocity(Constants.HIGH_HUB_RPM); 
 		});
 
-		reverseRollerButton.whenPressed(() -> {
-			shooterFeederSubsystem.toggleRollDirection();
+		constantRollSpeedButton.whenPressed(() -> {
+			ShooterFeederSubsystem.toggleConstantRollSpeed();
 		});  
 
 		// Climber Button Bindings 

@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.auto.PathFinder;
@@ -133,43 +134,51 @@ public class Autonomous {
             case FORWARD_SHOOT_LOW_HUB:
                 return new SequentialCommandGroup(
                     new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)),
-                        null, new Pose2d(2, 0, new Rotation2d(0)))
+                        null, new Pose2d(2, 0, new Rotation2d(0))).getAutoCommand()
                     .andThen(new Shoot(shooter, shooterFeeder, true))
                     .andThen(PathFinder.resetInitialPosition())
                 );
             case INIT_FORWARD:
-                return new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)), null, new Pose2d(2, 0, new Rotation2d(0)));
+                return new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)), 
+                    null, new Pose2d(2, 0, new Rotation2d(0))).getAutoCommand();
             case INIT_REVERSE:
-                return new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)), null, new Pose2d(-2, 0, new Rotation2d(0)));
+                return new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)),
+                null, new Pose2d(-2, 0, new Rotation2d(0))).getAutoCommand();
             case INTAKE:
-                return new AutoIntake(intake, intakeArm, Constants.AUTO_INTAKE_SPEED, false);
+                return new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false);
             case TWO_BALL_AUTO_PRELOAD:
-                return new SequentialCommandGroup(
-                    new PathFinder(
-                        drivetrain,
-                        new Pose2d(0, 0, new Rotation2d(0)), 
-                        null,
-                        new Pose2d(0, 2, new Rotation2d(0)))
-                    .andThen(new Shoot(shooter, shooterFeeder, true))
-                    .andThen(new PathFinder(
-                        drivetrain,
-                        new Pose2d(0, 0, new Rotation2d(0)), 
-                        List.of(new Translation2d(0, -2), new Translation2d(1.5, -3)),
-                        new Pose2d(3, -6, new Rotation2d(0))
-                    ))
-                    .andThen(new AutoIntake(intake, intakeArm, 0.75, false))
-                    .andThen(new PathFinder(
-                        drivetrain, 
-                        new Pose2d(0, 0, new Rotation2d(0)),
-                        List.of(new Translation2d(-3, 4)), 
-                        new Pose2d(-3, 6, new Rotation2d(0))
-                    ))
-                    .andThen(new Shoot(shooter, shooterFeeder, true))
+                return new ParallelRaceGroup(
+                    new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false),
+                    new SequentialCommandGroup(
+                        new PathFinder(
+                            drivetrain,
+                            new Pose2d(0, 0, new Rotation2d(0)), 
+                            null,
+                            new Pose2d(0, 2, new Rotation2d(0)))
+                        .getAutoCommand()
+                        .andThen(new Shoot(shooter, shooterFeeder, true))
+                        .andThen(new PathFinder(
+                            drivetrain,
+                            new Pose2d(0, 0, new Rotation2d(0)), 
+                            List.of(new Translation2d(0, -2), new Translation2d(1.5, -3)),
+                            new Pose2d(3, -6, new Rotation2d(0))
+                        ).getAutoCommand())
+                        .andThen(new PathFinder(
+                            drivetrain, 
+                            new Pose2d(0, 0, new Rotation2d(0)),
+                            List.of(new Translation2d(-3, 4)), 
+                            new Pose2d(-3, 6, new Rotation2d(0))
+                        ).getAutoCommand())
+                        .andThen(new Shoot(shooter, shooterFeeder, true)))
                 );
             case TWO_BALL_AUTO: 
-                return new SequentialCommandGroup(
-                    
-                ); 
+                return new ParallelRaceGroup(
+                    new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false), 
+                    new SequentialCommandGroup(
+                        new PathFinder(
+                            drivetrain, new Pose2d(0, 0, new Rotation2d(0)), null, new Pose2d(-3, 0, new Rotation2d(0)))
+                    )
+                );
             default:
                 return null;
         }

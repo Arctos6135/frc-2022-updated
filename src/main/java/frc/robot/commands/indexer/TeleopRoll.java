@@ -6,9 +6,9 @@ import com.revrobotics.ColorMatchResult;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 
 /**
@@ -45,10 +45,14 @@ public class TeleopRoll extends CommandBase {
 
     @Override 
     public void execute() {
-        double rollSpeed = TeleopDrive.applyDeadband(operatorController.getRawAxis(Y_AXIS), Constants.CONTROLLER_DEADZONE);
-        rollSpeed = Math.copySign(rollSpeed * rollSpeed, rollSpeed); 
+        if (ShooterFeederSubsystem.constantRollSpeed) {
+            shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED); 
+        } else {
+            double rollSpeed = TeleopDrive.applyDeadband(operatorController.getRawAxis(Y_AXIS), Constants.CONTROLLER_DEADZONE);
+            rollSpeed = Math.copySign(rollSpeed * rollSpeed, rollSpeed); 
 
-        shooterFeederSubsystem.setRollSpeed(rollSpeed);
+            shooterFeederSubsystem.setRollSpeed(rollSpeed);
+        }
 
         detectedColor = this.shooterFeederSubsystem.getColorDetected(); 
         matchedColor = colorMatch.matchColor(detectedColor); 

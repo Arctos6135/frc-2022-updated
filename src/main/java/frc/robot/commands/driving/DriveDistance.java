@@ -6,7 +6,7 @@ package frc.robot.commands.driving;
 
 import com.arctos6135.robotpathfinder.motionprofile.followable.profiles.TrapezoidalTankDriveProfile;
 
-import frc.robot.Constants;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 /** An example command that uses an example subsystem. */

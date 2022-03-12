@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 import com.arctos6135.robotpathfinder.core.RobotSpecs;
 
@@ -19,13 +19,12 @@ public final class Constants {
 	public static final int AUXILLIARY_SHOOTER_MOTOR = 6;
 
 	// Intake Motors
-	// TODO: change when attached to PDP 
 	public static final int MECANUM_INTAKE_MOTOR = 7;
 	public static final int INTAKE_ARM_MOTOR = 8;
 
 	// Shooter Feeder Motors
-	// TODO: change when electrical is done
 	public static final int ROLLER_MOTOR = 9;
+	public static final double ROLL_SPEED = 0.75;
 
 	// Climb Motors 
 	public static final int HOOK_DEPLOYMENT_MOTOR = 10; 
@@ -75,16 +74,13 @@ public final class Constants {
 	public static final int DEPLOY_CLIMB_BUTTON = XboxController.Button.kB.value; 
 	public static final int CLIMB_TIME_OVERRIDE_BUTTON = XboxController.Button.kA.value; 
 	public static final int ROLL_AXIS = XboxController.Axis.kLeftY.value;
-	public static final int REVERSE_ROLL_BUTTON = XboxController.Button.kLeftStick.value; 
+	public static final int CONSTANT_ROLL_SPEED_BUTTON = XboxController.Button.kLeftStick.value; 
 	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
 	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value; 
 	public static final int DRIVE_RAISE_HALFWAY = XboxController.Button.kLeftBumper.value; 
 	public static final int DRIVE_RAISE_FULLY = XboxController.Button.kRightBumper.value;
-	public static final int SHOOT_LOW_RPM_BUTTON = XboxController.Button.kBack.value;
-	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Button.kStart.value; 
-
-	// Autonomous Related 
-	public static final double AUTO_INTAKE_SPEED = 0.75; 
+	public static final int SHOOT_LOW_RPM_BUTTON = XboxController.Axis.kRightTrigger.value;
+	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Axis.kLeftTrigger.value;
 
 	// Robot Dimensions
 	// TODO: change these to match robot

@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 /**
  * The intake subsystem.
@@ -14,6 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Motors to Spin Mecanum Wheels 
     private final CANSparkMax mecanumWheelMotor;
+    private final RelativeEncoder mecanumWheelEncoder; 
  
     private IdleMode idleMode;
 
@@ -24,6 +28,24 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public void setMecanumWheelMotor(double scale) {
         mecanumWheelMotor.set(scale); 
+    }
+
+    /**
+     * Get the speed of the intake motors.
+     * 
+     * @return the RPM of the intake mecanum wheels.
+     */
+    public double getMecanumWheelVelocity() {
+        return this.mecanumWheelEncoder.getVelocity();
+    }
+
+    /**
+     * Get the relative encoder of the intake subsystem. 
+     * 
+     * @return the intake encoder. 
+     */
+    public RelativeEncoder getMecanumWheelEncoder() {
+        return this.mecanumWheelEncoder;
     }
 
     /**
@@ -56,6 +78,7 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public IntakeSubsystem(int mecanumWheelMotor) {
         this.mecanumWheelMotor = new CANSparkMax(mecanumWheelMotor, MotorType.kBrushless);
+        this.mecanumWheelEncoder = this.mecanumWheelMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION); 
        
         // Invert the left motor to spin in the same direction.
         this.mecanumWheelMotor.setInverted(true);

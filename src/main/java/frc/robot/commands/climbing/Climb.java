@@ -3,8 +3,8 @@ package frc.robot.commands.climbing;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
 
 /**
