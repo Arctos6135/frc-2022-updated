@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.shooting;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -34,8 +34,7 @@ public class Shoot extends CommandBase {
     public Shoot(Shooter shooter, ShooterFeederSubsystem shooterFeederSubsystem, boolean lowerHub) {
         this.shooter = shooter; 
         this.shooterFeederSubsystem = shooterFeederSubsystem; 
-        this.lowerHub = lowerHub;
-        this.targetVelocity = this.shooter.getVelocitySetpoint(); 
+        this.lowerHub = lowerHub; 
 
         addRequirements(shooter, shooterFeederSubsystem);
 
@@ -55,8 +54,10 @@ public class Shoot extends CommandBase {
 
         if (lowerHub) {
             shooter.setVelocity(Constants.LOW_HUB_RPM); 
+            targetVelocity = Constants.LOW_HUB_RPM; 
         } else {
             shooter.setVelocity(Constants.HIGH_HUB_RPM); 
+            targetVelocity = Constants.HIGH_HUB_RPM;
         }
     }
 

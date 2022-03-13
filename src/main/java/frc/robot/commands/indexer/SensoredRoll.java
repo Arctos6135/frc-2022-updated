@@ -34,6 +34,7 @@ public class SensoredRoll extends CommandBase {
     @Override 
     public void initialize() {
         shooterFeederSubsystem.setRollDirection(true);
+        shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
     }
 
     @Override 
@@ -43,9 +44,10 @@ public class SensoredRoll extends CommandBase {
         
         // Assumes that we are in allicance BLUE 
         if (matchedColor.color == Constants.OUR_ALLIANCE) {
-            // Shoot the ball 
+            // Store the ball halfway up the belts
             shooterFeederSubsystem.setBallInShotPosition(true);
             shooterFeederSubsystem.incrementBallCount();
+            shooterFeederSubsystem.stopRoller();
         } else if (matchedColor.color == Constants.OPPOSING_ALLIANCE) {
             // Outtake the ball 
             shooterFeederSubsystem.setRollDirection(false);

@@ -8,6 +8,7 @@ public class AutoConstants {
     public static final double kaVoltSecondsSquaredPerMeter = 0.2;
 
     public static final double kPDriveVel = 0;
+    public static final double kDDriveVel = 0; 
 
     public static final double maxVoltage = 10; 
 

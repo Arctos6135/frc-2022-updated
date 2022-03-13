@@ -61,8 +61,8 @@ public class PathFinder extends CommandBase {
                 AutoConstants.kvVoltSecondsPerMeter,
                 AutoConstants.kaVoltSecondsSquaredPerMeter),
             AutoConstants.kDriveKinematics, drivetrain::getWheelSpeeds,
-            new PIDController(AutoConstants.kPDriveVel, 0, 0),
-            new PIDController(AutoConstants.kPDriveVel, 0, 0),
+            new PIDController(AutoConstants.kPDriveVel, AutoConstants.kDDriveVel, 0),
+            new PIDController(AutoConstants.kPDriveVel, AutoConstants.kDDriveVel, 0),
             drivetrain::tankDriveVolts,
             drivetrain);
     }

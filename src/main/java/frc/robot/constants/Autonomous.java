@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.FieldConstants;
-import frc.robot.commands.Shoot;
 import frc.robot.commands.auto.PathFinder;
 import frc.robot.commands.intake.AutoIntake;
+import frc.robot.commands.shooting.AutoShoot;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -147,7 +147,7 @@ public class Autonomous {
                     new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d()),
                         null, new Pose2d(2, 0, new Rotation2d())).getAutoCommand()
                     // Shoot 
-                    .andThen(new Shoot(shooter, shooterFeeder, true))
+                    .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS))
                     // Drive Backwards (Exit Tarmac)
                     .andThen(new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d()), 
                         null, new Pose2d(-4, 0, new Rotation2d())).getAutoCommand())
@@ -174,7 +174,7 @@ public class Autonomous {
                             FieldConstants.FENDER_2)
                         .getAutoCommand()
                         // Shoot preloads
-                        .andThen(new Shoot(shooter, shooterFeeder, true))
+                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS))
                         // Drive to the bottom left blue ball
                         .andThen(new PathFinder(
                             drivetrain,
@@ -190,7 +190,7 @@ public class Autonomous {
                                     FieldConstants.FENDER_2)
                         ).getAutoCommand())
                         // Shoot 
-                        .andThen(new Shoot(shooter, shooterFeeder, true)))
+                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS)))
                 );
             case TWO_BALL_AUTO: 
                 return new ParallelRaceGroup(
@@ -208,7 +208,7 @@ public class Autonomous {
                             FieldConstants.TARMAC_BOTTOM_LEFT_2_REFERENCE, 
                             FieldConstants.FENDER_2)).getAutoCommand())
                         // Shoot the ball
-                        .andThen(new Shoot(shooter, shooterFeeder, true))
+                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS))
                         // Drive to the middle ball
                         .andThen(new PathFinder(
                             drivetrain, List.of(
@@ -223,7 +223,7 @@ public class Autonomous {
                                 FieldConstants.FENDER_2
                             )).getAutoCommand())
                         // Shoot the ball
-                        .andThen(new Shoot(shooter, shooterFeeder, true))
+                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS))
                     )
                 );
             case TERMINAL_AUTO: 
@@ -235,8 +235,8 @@ public class Autonomous {
                             new Pose2d(), 
                             null, 
                             FieldConstants.FENDER_2).getAutoCommand()
-                        // Shoot the ball
-                        .andThen(new Shoot(shooter, shooterFeeder, true))
+                        // Shoot the preloaded ball
+                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS))
                         // Drive to terminal and intake 2 balls 
                         .andThen(new PathFinder(
                             drivetrain, 
@@ -251,9 +251,8 @@ public class Autonomous {
                             FieldConstants.MIDDLE_CARGO_BLUE, 
                             FieldConstants.TARMAC_BOTTOM_LEFT_1_REFERENCE, 
                             FieldConstants.FENDER_2)).getAutoCommand())
-                        // Shoot both balls // TODO: check shooter for multi-shot functionality
-                        .andThen(new Shoot(shooter, shooterFeeder, true))
-
+                        // Shoot both balls 
+                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.MAX_BALLS))
                     )
                 );
             default:

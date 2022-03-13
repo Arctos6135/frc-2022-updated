@@ -112,4 +112,7 @@ public final class Constants {
 	// TODO: test values for shooter RPM
 	public static final double LOW_HUB_RPM = 0; 
 	public static final double HIGH_HUB_RPM = 0; 
+
+	public static final double MAX_BALLS = 2; 
+	public static final double PRELOADED_BALLS = 1; 
 }
