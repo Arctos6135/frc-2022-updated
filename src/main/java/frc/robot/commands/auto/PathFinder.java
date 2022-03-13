@@ -68,6 +68,33 @@ public class PathFinder extends CommandBase {
     }
 
     /**
+     * Creates a new instance of the Path Finder autonomous drive command. 
+     * 
+     * @param drivetrain the robot driving subsystem. 
+     * @param waypoints the points to pass through when driving, as Pose2d objects. 
+     */
+    public PathFinder(Drivetrain drivetrain, List<Pose2d> waypoints) {
+        PathFinder.drivetrain = drivetrain; 
+        addRequirements(drivetrain);
+
+        PathFinder.autoTrajectory = TrajectoryGenerator.generateTrajectory(waypoints, this.config);
+
+        this.autoCommand = new RamseteCommand(autoTrajectory, drivetrain::getPose,
+            new RamseteController(
+                AutoConstants.kRamseteB,
+                AutoConstants.kRamseteZeta),
+            new SimpleMotorFeedforward(
+                AutoConstants.ksVolts,
+                AutoConstants.kvVoltSecondsPerMeter,
+                AutoConstants.kaVoltSecondsSquaredPerMeter),
+            AutoConstants.kDriveKinematics, drivetrain::getWheelSpeeds,
+            new PIDController(AutoConstants.kPDriveVel, 0, 0),
+            new PIDController(AutoConstants.kPDriveVel, 0, 0),
+            drivetrain::tankDriveVolts,
+            drivetrain);
+    }
+
+    /**
      * Reset the robot to the starting position of the trajectory. 
      */
     public static Command resetInitialPosition() {

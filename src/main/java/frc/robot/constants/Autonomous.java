@@ -4,11 +4,11 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.FieldConstants;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.auto.PathFinder;
 import frc.robot.commands.intake.AutoIntake;
@@ -106,7 +106,17 @@ public class Autonomous {
          * <li>Scores: 2 Balls</li> 
          * <li>Preload: 0 Balls</li>
          */
-        TWO_BALL_AUTO("Two Ball Auto"); 
+        TWO_BALL_AUTO("Two Ball Auto"),
+        /**
+         * Intake balls from the terminal.
+         * 
+         * <ul> 
+         * <li>Starts: Anywhere</li> 
+         * <li>Ends: N/A </li> 
+         * <li>Scores: x Balls</li> 
+         * <li>Preload: 1 Balls</li>
+         */
+        TERMINAL_AUTO("Terminal Auto"); 
 
         String autoName; 
 
@@ -133,9 +143,14 @@ public class Autonomous {
                 return null;
             case FORWARD_SHOOT_LOW_HUB:
                 return new SequentialCommandGroup(
-                    new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)),
-                        null, new Pose2d(2, 0, new Rotation2d(0))).getAutoCommand()
+                    // Drive Forwards
+                    new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d()),
+                        null, new Pose2d(2, 0, new Rotation2d())).getAutoCommand()
+                    // Shoot 
                     .andThen(new Shoot(shooter, shooterFeeder, true))
+                    // Drive Backwards (Exit Tarmac)
+                    .andThen(new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d()), 
+                        null, new Pose2d(-4, 0, new Rotation2d())).getAutoCommand())
                     .andThen(PathFinder.resetInitialPosition())
                 );
             case INIT_FORWARD:
@@ -148,35 +163,97 @@ public class Autonomous {
                 return new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false);
             case TWO_BALL_AUTO_PRELOAD:
                 return new ParallelRaceGroup(
+                    // Intake for all of autonomous
                     new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false),
                     new SequentialCommandGroup(
+                        // Drive towards center of fender
                         new PathFinder(
                             drivetrain,
                             new Pose2d(0, 0, new Rotation2d(0)), 
-                            null,
-                            new Pose2d(0, 2, new Rotation2d(0)))
+                            null, 
+                            FieldConstants.FENDER_2)
                         .getAutoCommand()
+                        // Shoot preloads
                         .andThen(new Shoot(shooter, shooterFeeder, true))
+                        // Drive to the bottom left blue ball
                         .andThen(new PathFinder(
                             drivetrain,
-                            new Pose2d(0, 0, new Rotation2d(0)), 
-                            List.of(new Translation2d(0, -2), new Translation2d(1.5, -3)),
-                            new Pose2d(3, -6, new Rotation2d(0))
+                            List.of(FieldConstants.FENDER_2, 
+                                    FieldConstants.TARMAC_BOTTOM_LEFT_2_REFERENCE, 
+                                    FieldConstants.BOTTOM_CARGO_BLUE)
                         ).getAutoCommand())
+                        // Drive to the center of the fender
                         .andThen(new PathFinder(
                             drivetrain, 
-                            new Pose2d(0, 0, new Rotation2d(0)),
-                            List.of(new Translation2d(-3, 4)), 
-                            new Pose2d(-3, 6, new Rotation2d(0))
+                            List.of(FieldConstants.BOTTOM_CARGO_BLUE, 
+                                    FieldConstants.TARMAC_BOTTOM_LEFT_2_REFERENCE, 
+                                    FieldConstants.FENDER_2)
                         ).getAutoCommand())
+                        // Shoot 
                         .andThen(new Shoot(shooter, shooterFeeder, true)))
                 );
             case TWO_BALL_AUTO: 
                 return new ParallelRaceGroup(
                     new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false), 
                     new SequentialCommandGroup(
+                        // Drive to the bottom left ball
                         new PathFinder(
-                            drivetrain, new Pose2d(0, 0, new Rotation2d(0)), null, new Pose2d(-3, 0, new Rotation2d(0)))
+                            drivetrain, new Pose2d(0, 0, new Rotation2d(0)), 
+                            null, 
+                            FieldConstants.BOTTOM_CARGO_BLUE
+                        ).getAutoCommand()
+                        // Drive to the center of the fender 
+                        .andThen(new PathFinder(
+                            drivetrain, List.of(FieldConstants.BOTTOM_CARGO_BLUE, 
+                            FieldConstants.TARMAC_BOTTOM_LEFT_2_REFERENCE, 
+                            FieldConstants.FENDER_2)).getAutoCommand())
+                        // Shoot the ball
+                        .andThen(new Shoot(shooter, shooterFeeder, true))
+                        // Drive to the middle ball
+                        .andThen(new PathFinder(
+                            drivetrain, List.of(
+                            FieldConstants.FENDER_2, 
+                            FieldConstants.TARMAC_BOTTOM_LEFT_1_REFERENCE, 
+                            FieldConstants.MIDDLE_CARGO_BLUE)).getAutoCommand())
+                        // Drive back to center of fender
+                        .andThen(new PathFinder(
+                            drivetrain, List.of(
+                                FieldConstants.MIDDLE_CARGO_BLUE, 
+                                FieldConstants.TARMAC_BOTTOM_LEFT_1_REFERENCE, 
+                                FieldConstants.FENDER_2
+                            )).getAutoCommand())
+                        // Shoot the ball
+                        .andThen(new Shoot(shooter, shooterFeeder, true))
+                    )
+                );
+            case TERMINAL_AUTO: 
+                return new ParallelRaceGroup(
+                    new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false), 
+                    new SequentialCommandGroup(
+                        // Drive to the center of fender
+                        new PathFinder(drivetrain, 
+                            new Pose2d(), 
+                            null, 
+                            FieldConstants.FENDER_2).getAutoCommand()
+                        // Shoot the ball
+                        .andThen(new Shoot(shooter, shooterFeeder, true))
+                        // Drive to terminal and intake 2 balls 
+                        .andThen(new PathFinder(
+                            drivetrain, 
+                            List.of(FieldConstants.FENDER_2, 
+                            FieldConstants.TARMAC_BOTTOM_LEFT_1_REFERENCE, 
+                            FieldConstants.MIDDLE_CARGO_BLUE, 
+                            FieldConstants.TERMINAL_CARGO)))
+                        // Drive back to fender
+                        .andThen(new PathFinder(
+                            drivetrain, 
+                            List.of(FieldConstants.TERMINAL_CARGO, 
+                            FieldConstants.MIDDLE_CARGO_BLUE, 
+                            FieldConstants.TARMAC_BOTTOM_LEFT_1_REFERENCE, 
+                            FieldConstants.FENDER_2)).getAutoCommand())
+                        // Shoot both balls // TODO: check shooter for multi-shot functionality
+                        .andThen(new Shoot(shooter, shooterFeeder, true))
+
                     )
                 );
             default:
