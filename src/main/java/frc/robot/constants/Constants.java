@@ -76,6 +76,7 @@ public final class Constants {
 	public static final int XBOX_OPERATOR = 1;
 	public static final int DEPLOY_SHOOTER_LOWER_BUTTON = XboxController.Button.kX.value;
 	public static final int DEPLOY_SHOOTER_UPPER_BUTTON = XboxController.Button.kY.value; 
+	public static final int STOP_SHOOTER_BUTTON = XboxController.Button.kB.value;
 	public static final int CLIMB_TIME_OVERRIDE_BUTTON = XboxController.Button.kA.value; 
 	public static final int CLIMB_RUNG_AXIS = XboxController.Axis.kLeftY.value;
 	public static final int TOGGLE_CLIMB_PRECISION = XboxController.Button.kLeftStick.value;

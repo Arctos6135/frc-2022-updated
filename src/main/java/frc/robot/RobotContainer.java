@@ -298,6 +298,7 @@ public class RobotContainer {
 		// Shooter Related 
 		Button deployShooterLowerButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_LOWER_BUTTON);
 		Button deployShooterUpperButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON);
+		Button stopShooterButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_BUTTON); 
 		Button shootLowHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_LOW_RPM_BUTTON);
 		Button shootHighHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_HIGH_RPM_BUTTON); 
 
@@ -348,6 +349,10 @@ public class RobotContainer {
 		deployShooterUpperButton.whenActive(() -> {
 			new Shoot(shooterSubsystem, shooterFeederSubsystem, false); 
 		});
+
+		stopShooterButton.whenPressed(() -> {
+			shooterSubsystem.setVelocity(0); 
+		}); 
 
 		// Setting RPM 
 		shootLowHubRPMButton.whenPressed(() -> {
