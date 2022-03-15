@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 
@@ -19,7 +18,8 @@ public class TeleopRoll extends CommandBase {
     
     private final ShooterFeederSubsystem shooterFeederSubsystem; 
     private final XboxController operatorController;
-    private final int Y_AXIS; 
+    private final int rollUpButton;
+    private final int rollDownButton;  
 
     private ColorMatch colorMatch; 
     private Color detectedColor; 
@@ -33,10 +33,12 @@ public class TeleopRoll extends CommandBase {
      * @param shooterFeederSubsystem the shooter feeder subsystem with the roller motor. 
      * @param operatorController the controller interacting with the shooter feeder subsystem. 
      */
-    public TeleopRoll(ShooterFeederSubsystem shooterFeederSubsystem, XboxController operatorController, int rollAxis) {
+    public TeleopRoll(ShooterFeederSubsystem shooterFeederSubsystem, XboxController operatorController, 
+        int rollUpButton, int rollDownButton) {
         this.shooterFeederSubsystem = shooterFeederSubsystem; 
         this.operatorController = operatorController;
-        this.Y_AXIS = rollAxis; 
+        this.rollUpButton = rollUpButton;
+        this.rollDownButton = rollDownButton;  
 
         addRequirements(shooterFeederSubsystem);
 
@@ -48,23 +50,17 @@ public class TeleopRoll extends CommandBase {
 
     @Override 
     public void execute() {
-        if (ShooterFeederSubsystem.constantRollSpeed) {
-            double rollSpeed = TeleopDrive.applyDeadband(operatorController.getRawAxis(Y_AXIS), Constants.CONTROLLER_DEADZONE); 
+        double rollSpeedUp = operatorController.getRawButton(this.rollUpButton) ? Constants.ROLL_SPEED : 0; 
+        double rollSpeedDown = operatorController.getRawButton(this.rollDownButton) ? -Constants.ROLL_SPEED : 0; 
 
-            if (rollSpeed > 0) {
-                shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED); 
-            } else if (rollSpeed < 0) {
-                shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
-            } else {
-                shooterFeederSubsystem.setRollSpeed(0);
-            }
-
+        if (rollSpeedUp == Constants.ROLL_SPEED && rollSpeedDown == 0) {
+            shooterFeederSubsystem.setRollSpeed(rollSpeedUp); 
+        } else if (rollSpeedUp == 0 && rollSpeedDown == -Constants.ROLL_SPEED) {
+            shooterFeederSubsystem.setRollSpeed(-rollSpeedDown);
         } else {
-            double rollSpeed = TeleopDrive.applyDeadband(operatorController.getRawAxis(Y_AXIS), Constants.CONTROLLER_DEADZONE);
-            rollSpeed = Math.copySign(rollSpeed * rollSpeed, rollSpeed); 
-
-            shooterFeederSubsystem.setRollSpeed(rollSpeed * TeleopRoll.rollPrecisionFactor);
+            shooterFeederSubsystem.setRollSpeed(0);
         }
+
 
         detectedColor = this.shooterFeederSubsystem.getColorDetected(); 
         matchedColor = colorMatch.matchColor(detectedColor); 

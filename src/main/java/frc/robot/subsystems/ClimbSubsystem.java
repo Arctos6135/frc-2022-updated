@@ -1,19 +1,21 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * The climb subsystem consists of two motors (brushed) and two TALON SRX motor
+ * controllers. The default command for this subsystem is {@link frc.robot.commands.climbing.Climb}. 
+ * 
+ * @see {@link HookSubsystem}
+ */
 public class ClimbSubsystem extends SubsystemBase {
-    
-    // Motor for Hook Deployment 
-    private final CANSparkMax climbMotorHook;
-
     // Motors for Pulling Robot Up 
-    private final CANSparkMax climbMotorUpLeft;
-    private final CANSparkMax climbMotorUpRight;  
+    private final TalonSRX climbMotorUpLeft;
+    private final TalonSRX climbMotorUpRight;  
 
     public static boolean overrideClimbTime = false; 
 
@@ -24,15 +26,13 @@ public class ClimbSubsystem extends SubsystemBase {
      * @param climbMotorUpLeft the PDP pin of the leftset climbing motor. 
      * @param climbMotorUpRight the PDP pin of the right climbing motor. 
      */
-    public ClimbSubsystem(int climbMotorHook, int climbMotorUpLeft, int climbMotorUpRight) {
-        this.climbMotorHook = new CANSparkMax(climbMotorHook, MotorType.kBrushless); 
-        this.climbMotorUpLeft = new CANSparkMax(climbMotorUpLeft, MotorType.kBrushless); 
-        this.climbMotorUpRight = new CANSparkMax(climbMotorUpRight, MotorType.kBrushless); 
+    public ClimbSubsystem(int climbMotorUpLeft, int climbMotorUpRight) {
+        this.climbMotorUpLeft = new TalonSRX(climbMotorUpLeft); 
+        this.climbMotorUpRight = new TalonSRX(climbMotorUpRight); 
 
         this.climbMotorUpLeft.follow(this.climbMotorUpRight); 
 
-        setIdleModeHook(IdleMode.kBrake); 
-        setIdleModeClimb(IdleMode.kBrake);
+        setNeutralModeClimb(NeutralMode.Brake);
     }
 
     /**
@@ -51,32 +51,15 @@ public class ClimbSubsystem extends SubsystemBase {
         return ClimbSubsystem.overrideClimbTime;
     }
 
-    /**
-     * Set the idlemode of the hook deployment motor. 
-     * 
-     * @param idleMode the idlemode of the hook deployment motor. 
-     */
-    public void setIdleModeHook(IdleMode idleMode) {
-        this.climbMotorHook.setIdleMode(idleMode); 
-    }
-
+    
     /**
      * Set the idlemode of both the climbing motors. 
      * 
-     * @param idleMode the idlemode of both the climbing motors. 
+     * @param neutralMode the neutral mode of both the climbing motors. 
      */
-    public void setIdleModeClimb(IdleMode idleMode) {
-        this.climbMotorUpLeft.setIdleMode(idleMode); 
-        this.climbMotorUpRight.setIdleMode(idleMode); 
-    }
-
-    /**
-     * Set the speed of the hook motors. 
-     * 
-     * @param hookSpeed the speed of the hook motor.
-     */
-    public void setHookMotorSpeed(double hookSpeed) {
-        this.climbMotorHook.set(hookSpeed); 
+    public void setNeutralModeClimb(NeutralMode neutralMode) {
+        this.climbMotorUpLeft.setNeutralMode(neutralMode); 
+        this.climbMotorUpRight.setNeutralMode(neutralMode); 
     }
 
     /**
@@ -85,18 +68,14 @@ public class ClimbSubsystem extends SubsystemBase {
      * @param climbSpeed the speed of the robot during climbing.
      */
     public void setClimbMotorSpeed(double climbSpeed) {
-        this.climbMotorUpRight.set(climbSpeed); 
+        this.climbMotorUpRight.set(ControlMode.PercentOutput, climbSpeed); 
     }
 
     /**
      * Stop the climbing motors. 
      */
     public void stopClimbMotors() {
-        this.climbMotorUpRight.stopMotor();
-        this.climbMotorUpLeft.stopMotor(); 
-    }
-
-    public void stopHookMotor() {
-        this.climbMotorHook.stopMotor(); 
+        this.climbMotorUpRight.set(ControlMode.PercentOutput, 0);
+        this.climbMotorUpLeft.set(ControlMode.PercentOutput, 0); 
     }
 }

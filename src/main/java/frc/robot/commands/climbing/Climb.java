@@ -4,19 +4,26 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
 
 /**
  * Pulls the robot up using two motors on the climb subsystem to roll the winch.    
+ * This is the default command for 
+ * @see ClimbSubsystem.java 
+ * .
  */
 public class Climb extends CommandBase {
     
     private final ClimbSubsystem climbSubsystem; 
     private final XboxController operatorController;
-    private final int deployClimb; 
+    private final int deployClimbAxis; 
 
-    private static boolean overrideTime; 
+    public static boolean overrideTime; 
+    public static boolean precisionClimb = false; 
+    public static double normalPrecision = 0.5; 
+    public static double precisionFactor = 0.25; 
 
     /**
      * Create an instance of the climb command. 
@@ -24,10 +31,10 @@ public class Climb extends CommandBase {
      * @param climbSubsystem the climb subsystem with the climb and hook motors. 
      * @param operatorController the controller used to interact with the climb commands. 
      */
-    public Climb(ClimbSubsystem climbSubsystem, XboxController operatorController, int deployClimb) {
+    public Climb(ClimbSubsystem climbSubsystem, XboxController operatorController, int deployClimbAxis) {
         this.climbSubsystem = climbSubsystem; 
         this.operatorController = operatorController;
-        this.deployClimb = deployClimb;
+        this.deployClimbAxis = deployClimbAxis;
 
         addRequirements(climbSubsystem);
     }
@@ -39,6 +46,22 @@ public class Climb extends CommandBase {
         overrideTime = !overrideTime; 
     }
 
+    /**
+     * Toggle whether to enter precision mode for climbing. 
+     */
+    public static void togglePrecisionClimb() {
+        Climb.precisionClimb = !Climb.precisionClimb;
+    }
+
+    /**
+     * Get whether climbing is in precision mode. 
+     * 
+     * @return whether the climb is in precision mode.
+     */
+    public static boolean isPrecisionClimb() {
+        return Climb.precisionClimb;
+    }
+
     @Override 
     public void initialize() {
 
@@ -46,7 +69,9 @@ public class Climb extends CommandBase {
 
     @Override 
     public void execute() {
-        double climbSpeed = operatorController.getRawButton(deployClimb) ? 1.0 : 0.0;
+        double climbSpeed = operatorController.getRawAxis(this.deployClimbAxis);
+        climbSpeed = TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE); 
+        climbSpeed = precisionClimb ? precisionFactor : normalPrecision; 
 
         // Nearing the end of the match, climb system is activated. 
         if (!overrideTime && DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME) {

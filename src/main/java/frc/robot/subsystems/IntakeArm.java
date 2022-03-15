@@ -9,7 +9,8 @@ import frc.robot.constants.Constants;
 
 /**
  * The intake arm for the intake subsystem. The arm is rotated up and down 
- * to intake balls from the ground, using mecanum wheels.
+ * to intake balls from the ground, using mecanum wheels. 
+ * The default command for this subsystem is {@link frc.robot.commands.intake.RotateArm}. 
  */
 public class IntakeArm extends SubsystemBase {
     private final CANSparkMax intakeArmMotor;

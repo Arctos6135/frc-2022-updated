@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.util.Color;
 
 public final class Constants {
-
 	// Drivetrain Motors 
 	public static final int RIGHT_CANSPARKMAX = 1;
 	public static final int LEFT_CANSPARKMAX = 2;
@@ -23,13 +22,16 @@ public final class Constants {
 	public static final int INTAKE_ARM_MOTOR = 8;
 
 	// Shooter Feeder Motors
-	public static final int ROLLER_MOTOR = 9;
-	public static final double ROLL_SPEED = 0.75;
+	public static final int TOP_ROLLER_MOTOR = 9;
+	public static final int BOTTOM_ROLLER_MOTOR = 10; 
 
 	// Climb Motors 
-	public static final int HOOK_DEPLOYMENT_MOTOR = 10; 
-	public static final int LEFT_CLIMB_MOTOR = 11; 
-	public static final int RIGHT_CLIMB_MOTOR = 12; 
+	public static final int HOOK_DEPLOYMENT_MOTOR = 11; 
+	public static final int LEFT_CLIMB_MOTOR = 12; 
+	public static final int RIGHT_CLIMB_MOTOR = 13; 
+
+	// Indexer Constants
+	public static final double ROLL_SPEED = 0.75;
 
 	// Climb Related Constants
 	public static final double START_CLIMB_TIME = 20.0; // seconds
@@ -75,12 +77,12 @@ public final class Constants {
 	public static final int DEPLOY_SHOOTER_LOWER_BUTTON = XboxController.Button.kX.value;
 	public static final int DEPLOY_SHOOTER_UPPER_BUTTON = XboxController.Button.kY.value; 
 	public static final int CLIMB_TIME_OVERRIDE_BUTTON = XboxController.Button.kA.value; 
-	public static final int TELEOP_ROLL_AXIS = XboxController.Axis.kLeftY.value;
-	public static final int CONSTANT_ROLL_SPEED_BUTTON = XboxController.Button.kLeftStick.value; 
+	public static final int CLIMB_RUNG_AXIS = XboxController.Axis.kLeftY.value;
+	public static final int TOGGLE_CLIMB_PRECISION = XboxController.Button.kLeftStick.value;
 	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
 	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value; 
-	public static final int RUNG_CLIMB_UP_TRIGGER = XboxController.Button.kRightBumper.value;
-	public static final int RUNG_CLIMB_DOWN_TRIGGER = XboxController.Button.kLeftBumper.value; 
+	public static final int TELEOP_ROLL_UP_TRIGGER = XboxController.Button.kRightBumper.value;
+	public static final int TELEOP_ROLL_DOWN_TRIGGER = XboxController.Button.kLeftBumper.value; 
 	public static final int SHOOT_LOW_RPM_BUTTON = XboxController.Axis.kRightTrigger.value;
 	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Axis.kLeftTrigger.value;
 

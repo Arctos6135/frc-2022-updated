@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
 /**
- * The intake subsystem.
+ * The intake subsystem, with a {@link com.revrobotics.CANSparkMax} controlling the mecanum wheels. 
+ * The default command for this subsystem is {@link frc.robot.commands.intake.Intake}. 
  */
 public class IntakeSubsystem extends SubsystemBase {
     // No Pneumatics

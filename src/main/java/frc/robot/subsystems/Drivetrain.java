@@ -24,8 +24,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.MonitoredCANSparkMaxGroup;
 
+/**
+ * The robot driving subsystem, with 4 brushless NEO motors controlled by {@link com.revrobotics.CANSparkMax} motors.
+ * 
+ * The default command for this subsystem is {@link frc.robot.commands.driving.TeleopDrive}.
+ */
 public class Drivetrain extends SubsystemBase {
-
   // Motor Controllers
   private final CANSparkMax rightMotor;
   private final CANSparkMax leftMotor;

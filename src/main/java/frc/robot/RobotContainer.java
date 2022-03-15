@@ -28,6 +28,7 @@ import frc.robot.commands.shooting.Shoot;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.HookSubsystem;
 import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
@@ -39,7 +40,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-// Contains all commands and subsystems.
+/**
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very little robot logic should
+ * actually be handled in the {@link Robot} periodic methods (other than the
+ * scheduler calls). Instead, the structure of the robot (including subsystems,
+ * commands, and button mappings) should be declared here.
+ */
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain drivetrain;
@@ -48,33 +55,35 @@ public class RobotContainer {
 	private final ShooterFeederSubsystem shooterFeederSubsystem; 
 	private final Shooter shooterSubsystem;
 	private final ClimbSubsystem climbSubsystem; 
+	private final HookSubsystem hookSubsystem; 
 
 	private static final XboxController driverController = new XboxController(Constants.XBOX_DRIVER);
 	private static final XboxController operatorController = new XboxController(Constants.XBOX_OPERATOR);
 
 	// Shuffleboard Tabs
-	final ShuffleboardTab configTab; 
-	final ShuffleboardTab driveTab;
-	final ShuffleboardTab shooterTab;
-	final ShuffleboardTab colorTab; 
-	final ShuffleboardTab prematchTab;
-	final ShuffleboardTab debugTab;
+	public final ShuffleboardTab configTab; 
+	public final ShuffleboardTab driveTab;
+	public final ShuffleboardTab shooterTab;
+	public final ShuffleboardTab climbTab; 
+	public final ShuffleboardTab colorTab; 
+	public final ShuffleboardTab prematchTab;
+	public final ShuffleboardTab debugTab;
 
 	// Network Tables for Smart Dashboard
-	NetworkTableEntry driveReversedEntry;
-	NetworkTableEntry precisionDriveEntry;
-	NetworkTableEntry overrideModeEntry;
-	NetworkTableEntry shooterRPMEntry; 
+	public NetworkTableEntry driveReversedEntry;
+	public NetworkTableEntry precisionDriveEntry;
+	public NetworkTableEntry overrideModeEntry;
+	public NetworkTableEntry shooterRPMEntry; 
 	
 	// Logging Related
-	NetworkTableEntry lastError;
-	NetworkTableEntry lastWarning;
+	public NetworkTableEntry lastError;
+	public NetworkTableEntry lastWarning;
 	
 	// Drivetrain Status
-	SimpleWidget drivetrainMotorStatus;
-	SimpleWidget shooterMotorStatus;
-	SimpleWidget shooterFeederStatus;
-	SimpleWidget climbStatus;
+	public SimpleWidget drivetrainMotorStatus;
+	public SimpleWidget shooterMotorStatus;
+	public SimpleWidget shooterFeederStatus;
+	public SimpleWidget climbStatus;
 
 	private SendableChooser<Integer> preloadedBalls = new SendableChooser<>(); 
 
@@ -82,7 +91,9 @@ public class RobotContainer {
 
 	private Autonomous autonomous; 
 
-	// Contains subsystems, OI devices, and commands
+	/**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
 	public RobotContainer() {
 		drivetrain = new Drivetrain(Constants.RIGHT_CANSPARKMAX, Constants.LEFT_CANSPARKMAX,
 			Constants.RIGHT_CANSPARKMAX_FOLLOWER, Constants.LEFT_CANSPARKMAX_FOLLOWER);
@@ -99,9 +110,9 @@ public class RobotContainer {
 			new RotateArm(intakeArm, operatorController, Constants.INTAKE_ARM_ROTATE)
 		);
 
-		shooterFeederSubsystem = new ShooterFeederSubsystem(Constants.ROLLER_MOTOR); 
+		shooterFeederSubsystem = new ShooterFeederSubsystem(Constants.TOP_ROLLER_MOTOR, Constants.BOTTOM_ROLLER_MOTOR); 
 		shooterFeederSubsystem.setDefaultCommand(
-			new TeleopRoll(shooterFeederSubsystem, operatorController, Constants.TELEOP_ROLL_AXIS) 
+			new TeleopRoll(shooterFeederSubsystem, operatorController, Constants.TELEOP_ROLL_UP_TRIGGER, Constants.TELEOP_ROLL_DOWN_TRIGGER) 
 		);
 
 		shooterSubsystem = new Shooter(Constants.MAIN_SHOOTER_MOTOR, Constants.AUXILLIARY_SHOOTER_MOTOR);
@@ -110,10 +121,15 @@ public class RobotContainer {
 			new Shoot(shooterSubsystem, shooterFeederSubsystem, true)
 		);
 
-		climbSubsystem = new ClimbSubsystem(Constants.HOOK_DEPLOYMENT_MOTOR, Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
+		climbSubsystem = new ClimbSubsystem(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
 		climbSubsystem.setDefaultCommand(
-			new DeployHook(climbSubsystem, driverController)
-		); 
+			new Climb(climbSubsystem, operatorController, Constants.CLIMB_RUNG_AXIS)
+		);
+		
+		hookSubsystem = new HookSubsystem(Constants.HOOK_DEPLOYMENT_MOTOR); 
+		hookSubsystem.setDefaultCommand(
+			new DeployHook(hookSubsystem, driverController)
+		);
 
 		autonomous = new Autonomous(); 
 
@@ -121,6 +137,7 @@ public class RobotContainer {
 		configTab = Shuffleboard.getTab("Config");
 		driveTab = Shuffleboard.getTab("Drive");
 		shooterTab = Shuffleboard.getTab("Shoot"); 
+		climbTab = Shuffleboard.getTab("Climb"); 
 		colorTab = Shuffleboard.getTab("Color"); 
 		prematchTab = Shuffleboard.getTab("Pre-match");
 		debugTab = Shuffleboard.getTab("Debug");
@@ -142,7 +159,7 @@ public class RobotContainer {
 	}
 
 	private void configureDashboard() {
-		// Configure Tabs
+		// Motor Configuration Settings 
 		configTab.add("Precision Drive Factor", TeleopDrive.getPrecisionFactor()).withPosition(0, 0).withSize(6, 4)
 		.withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.0, "max", 1.0)).getEntry()
 		.addListener(notif -> {
@@ -195,17 +212,27 @@ public class RobotContainer {
 		precisionDriveEntry = driveTab.add("Precision", TeleopDrive.isPrecisionDrive()).withWidget(BuiltInWidgets.kBooleanBox)
 		.withPosition(4, 0).withSize(4, 4).getEntry();
 
+		// Shooting Configurations
 		shooterTab.add("Shooter RPM", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
 		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 5000)).getEntry()
 		.addListener(notif -> {
 			shooterSubsystem.setVelocity(notif.value.getDouble());
 		}, EntryListenerFlags.kUpdate);
-				
+
+		shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(6, 0)
+		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 1.0)).getEntry()
+		.addListener(notif -> {
+			shooterFeederSubsystem.setRollSpeed(notif.value.getDouble());
+		}, EntryListenerFlags.kUpdate); 
+		
+		// Climbing Configurations
 		InstantCommand climbOverrideCommand = new InstantCommand(() -> {
 			Climb.toggleOverride();
 		});
 		climbOverrideCommand.setName("Override");
-		driveTab.add("Override Climb Time", climbOverrideCommand).withWidget(BuiltInWidgets.kCommand).withPosition(6, 4).withSize(6, 6);
+		climbTab.add("Override Climb Time", climbOverrideCommand).withWidget(BuiltInWidgets.kCommand).withPosition(0, 0).withSize(6, 6);
+
+		climbTab.add("Precision Climb", Climb.isPrecisionClimb()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0).withSize(4, 4).getEntry();
 		
 		// Color Detection of Balls 
 		colorTab.add("Red Color", shooterFeederSubsystem.getColorSensor().getRed());
@@ -255,6 +282,12 @@ public class RobotContainer {
 		shooterRPMEntry.setNumber(shooterSubsystem.getActualVelocity());
 	}
 
+	/**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by instantiating a {@link GenericHID} or one of its subclasses
+     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+     * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+    */
 	private void configureButtonBindings() {
 		// Driving Related 
 		Button reverseDriveButton = new JoystickButton(driverController, Constants.REVERSE_DRIVE_DIRECTION);
@@ -265,14 +298,12 @@ public class RobotContainer {
 		// Shooter Related 
 		Button deployShooterLowerButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_LOWER_BUTTON);
 		Button deployShooterUpperButton = new JoystickButton(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON);
-		Button constantRollSpeedButton = new JoystickButton(operatorController, Constants.CONSTANT_ROLL_SPEED_BUTTON);
 		Button shootLowHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_LOW_RPM_BUTTON);
 		Button shootHighHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_HIGH_RPM_BUTTON); 
 
 		// Climb Related
 		Button overrideClimbTimeButton = new JoystickButton(operatorController, Constants.CLIMB_TIME_OVERRIDE_BUTTON); 
-		AnalogTrigger rungClimbUpTrigger = new AnalogTrigger(operatorController, Constants.RUNG_CLIMB_UP_TRIGGER, 0.5); 
-		AnalogTrigger rungClimbDownTrigger = new AnalogTrigger(operatorController, Constants.RUNG_CLIMB_DOWN_TRIGGER, 0.5); 
+		Button toggleClimbPrecision = new JoystickButton(operatorController, Constants.TOGGLE_CLIMB_PRECISION); 
 		
 		// Intake Related 
 		Button reverseIntakeArmButton = new JoystickButton(operatorController, Constants.INTAKE_ARM_REVERSE_BUTTON); 
@@ -327,30 +358,14 @@ public class RobotContainer {
 			shooterSubsystem.setVelocity(Constants.HIGH_HUB_RPM); 
 		});
 
-		constantRollSpeedButton.whenPressed(() -> {
-			ShooterFeederSubsystem.toggleConstantRollSpeed();
-		});  
-
 		// Climber Button Bindings 
 		overrideClimbTimeButton.whenPressed(() -> {
 			ClimbSubsystem.toggleClimbTimeOverride();
 		});
 
-		rungClimbUpTrigger.setMinTimeRequired(0.05);
-		rungClimbUpTrigger.whileActiveOnce(new FunctionalCommand(() -> {
-			this.climbSubsystem.setClimbMotorSpeed(Constants.CLIMB_SPEED);
-		    }, () -> { 
-			}, (interrupted) -> {
-				this.climbSubsystem.setClimbMotorSpeed(0);
-			}, () -> false)); 
-
-		rungClimbDownTrigger.setMinTimeRequired(0.05);
-		rungClimbDownTrigger.whileActiveOnce(new FunctionalCommand(() -> {
-			this.climbSubsystem.setClimbMotorSpeed(-Constants.CLIMB_SPEED);
-		    }, () -> { 
-			}, (interrupted) -> {
-				this.climbSubsystem.setClimbMotorSpeed(0);
-			}, () -> false)); 
+		toggleClimbPrecision.whenPressed(() -> {
+			Climb.togglePrecisionClimb();
+		});
 		
 		// Intake Button Bindings 
 		reverseIntakeArmButton.whenPressed(() -> {
@@ -386,6 +401,11 @@ public class RobotContainer {
 		}
 	}
 	
+	/**
+	 * Get the robot logger. 
+	 * 
+	 * @return the robot logger. 
+	 */
 	public static RobotLogger getLogger() {
 		return logger;
 	}

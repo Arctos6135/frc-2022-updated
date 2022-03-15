@@ -10,8 +10,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.MonitoredCANSparkMaxGroup;
 
+/**
+ * The shooting subsystem, with two {@link com.revrobotics.CANSparkMax} motor controllers for
+ * the two NEO shooter motors. 
+ * The default command for this subsystem is {@link frc.robot.commands.shooting.Shoot}. 
+ */
 public class Shooter extends SubsystemBase {
-
+	// Shooter Motors 
 	private final CANSparkMax masterShooterMotor;
 	private final CANSparkMax followerShooterMotor;
 	private final RelativeEncoder shooterEncoder;

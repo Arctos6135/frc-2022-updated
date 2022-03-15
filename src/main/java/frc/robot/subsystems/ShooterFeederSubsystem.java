@@ -1,9 +1,8 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.ColorSensorV3;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
@@ -13,13 +12,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * The shooter feeder subsystem (essie) is composed of belts controlled by 
  * a motor and a color sensor approximately halfway up. The shooter feeder
  * subsystem is able to roll balls upwards or store them. 
+ * 
+ * The default command for this subsystem is {@link frc.robot.commands.indexer.TeleopRoll}. 
  */
 public class ShooterFeederSubsystem extends SubsystemBase {
+    // Roller Motors 
+    private final WPI_VictorSPX topRollerMotor;
+    private final WPI_VictorSPX bottomRollerMotor;  
     
-    private final CANSparkMax rollerMotor;
     private final ColorSensorV3 colorSensor; 
 
-    private double rollSpeed = 0; 
+    private double rollSpeed = 0.5; 
     private boolean rollUpwards = true; 
     private boolean ballInShotPosition = false; 
     private int ballCount = 0; 
@@ -30,17 +33,16 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      * 
      * @param rollerMotor the roller motor of the belts.
      */
-    public ShooterFeederSubsystem(int rollerMotor) {
-        this.rollerMotor = new CANSparkMax(rollerMotor, MotorType.kBrushless);
+    public ShooterFeederSubsystem(int topRollerMotor, int bottomRollerMotor) {
+        this.topRollerMotor = new WPI_VictorSPX(topRollerMotor); 
+        this.bottomRollerMotor = new WPI_VictorSPX(bottomRollerMotor); 
 
-        this.rollerMotor.setIdleMode(IdleMode.kBrake); 
+        this.topRollerMotor.setNeutralMode(NeutralMode.Coast); 
+        this.bottomRollerMotor.setNeutralMode(NeutralMode.Coast); 
+
+        this.bottomRollerMotor.follow(this.topRollerMotor);
 
         this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-        this.ballCount = 0; 
-    }
-
-    public static void toggleConstantRollSpeed() {
-        ShooterFeederSubsystem.constantRollSpeed = !constantRollSpeed;
     }
 
     /**
@@ -65,7 +67,7 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      * Stops rolling the flat belt motors. 
      */
     public void stopRoller() {
-        rollerMotor.stopMotor();
+        topRollerMotor.stopMotor();
     }
 
     /**
@@ -86,9 +88,9 @@ public class ShooterFeederSubsystem extends SubsystemBase {
         this.rollSpeed = rollSpeed; 
 
         if (rollUpwards) {
-            rollerMotor.set(this.rollSpeed); 
+            topRollerMotor.set(this.rollSpeed); 
         } else {
-            rollerMotor.set(-this.rollSpeed); 
+            topRollerMotor.set(-this.rollSpeed); 
         }
     }
 

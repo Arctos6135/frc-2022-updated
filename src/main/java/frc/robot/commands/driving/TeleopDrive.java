@@ -10,7 +10,7 @@ import frc.robot.subsystems.Drivetrain;
  * The left joystick controls forwards and backwards movement. 
  * The right joystick controls turning. 
  * Precision driving and reverse driving is controlled using separate buttons binded in 
- * @link{RobotContainer.java}. 
+ * {@link frc.robot.RobotContainer}.
  */
 public class TeleopDrive extends CommandBase {
     private final Drivetrain drivetrain;
