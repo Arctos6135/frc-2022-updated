@@ -32,9 +32,10 @@ public final class Constants {
 	public static final int RIGHT_CLIMB_MOTOR = 12; 
 
 	// Climb Related Constants
-	public static final int START_CLIMB_TIME = 20; // seconds
+	public static final double START_CLIMB_TIME = 20.0; // seconds
 	public static final double CLIMB_DRIVE_TIME = 0.1; 
 	public static final double RAISE_HALFWAY = 4.1; 
+	public static final double CLIMB_SPEED = 0.5; 
 
 	public static final double INTAKE_ARM_LOWERED = 1.2; 
 	public static final double INTAKE_ARM_RAISED = 0; 
@@ -63,22 +64,23 @@ public final class Constants {
 	public static final int REVERSE_DRIVE_DIRECTION = XboxController.Button.kLeftStick.value;
 	public static final int OVERRIDE_MOTOR_PROTECTION = XboxController.Button.kB.value;
 	public static final int PRECISION_DRIVE_TOGGLE = XboxController.Button.kX.value;
+	public static final int DEPLOY_CLIMB_HOOK = XboxController.Button.kY.value; 
+	public static final int RETRACT_CLIMB_HOOK = XboxController.Button.kA.value; 
 	public static final int PRECISION_DRIVE_HOLD = XboxController.Axis.kLeftTrigger.value;
 	public static final int INTAKE_FORWARD_BUTTON = XboxController.Button.kLeftBumper.value;
 	public static final int INTAKE_REVERSE_BUTTON = XboxController.Button.kRightBumper.value;
-
+	
 	// Operator Controller 
 	public static final int XBOX_OPERATOR = 1;
 	public static final int DEPLOY_SHOOTER_LOWER_BUTTON = XboxController.Button.kX.value;
-	public static final int DEPLOY_SHOOTER_UPPER_BUTTON = XboxController.Button.kY.value;
-	public static final int DEPLOY_CLIMB_BUTTON = XboxController.Button.kB.value; 
+	public static final int DEPLOY_SHOOTER_UPPER_BUTTON = XboxController.Button.kY.value; 
 	public static final int CLIMB_TIME_OVERRIDE_BUTTON = XboxController.Button.kA.value; 
-	public static final int ROLL_AXIS = XboxController.Axis.kLeftY.value;
+	public static final int TELEOP_ROLL_AXIS = XboxController.Axis.kLeftY.value;
 	public static final int CONSTANT_ROLL_SPEED_BUTTON = XboxController.Button.kLeftStick.value; 
 	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
 	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value; 
-	public static final int DRIVE_RAISE_HALFWAY = XboxController.Button.kLeftBumper.value; 
-	public static final int DRIVE_RAISE_FULLY = XboxController.Button.kRightBumper.value;
+	public static final int RUNG_CLIMB_UP_TRIGGER = XboxController.Button.kRightBumper.value;
+	public static final int RUNG_CLIMB_DOWN_TRIGGER = XboxController.Button.kLeftBumper.value; 
 	public static final int SHOOT_LOW_RPM_BUTTON = XboxController.Axis.kRightTrigger.value;
 	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Axis.kLeftTrigger.value;
 

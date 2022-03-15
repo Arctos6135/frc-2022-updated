@@ -1,4 +1,4 @@
-package frc.robot.constants;
+package frc.robot;
 
 import java.util.List;
 
@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.FieldConstants;
 import frc.robot.commands.auto.PathFinder;
 import frc.robot.commands.intake.AutoIntake;
 import frc.robot.commands.shooting.AutoShoot;
+import frc.robot.constants.AutoConstants;
+import frc.robot.constants.Constants;
+import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.IntakeSubsystem;

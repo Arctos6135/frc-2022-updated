@@ -32,6 +32,9 @@ public class Climb extends CommandBase {
         addRequirements(climbSubsystem);
     }
 
+    /**
+     * Toggle whether to override the time restriction on the climb command.
+     */
     public static void toggleOverride() {
         overrideTime = !overrideTime; 
     }
@@ -43,7 +46,7 @@ public class Climb extends CommandBase {
 
     @Override 
     public void execute() {
-        double climbSpeed = operatorController.getRawButton(deployClimb) ? 0.5 : 0.0;
+        double climbSpeed = operatorController.getRawButton(deployClimb) ? 1.0 : 0.0;
 
         // Nearing the end of the match, climb system is activated. 
         if (!overrideTime && DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME) {

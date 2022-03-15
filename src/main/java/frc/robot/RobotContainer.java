@@ -19,13 +19,12 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.climbing.Climb;
-import frc.robot.commands.climbing.DriveRaise;
+import frc.robot.commands.climbing.DeployHook;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RotateArm;
 import frc.robot.commands.shooting.Shoot;
-import frc.robot.constants.Autonomous;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.Drivetrain;
@@ -102,7 +101,7 @@ public class RobotContainer {
 
 		shooterFeederSubsystem = new ShooterFeederSubsystem(Constants.ROLLER_MOTOR); 
 		shooterFeederSubsystem.setDefaultCommand(
-			new TeleopRoll(shooterFeederSubsystem, operatorController, Constants.ROLL_AXIS) 
+			new TeleopRoll(shooterFeederSubsystem, operatorController, Constants.TELEOP_ROLL_AXIS) 
 		);
 
 		shooterSubsystem = new Shooter(Constants.MAIN_SHOOTER_MOTOR, Constants.AUXILLIARY_SHOOTER_MOTOR);
@@ -111,10 +110,10 @@ public class RobotContainer {
 			new Shoot(shooterSubsystem, shooterFeederSubsystem, true)
 		);
 
-		climbSubsystem = new ClimbSubsystem(Constants.HOOK_DEPLOYMENT_MOTOR, Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR); 
+		climbSubsystem = new ClimbSubsystem(Constants.HOOK_DEPLOYMENT_MOTOR, Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
 		climbSubsystem.setDefaultCommand(
-			new Climb(climbSubsystem, operatorController, Constants.DEPLOY_CLIMB_BUTTON)
-		);
+			new DeployHook(climbSubsystem, driverController)
+		); 
 
 		autonomous = new Autonomous(); 
 
@@ -272,8 +271,8 @@ public class RobotContainer {
 
 		// Climb Related
 		Button overrideClimbTimeButton = new JoystickButton(operatorController, Constants.CLIMB_TIME_OVERRIDE_BUTTON); 
-		Button driveRaiseHalfway = new JoystickButton(operatorController, Constants.DRIVE_RAISE_HALFWAY); 
-		Button driveRaiseFully = new JoystickButton(operatorController, Constants.DRIVE_RAISE_FULLY);
+		AnalogTrigger rungClimbUpTrigger = new AnalogTrigger(operatorController, Constants.RUNG_CLIMB_UP_TRIGGER, 0.5); 
+		AnalogTrigger rungClimbDownTrigger = new AnalogTrigger(operatorController, Constants.RUNG_CLIMB_DOWN_TRIGGER, 0.5); 
 		
 		// Intake Related 
 		Button reverseIntakeArmButton = new JoystickButton(operatorController, Constants.INTAKE_ARM_REVERSE_BUTTON); 
@@ -334,24 +333,30 @@ public class RobotContainer {
 
 		// Climber Button Bindings 
 		overrideClimbTimeButton.whenPressed(() -> {
-			Climb.toggleOverride();
+			ClimbSubsystem.toggleClimbTimeOverride();
 		});
 
-		driveRaiseHalfway.whenPressed(
-			new DriveRaise(climbSubsystem, drivetrain) 
-		); 
+		rungClimbUpTrigger.setMinTimeRequired(0.05);
+		rungClimbUpTrigger.whileActiveOnce(new FunctionalCommand(() -> {
+			this.climbSubsystem.setClimbMotorSpeed(Constants.CLIMB_SPEED);
+		    }, () -> { 
+			}, (interrupted) -> {
+				this.climbSubsystem.setClimbMotorSpeed(0);
+			}, () -> false)); 
 
-		driveRaiseFully.whenPressed(
-			new DriveRaise(climbSubsystem, drivetrain) // TODO: change to a similar drive raise command 
-		);
+		rungClimbDownTrigger.setMinTimeRequired(0.05);
+		rungClimbDownTrigger.whileActiveOnce(new FunctionalCommand(() -> {
+			this.climbSubsystem.setClimbMotorSpeed(-Constants.CLIMB_SPEED);
+		    }, () -> { 
+			}, (interrupted) -> {
+				this.climbSubsystem.setClimbMotorSpeed(0);
+			}, () -> false)); 
 		
 		// Intake Button Bindings 
 		reverseIntakeArmButton.whenPressed(() -> {
 			RotateArm.toggleReverseRotation();
 			getLogger().logInfo("Intake arm direction set to " + RotateArm.isRotationReversed());
 		});
-
-
 	}
 
 	public Command getAutonomousCommand() {

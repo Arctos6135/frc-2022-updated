@@ -24,19 +24,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.MonitoredCANSparkMaxGroup;
 
-// TODO: do we want to set speed using voltage directly? 
-// If we set the motors using direct voltage, we can use 
-// TankDrive and Odometry, which is useful for autonomous 
-// commands. 
-// Use the following equation: 
-// V = kS sgn(d) + kV d1 + kA d2 
-// V -> applied voltage 
-// kS -> voltage needed to overcome static friction 
-// d -> displacement of motor 
-// kV -> voltage needed to hold constant velocity 
-// d1 -> velocity 
-// kA -> voltage needed to accelerate 
-// d2 -> acceleration 
 public class Drivetrain extends SubsystemBase {
 
   // Motor Controllers
@@ -63,7 +50,7 @@ public class Drivetrain extends SubsystemBase {
 
   // Acceleration of Motors
   private double leftMotorLastRate, rightMotorLastRate = 0;
-  private double lastTime = 0; // TODO: does this have to be initialized?
+  private double lastTime = 0; 
 
   // Robot Navigation System
   private final AHRS ahrs;

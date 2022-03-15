@@ -21,21 +21,23 @@ public class AutoShoot extends CommandBase {
     private double targetVelocity = 0; 
     private boolean velocityReached = false; 
     private boolean lowerHub; 
-    private double numBalls; 
+    private double numBallsLeft;
 
     private boolean finished = false; 
 
     /**
+     * Creates a new autonomous shooting command.
      * 
      * @param shooter the shooter subsystem with shooter wheels and motors.
      * @param shooterFeederSubsystem the shooter feeder subsystem with belts. 
      * @param lowerHub whether to shoot high or low hub. 
+     * @param numBalls the number of balls to be shot.
      */
     public AutoShoot(Shooter shooter, ShooterFeederSubsystem shooterFeederSubsystem, boolean lowerHub, double numBalls) {
         this.shooter = shooter; 
         this.shooterFeederSubsystem = shooterFeederSubsystem; 
         this.lowerHub = lowerHub; 
-        this.numBalls = numBalls; 
+        this.numBallsLeft = numBalls; 
 
         addRequirements(shooter, shooterFeederSubsystem);
 
@@ -53,10 +55,10 @@ public class AutoShoot extends CommandBase {
 
         if (lowerHub) {
             shooter.setVelocity(Constants.LOW_HUB_RPM); 
-            targetVelocity = Constants.LOW_HUB_RPM; 
+            this.targetVelocity = Constants.LOW_HUB_RPM; 
         } else {
             shooter.setVelocity(Constants.HIGH_HUB_RPM); 
-            targetVelocity = Constants.HIGH_HUB_RPM;
+            this.targetVelocity = Constants.HIGH_HUB_RPM;
         }
     }
 
@@ -66,8 +68,13 @@ public class AutoShoot extends CommandBase {
             velocityReached = true; 
             shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
         } else {
+            // Ball has been shot.
+            if (velocityReached) {
+                this.numBallsLeft--;
+            }
+
             // No balls left to shoot.
-            if (this.numBalls != Constants.MAX_BALLS) {
+            if (this.numBallsLeft <= 0) {
                 shooterFeederSubsystem.stopRoller(); 
                 finished = true;
             } else {
@@ -86,7 +93,7 @@ public class AutoShoot extends CommandBase {
 
     @Override 
     public boolean isFinished() {
-        return finished;
+        return finished || this.numBallsLeft == 0;
     }
     
 }

@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.constants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,6 +31,9 @@ public class FieldConstants {
     public static final double TARMAC_EDGE_TO_FENDER = Units.inchesToMeters(TARMAC_DEPTH); 
     public static final double TARMAC_DIAMETER = Units.inchesToMeters(2 * TARMAC_FULL_WIDTH + LOWER_EXIT_WIDTH); // along the middle line 
     public static final double TARMAC_DIAMETER_CORNER = Units.inchesToMeters(2 * TARMAC_DEPTH + HUB_SQUARE_EDGE); // ~ 226.42 inches 
+
+    // Hangar Measurements 
+    public static final double MID_RUNG_DISTANCE = Units.inchesToMeters(3 * 12 + 6); 
 
     // Rotation References (from hubs and fenders)
     // Tarmac Centers (from top to bottom)

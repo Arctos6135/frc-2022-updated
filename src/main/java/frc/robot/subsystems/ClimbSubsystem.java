@@ -15,6 +15,8 @@ public class ClimbSubsystem extends SubsystemBase {
     private final CANSparkMax climbMotorUpLeft;
     private final CANSparkMax climbMotorUpRight;  
 
+    public static boolean overrideClimbTime = false; 
+
     /**
      * Creates new instance of the climbing subsystem. 
      *
@@ -31,6 +33,22 @@ public class ClimbSubsystem extends SubsystemBase {
 
         setIdleModeHook(IdleMode.kBrake); 
         setIdleModeClimb(IdleMode.kBrake);
+    }
+
+    /**
+     * Toggle time override.
+     */
+    public static void toggleClimbTimeOverride() {
+        ClimbSubsystem.overrideClimbTime = !ClimbSubsystem.overrideClimbTime;
+    }
+
+    /**
+     * Get whether climb time protection has been overrided.
+     * 
+     * @return whether climb time has been overrided.
+     */
+    public static boolean getClimbTimeOverride() {
+        return ClimbSubsystem.overrideClimbTime;
     }
 
     /**

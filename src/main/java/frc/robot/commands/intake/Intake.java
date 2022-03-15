@@ -10,7 +10,7 @@ import frc.robot.subsystems.IntakeSubsystem;
  */
 public class Intake extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
-    private final XboxController controller; // TODO: may need to change to GenericHID
+    private final XboxController controller; 
     private final int forwardButton;
     private final int reverseButton;
    
