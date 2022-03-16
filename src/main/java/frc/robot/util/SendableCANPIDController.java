@@ -18,6 +18,11 @@ public class SendableCANPIDController implements Sendable {
     private double setpoint = 0; 
     private boolean enabled = false; 
 
+    /**
+     * Creates a new SendableCANPIDController. 
+     * 
+     * @param controller the PID controller. 
+     */
     public SendableCANPIDController(SparkMaxPIDController controller) {
         this.controller = controller; 
     }

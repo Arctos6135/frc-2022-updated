@@ -136,10 +136,20 @@ public class Autonomous {
         return this.chooser; 
     }
 
+    /**
+     * Get the autonomous routine. 
+     * 
+     * @param mode the autonomous mode. 
+     * @param drivetrain the robot driving subsystem. 
+     * @param intake the intake system.
+     * @param intakeArm the intake arm.
+     * @param shooter the shooter subsystem. 
+     * @param shooterFeeder the essie subsystem. 
+     * @return the autonomous routine, as a {@link edu.wpi.first.wpilibj2.command.SequentialCommandGroup}.
+     */
     public Command getAuto(AutoMode mode, Drivetrain drivetrain, IntakeSubsystem intake,
         IntakeArm intakeArm, Shooter shooter, ShooterFeederSubsystem shooterFeeder) {
-        
-        // Measurements in Inches 
+        // Measurements in Meters
         switch(mode) {
             case NONE:
                 return null;

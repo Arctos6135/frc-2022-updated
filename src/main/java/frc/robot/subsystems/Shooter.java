@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
 	
 	boolean protectionOverridden = false;
 
-	static final double kP = 0, kI = 0, kD = 0, kF = 0;
+	public static final double kP = 0, kI = 0, kD = 0, kF = 0;
 
 	/**
 	 * Creates new instance of the shooter subsystem. 
@@ -46,11 +46,10 @@ public class Shooter extends SubsystemBase {
 		this.masterShooterMotor, this.followerShooterMotor);
 
 		this.shooterEncoder = masterShooterMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
-		// this.shooterEncoder.setVelocityConversionFactor(2 * Math.PI / 60); 
 
 		this.pidController = masterShooterMotor.getPIDController();
 
-		// Spin Motors in the Same Direction
+		// Spin Motors in the Opposite Direction
 		this.masterShooterMotor.setInverted(false);
 		this.followerShooterMotor.setInverted(true);
 
@@ -100,7 +99,7 @@ public class Shooter extends SubsystemBase {
 	 */
 	public void setVelocity(double rpm) {
 		this.pidController.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
-		? 0 : rpm, CANSparkMax.ControlType.kVelocity);
+			? 0 : rpm, CANSparkMax.ControlType.kVelocity);
 		this.velocity = rpm;
 	}
 

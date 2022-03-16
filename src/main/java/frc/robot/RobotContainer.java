@@ -7,6 +7,7 @@ import java.util.logging.Level;
 
 import com.arctos6135.robotlib.logging.RobotLogger;
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
+import com.arctos6135.robotlib.oi.Rumble;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -57,8 +58,17 @@ public class RobotContainer {
 	private final ClimbSubsystem climbSubsystem; 
 	private final HookSubsystem hookSubsystem; 
 
+	// Controllers
 	private static final XboxController driverController = new XboxController(Constants.XBOX_DRIVER);
 	private static final XboxController operatorController = new XboxController(Constants.XBOX_OPERATOR);
+
+	// Controller Rumbling 
+	public static final Rumble infoRumbleDriver = new Rumble(driverController, Rumble.SIDE_BOTH, 1, 200, 1); 
+	public static final Rumble warningRumbleDriver = new Rumble(driverController, Rumble.SIDE_BOTH, 1, 300, 2); 
+	public static final Rumble errorRumbleDriver = new Rumble(driverController, Rumble.SIDE_BOTH, 1, 400, 3);
+	public static final Rumble infoRumbleOperator = new Rumble(operatorController, Rumble.SIDE_BOTH, 1, 200, 1); 
+	public static final Rumble warningRumbleOperator = new Rumble(operatorController, Rumble.SIDE_BOTH, 1, 300, 2); 
+	public static final Rumble errorRumbleOperator = new Rumble(operatorController, Rumble.SIDE_BOTH, 1, 400, 3); 
 
 	// Shuffleboard Tabs
 	public final ShuffleboardTab configTab; 
@@ -85,11 +95,11 @@ public class RobotContainer {
 	public SimpleWidget shooterFeederStatus;
 	public SimpleWidget climbStatus;
 
+	// Autonomous Mode 
 	private SendableChooser<Integer> preloadedBalls = new SendableChooser<>(); 
+	private Autonomous autonomous;
 
-	public static final RobotLogger logger = new RobotLogger();
-
-	private Autonomous autonomous; 
+	public static final RobotLogger logger = new RobotLogger(); 
 
 	/**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -158,6 +168,9 @@ public class RobotContainer {
 		configureButtonBindings();
 	}
 
+	/**
+	 * Add tabs and widgets to the {@link edu.wpi.first.wpilibj.shuffleboard.Shuffleboard}. 
+	 */
 	private void configureDashboard() {
 		// Motor Configuration Settings 
 		configTab.add("Precision Drive Factor", TeleopDrive.getPrecisionFactor()).withPosition(0, 0).withSize(6, 4)
@@ -191,7 +204,7 @@ public class RobotContainer {
 		.withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.0, "max", 1.0)).getEntry()
 		.addListener(notif -> {
 			RotateArm.setPrecisionFactor(notif.value.getDouble());
-			}, EntryListenerFlags.kUpdate); 
+				}, EntryListenerFlags.kUpdate); 
 				
 		// Write Settings of Spark Max Motors on Drivetrain and Shooter 
 		InstantCommand burnFlashCommand = new InstantCommand(() -> {
@@ -249,28 +262,43 @@ public class RobotContainer {
 		drivetrain.getMonitorGroup().setOverheatShutoffCallback((motor, temp) -> {
 			if (!drivetrain.getOverheatShutoffOverride()) {
 				drivetrainMotorStatus.withProperties(Map.of("color when false", Constants.COLOR_MOTOR_SHUTOFF)).getEntry().setBoolean(false);
+				errorRumbleDriver.execute(); 
 			}
-			getLogger().logError("Drivetrain motor " + motor.getDeviceId() + " reached overheat shutoff limit at " + temp + "C!");
+			String error = "Drivetrain motor" + Integer.toString(motor.getDeviceId()) + " reached overheat shutoff limit at " + Double.toString(temp) + "C!"; 
+			getLogger().logError(error);
+			DriverStation.reportError(error, true); 
 		});
 
 		drivetrain.getMonitorGroup().setOverheatWarningCallback((motor, temp) -> {
-			if (!drivetrain.getOverheatShutoffOverride())
+			if (!drivetrain.getOverheatShutoffOverride()) {
 				drivetrainMotorStatus.withProperties(Map.of("color when false", Constants.COLOR_MOTOR_WARNING)).getEntry().setBoolean(false);
-			getLogger().logWarning("Drivetrain motor " + motor.getDeviceId() + " reached overheat warning at " + temp + " C!");
+				warningRumbleDriver.execute();
+			}	
+			String error = "Drivetrain motor" + Integer.toString(motor.getDeviceId()) + " reached overheat warning at " + Double.toString(temp) + "C!"; 
+			getLogger().logWarning(error);
+			DriverStation.reportError(error, true); 
 		});
 
 		drivetrain.getMonitorGroup().setNormalTempCallback(() -> drivetrainMotorStatus.getEntry().setBoolean(true));
 
 		shooterSubsystem.getMonitorGroup().setOverheatShutoffCallback((motor, temp) -> {
-			if (!shooterSubsystem.getOverheatShutoffOverride())
+			if (!shooterSubsystem.getOverheatShutoffOverride()) {
 				shooterMotorStatus.withProperties(Map.of("color when false", Constants.COLOR_MOTOR_SHUTOFF)).getEntry().setBoolean(false);
-			getLogger().logError("Shooter motor " + motor.getDeviceId() + " reched overheat shutoff limit at " + temp + "C!");
+				errorRumbleOperator.execute(); 
+			}
+			String error = "Shooter motor " + Integer.toString(motor.getDeviceId()) + " reched overheat shutoff limit at " + Double.toString(temp) + "C!";
+			getLogger().logError(error);
+			DriverStation.reportError(error, true); 
 		});
 
 		shooterSubsystem.getMonitorGroup().setOverheatWarningCallback((motor, temp) -> {
-			if (!shooterSubsystem.getOverheatShutoffOverride())
+			if (!shooterSubsystem.getOverheatShutoffOverride()) {
 				shooterMotorStatus.withProperties(Map.of("color when false", Constants.COLOR_MOTOR_WARNING)).getEntry().setBoolean(false);
-			getLogger().logWarning("Shooter motor " + motor.getDeviceId() + " reached overheat warning at " + temp + " C!");
+				warningRumbleOperator.execute(); 
+			}
+			String error = "Shooter motor " + Integer.toString(motor.getDeviceId()) + " reached overheat warning at " + Double.toString(temp) + " C!";
+			getLogger().logWarning(error);
+			DriverStation.reportError(error, true);
 		});
 
 		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(9, 5);
@@ -307,6 +335,7 @@ public class RobotContainer {
 		Button stopShooterButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_BUTTON); 
 		Button shootLowHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_LOW_RPM_BUTTON);
 		Button shootHighHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_HIGH_RPM_BUTTON); 
+		Button shooterOverheatOverrideButton = new JoystickButton(operatorController, Constants.OVERRIDE_SHOOTER_PROTECTION_BUTTON); 
 
 		// Climb Related
 		Button overrideClimbTimeButton = new JoystickButton(operatorController, Constants.CLIMB_TIME_OVERRIDE_BUTTON); 
@@ -336,16 +365,32 @@ public class RobotContainer {
 	    }, () -> false));
 
 		dtOverheatOverrideButton.whenPressed(() -> {
-			// Toggle overheat shutoff override
+			// Toggle overheat shutoff override.
 			boolean override = !drivetrain.getOverheatShutoffOverride();
 			drivetrain.setOverheatShutoffOverride(override);
 			
 			if (override) {
 				getLogger().logWarning("Drivetrain motor temperature protection overridden.");
+				DriverStation.reportWarning("Drivetrain motor temperature protection overridden.", true);
 			} else {
 				getLogger().logInfo("Drivetrain motor temperature protection re-enabled.");
 			}
+			infoRumbleDriver.execute(); 
 		});
+
+		shooterOverheatOverrideButton.whenPressed(() -> {
+			// Toggle overheat shutoff override.
+			boolean override = !shooterSubsystem.getOverheatShutoffOverride(); 
+			shooterSubsystem.setOverheatShutoffOverride(override);
+
+			if (override) {
+				getLogger().logWarning("Shooter motor temperature protection overridden.");
+				DriverStation.reportWarning("Shooter motor temperature protection overridden.", true);
+			} else {
+				getLogger().logInfo("Shooter motor temperature protection re-enabled.");
+			}
+			infoRumbleOperator.execute(); 
+		}); 
 
 		// Shooting 
 		deployShooterLowerButton.whenActive(() -> {
@@ -385,6 +430,11 @@ public class RobotContainer {
 		});
 	}
 
+	/**
+	 * Return the autonomous command of the robot. 
+	 * 
+	 * @return the autonomous command for the match.
+	 */
 	public Command getAutonomousCommand() {
 		return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, intakeSubsystem, intakeArm, shooterSubsystem, shooterFeederSubsystem); 
 	}
