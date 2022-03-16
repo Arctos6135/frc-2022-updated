@@ -213,13 +213,19 @@ public class RobotContainer {
 		.withPosition(4, 0).withSize(4, 4).getEntry();
 
 		// Shooting Configurations
-		shooterTab.add("Shooter RPM", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
+		shooterTab.add("Shooter RPM (LOW)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
 		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 5000)).getEntry()
 		.addListener(notif -> {
 			shooterSubsystem.setVelocity(notif.value.getDouble());
 		}, EntryListenerFlags.kUpdate);
 
-		shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(6, 0)
+		shooterTab.add("Shooter RPM (HIGH)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(6, 0)
+		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 5000)).getEntry()
+		.addListener(notif -> {
+			shooterSubsystem.setVelocity(notif.value.getDouble());
+		}, EntryListenerFlags.kUpdate);
+
+		shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(0, 6)
 		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 1.0)).getEntry()
 		.addListener(notif -> {
 			shooterFeederSubsystem.setRollSpeed(notif.value.getDouble());

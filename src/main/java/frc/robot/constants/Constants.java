@@ -32,9 +32,9 @@ public final class Constants {
 
 	// Indexer Constants
 	public static final double ROLL_SPEED = 0.75;
-
+  
 	// Climb Related Constants
-	public static final double START_CLIMB_TIME = 20.0; // seconds
+	public static final double START_CLIMB_TIME = 30.0; // seconds
 	public static final double CLIMB_DRIVE_TIME = 0.1; 
 	public static final double RAISE_HALFWAY = 4.1; 
 	public static final double CLIMB_SPEED = 0.5; 

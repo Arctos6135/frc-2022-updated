@@ -407,9 +407,9 @@ public class Drivetrain extends SubsystemBase {
     m_differentialOdometry = new DifferentialDriveOdometry(ahrs.getRotation2d());
 
     // Encoder Instantiation
-    // TODO: check to see if kQuadrature should be replaced with kHallSensor
-    rightEncoder = rightMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, Constants.COUNTS_PER_REVOLUTION);
-    leftEncoder = leftMotor.getEncoder(SparkMaxRelativeEncoder.Type.kQuadrature, Constants.COUNTS_PER_REVOLUTION);
+    // TODO: check to see if kQuadrature should be replaced with kHallSensor  
+    rightEncoder = rightMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
+    leftEncoder = leftMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
 
     // Motor Monitor Group
     motorMonitorGroup = new MonitoredCANSparkMaxGroup("Drivetrain", Constants.MOTOR_WARNING_TEMP,

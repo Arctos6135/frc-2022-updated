@@ -14,13 +14,30 @@ import frc.robot.constants.Constants;
  * The default command for this subsystem is {@link frc.robot.commands.intake.Intake}. 
  */
 public class IntakeSubsystem extends SubsystemBase {
-    // No Pneumatics
-
     // Motors to Spin Mecanum Wheels 
     private final CANSparkMax mecanumWheelMotor;
     private final RelativeEncoder mecanumWheelEncoder; 
  
     private IdleMode idleMode;
+
+    /**
+     * Create a new intake subsystem.
+     * 
+     * The PID controller used by the intake arm is built in to the Spark Max motor used for 
+     * the intake arm. 
+     *
+     * @param leftIntake the CAN ID of the left intake motor controller.
+     * @param rightIntake the CAN ID of the right intake motor controller.
+     */
+    public IntakeSubsystem(int mecanumWheelMotor) {
+        this.mecanumWheelMotor = new CANSparkMax(mecanumWheelMotor, MotorType.kBrushless);
+        this.mecanumWheelEncoder = this.mecanumWheelMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION); 
+       
+        // Invert the left motor to spin in the same direction.
+        this.mecanumWheelMotor.setInverted(true);
+
+        this.mecanumWheelMotor.stopMotor();
+    }
 
     /**
      * Set the speed of the intake motors.
@@ -66,24 +83,5 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setMecanumWheelMotorMode(IdleMode idleMode) {
         this.idleMode = idleMode;
         this.mecanumWheelMotor.setIdleMode(this.idleMode); 
-    }
-   
-    /**
-     * Create a new intake subsystem.
-     * 
-     * The PID controller used by the intake arm is built in to the Spark Max motor used for 
-     * the intake arm. 
-     *
-     * @param leftIntake the CAN ID of the left intake motor controller.
-     * @param rightIntake the CAN ID of the right intake motor controller.
-     */
-    public IntakeSubsystem(int mecanumWheelMotor) {
-        this.mecanumWheelMotor = new CANSparkMax(mecanumWheelMotor, MotorType.kBrushless);
-        this.mecanumWheelEncoder = this.mecanumWheelMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION); 
-       
-        // Invert the left motor to spin in the same direction.
-        this.mecanumWheelMotor.setInverted(true);
-
-        this.mecanumWheelMotor.stopMotor();
     }
 }

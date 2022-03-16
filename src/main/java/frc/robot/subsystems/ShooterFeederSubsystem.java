@@ -1,8 +1,12 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
@@ -17,8 +21,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class ShooterFeederSubsystem extends SubsystemBase {
     // Roller Motors 
-    private final WPI_VictorSPX topRollerMotor;
-    private final WPI_VictorSPX bottomRollerMotor;  
+    private final CANSparkMax topRollerMotor;
+    private final TalonSRX bottomRollerMotor;  
     
     private final ColorSensorV3 colorSensor; 
 
@@ -34,13 +38,11 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      * @param rollerMotor the roller motor of the belts.
      */
     public ShooterFeederSubsystem(int topRollerMotor, int bottomRollerMotor) {
-        this.topRollerMotor = new WPI_VictorSPX(topRollerMotor); 
-        this.bottomRollerMotor = new WPI_VictorSPX(bottomRollerMotor); 
+        this.topRollerMotor = new CANSparkMax(topRollerMotor, MotorType.kBrushless); 
+        this.bottomRollerMotor = new TalonSRX(bottomRollerMotor); 
 
-        this.topRollerMotor.setNeutralMode(NeutralMode.Coast); 
+        this.topRollerMotor.setIdleMode(IdleMode.kBrake); 
         this.bottomRollerMotor.setNeutralMode(NeutralMode.Coast); 
-
-        this.bottomRollerMotor.follow(this.topRollerMotor);
 
         this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
@@ -68,6 +70,7 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      */
     public void stopRoller() {
         topRollerMotor.stopMotor();
+        bottomRollerMotor.set(ControlMode.PercentOutput, 0);
     }
 
     /**
@@ -89,8 +92,10 @@ public class ShooterFeederSubsystem extends SubsystemBase {
 
         if (rollUpwards) {
             topRollerMotor.set(this.rollSpeed); 
+            bottomRollerMotor.set(ControlMode.PercentOutput, this.rollSpeed);
         } else {
             topRollerMotor.set(-this.rollSpeed); 
+            bottomRollerMotor.set(ControlMode.PercentOutput, -this.rollSpeed);
         }
     }
 
