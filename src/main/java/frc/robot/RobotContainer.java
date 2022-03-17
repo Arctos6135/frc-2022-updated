@@ -25,6 +25,7 @@ import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RotateArm;
+import frc.robot.commands.shooting.PrepareShooter;
 import frc.robot.commands.shooting.Shoot;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -67,6 +68,7 @@ public class RobotContainer {
 	public static final Rumble warningRumbleDriver = new Rumble(driverController, Rumble.SIDE_BOTH, 1, 300, 2); 
 	public static final Rumble errorRumbleDriver = new Rumble(driverController, Rumble.SIDE_BOTH, 1, 400, 3);
 	public static final Rumble infoRumbleOperator = new Rumble(operatorController, Rumble.SIDE_BOTH, 1, 200, 1); 
+	public static final Rumble shooterRumbleOperator = new Rumble(operatorController, Rumble.SIDE_BOTH, 1, 200, 2);
 	public static final Rumble warningRumbleOperator = new Rumble(operatorController, Rumble.SIDE_BOTH, 1, 300, 2); 
 	public static final Rumble errorRumbleOperator = new Rumble(operatorController, Rumble.SIDE_BOTH, 1, 400, 3); 
 
@@ -408,11 +410,11 @@ public class RobotContainer {
 
 		// Setting RPM 
 		shootLowHubRPMButton.whenPressed(() -> {
-			shooterSubsystem.setVelocity(Constants.LOW_HUB_RPM);
+			new PrepareShooter(shooterSubsystem, true); 
 		});
 
 		shootHighHubRPMButton.whenPressed(() -> {
-			shooterSubsystem.setVelocity(Constants.HIGH_HUB_RPM); 
+			new PrepareShooter(shooterSubsystem, false); 
 		});
 
 		// Climber Button Bindings 
