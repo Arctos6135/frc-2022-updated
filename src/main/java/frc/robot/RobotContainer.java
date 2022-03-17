@@ -300,11 +300,12 @@ public class RobotContainer {
 			getLogger().logWarning(error);
 			DriverStation.reportError(error, true);
 		});
-
-		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(9, 5);
+		
+		// Autonomous Mode 
+		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(12, 5);
 		preloadedBalls.setDefaultOption("0", 0);
 		preloadedBalls.addOption("1", 1);
-		prematchTab.add("Preloaded Balls", preloadedBalls).withPosition(9, 0).withSize(5, 5); 
+		prematchTab.add("Preloaded Balls", preloadedBalls).withPosition(12, 0).withSize(5, 5); 
 		
 		lastError = driveTab.add("Last Error", "").withPosition(0, 12).withSize(20, 4).getEntry();
 		lastWarning = driveTab.add("Last Warning", "").withPosition(4, 12).withSize(20, 4).getEntry();
@@ -321,7 +322,7 @@ public class RobotContainer {
      * created by instantiating a {@link GenericHID} or one of its subclasses
      * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-    */
+     */
 	private void configureButtonBindings() {
 		// Driving Related 
 		Button reverseDriveButton = new JoystickButton(driverController, Constants.REVERSE_DRIVE_DIRECTION);

@@ -102,7 +102,6 @@ public class MotionProfile extends CommandBase {
         ChassisSpeeds chassisSpeeds = ramseteController.calculate(drivetrain.getPose(), setpoint);
         DifferentialDriveWheelSpeeds wheelSpeeds = AutoConstants.kDriveKinematics.toWheelSpeeds(chassisSpeeds);
         drivetrain.setMotors(wheelSpeeds.leftMetersPerSecond, wheelSpeeds.rightMetersPerSecond);
-        // TODO: convert from m/s to SPARK MAX [-1.0, 1.0]
     }
 
     @Override
