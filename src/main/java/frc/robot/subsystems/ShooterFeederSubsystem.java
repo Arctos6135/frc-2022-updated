@@ -23,11 +23,11 @@ public class ShooterFeederSubsystem extends SubsystemBase {
     // Roller Motors 
     private final CANSparkMax topRollerMotor;
     // private final TalonSRX bottomRollerMotor;  
+    private final CANSparkMax bottomRollerMotor; 
     
     private final ColorSensorV3 colorSensor; 
 
     private double rollSpeed = 0.5; 
-    private boolean rollUpwards = true; 
     private boolean ballInShotPosition = false; 
     private int ballCount = 0; 
     public static boolean constantRollSpeed = true; 
@@ -40,9 +40,14 @@ public class ShooterFeederSubsystem extends SubsystemBase {
     public ShooterFeederSubsystem(int topRollerMotor, int bottomRollerMotor) {
         this.topRollerMotor = new CANSparkMax(topRollerMotor, MotorType.kBrushless); 
         // this.bottomRollerMotor = new TalonSRX(bottomRollerMotor); 
+        this.bottomRollerMotor = new CANSparkMax(bottomRollerMotor, MotorType.kBrushed); 
 
         this.topRollerMotor.setIdleMode(IdleMode.kBrake); 
         // this.bottomRollerMotor.setNeutralMode(NeutralMode.Coast); 
+        this.bottomRollerMotor.setIdleMode(IdleMode.kBrake); 
+
+        this.topRollerMotor.setInverted(false); 
+        this.bottomRollerMotor.setInverted(false); 
 
         this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
@@ -71,6 +76,7 @@ public class ShooterFeederSubsystem extends SubsystemBase {
     public void stopRoller() {
         topRollerMotor.stopMotor();
         // bottomRollerMotor.set(ControlMode.PercentOutput, 0);
+        bottomRollerMotor.stopMotor(); 
     }
 
     /**
@@ -79,7 +85,7 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      * @return the speed of the roller motor. 
      */
     public double getRollSpeed() {
-        return rollUpwards ? rollSpeed : -rollSpeed; 
+        return rollSpeed;
     }
 
     /**
@@ -90,38 +96,17 @@ public class ShooterFeederSubsystem extends SubsystemBase {
     public void setRollSpeed(double rollSpeed) {
         this.rollSpeed = rollSpeed; 
 
-        if (rollUpwards) {
-            topRollerMotor.set(this.rollSpeed); 
-            // bottomRollerMotor.set(ControlMode.PercentOutput, this.rollSpeed);
-        } else {
-            topRollerMotor.set(-this.rollSpeed); 
-            // bottomRollerMotor.set(ControlMode.PercentOutput, -this.rollSpeed);
-        }
+        topRollerMotor.set(this.rollSpeed); 
+        bottomRollerMotor.set(this.rollSpeed); 
+        // bottomRollerMotor.set(ControlMode.PercentOutput, this.rollSpeed);
     }
 
-    /**
-     * Get the direction the belts are rolling. 
-     * 
-     * @return the direction of the roller belts. 
-     */
-    public boolean getRollDirection() {
-        return this.rollUpwards; 
+    public void setIntakeSpeed(double rollSpeed) {
+        bottomRollerMotor.set(rollSpeed);
     }
 
-    /**
-     * Set whether the belts should roll upwards or downwards. 
-     * 
-     * @param rollUpwards whether the belts should roll upwards.
-     */
-    public void setRollDirection(boolean rollUpwards) {
-        this.rollUpwards = rollUpwards; 
-    }
-
-    /**
-     * Toggle between rotating the belts upwards and downwards. 
-     */
-    public void toggleRollDirection() {
-        this.rollUpwards = !this.rollUpwards;
+    public void setTopMotorSpeed(double rollSpeed) {
+        topRollerMotor.set(rollSpeed); 
     }
 
     /**

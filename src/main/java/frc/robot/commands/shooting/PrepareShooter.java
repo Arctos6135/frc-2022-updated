@@ -3,7 +3,6 @@ package frc.robot.commands.shooting;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter; 
 
 /**
@@ -13,9 +12,7 @@ import frc.robot.subsystems.Shooter;
  */
 public class PrepareShooter extends CommandBase {
     private final Shooter shooter;
-    private static final double VELOCITY_TOLERANCE = 100; 
 
-    private double targetVelocity = 0; 
     private final double rpm; 
     private boolean rpmReached = false; 
 
@@ -39,18 +36,13 @@ public class PrepareShooter extends CommandBase {
             RobotContainer.getLogger().logError("Shooter is overheating, cannot shoot.");
             DriverStation.reportError("Shooter is overheating, cannot shoot.", false); 
         }
-
-        //shooter.setVelocity(this.rpm); 
-        //this.targetVelocity = this.rpm;  
+ 
         this.shooter.setVelocityDirectly(this.rpm);
         rpmReached = true;
     }
 
     @Override 
     public void execute() {
-        //if (Math.abs(shooter.getActualVelocity() - targetVelocity) < VELOCITY_TOLERANCE) {
-        //    rpmReached = true; 
-        //}
     }
 
     @Override 

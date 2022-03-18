@@ -23,7 +23,7 @@ public final class Constants {
 
 	// Shooter Feeder Motors
 	public static final int TOP_ROLLER_MOTOR = 7;
-	public static final int BOTTOM_ROLLER_MOTOR = 10; 
+	public static final int BOTTOM_ROLLER_MOTOR = 8; 
 
 	// Climb Motors 
 	public static final int HOOK_DEPLOYMENT_MOTOR = 11; 
@@ -33,6 +33,7 @@ public final class Constants {
 	// Indexer Constants
 	public static final double ROLL_SPEED = 0.5;
 	public static final double ROLL_SPEED_SENSING = 0.25;
+	public static final double OUTTAKE_TIME = 2.0;
   
 	// Climb Related Constants
 	public static final double START_CLIMB_TIME = 30.0; // seconds
@@ -82,7 +83,7 @@ public final class Constants {
 	public static final int SENSORED_ROLL = XboxController.Button.kA.value;
 	public static final int STOP_SHOOTER_BUTTON = XboxController.Button.kB.value;
 	public static final int OVERRIDE_SHOOTER_PROTECTION_BUTTON = XboxController.Button.kStart.value; 
-	public static final int CLIMB_TIME_OVERRIDE_BUTTON = XboxController.Button.kBack.value; 
+	public static final int STOP_SHOOTER_FEEDER_BUTTON = XboxController.Button.kBack.value; 
 	public static final int CLIMB_RUNG_AXIS = XboxController.Axis.kLeftY.value;
 	public static final int TOGGLE_CLIMB_PRECISION = XboxController.Button.kLeftStick.value;
 	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
@@ -119,7 +120,11 @@ public final class Constants {
 
 	// TODO: test values for shooter RPM
 	public static final double LOW_HUB_RPM = 1000.0; 
-	public static final double HIGH_HUB_RPM = 1.0; 
+	public static final double HIGH_HUB_RPM = 2000.0; 
+
+	// Direct Shooter Velocity 
+	public static final double LOW_HUB_RPM_DIRECT = 0.5; 
+	public static final double HIGH_HUB_RPM_DIRECT = 0.9; 
 
 	public static final double MAX_BALLS = 2; 
 	public static final double PRELOADED_BALLS = 1; 

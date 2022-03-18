@@ -41,7 +41,6 @@ public class AutoShoot extends CommandBase {
 
         addRequirements(shooter, shooterFeederSubsystem);
 
-        this.shooterFeederSubsystem.setRollDirection(true);
         this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED); 
     }
 
@@ -55,10 +54,14 @@ public class AutoShoot extends CommandBase {
 
         if (lowerHub) {
             shooter.setVelocity(Constants.LOW_HUB_RPM); 
-            this.targetVelocity = Constants.LOW_HUB_RPM; 
+            this.targetVelocity = Constants.LOW_HUB_RPM;
+            // shooter.setVelocityDirectly(Constants.LOW_HUB_RPM_DIRECT);
+            // this.targetVelocity = Constants.LOW_HUB_RPM_DIRECT; 
         } else {
             shooter.setVelocity(Constants.HIGH_HUB_RPM); 
             this.targetVelocity = Constants.HIGH_HUB_RPM;
+            // shooter.setVelocityDirectly(Constants.HIGH_HUB_RPM_DIRECT);
+            // this.targetVelocity = Constants.HIGH_HUB_RPM_DIRECT; 
         }
     }
 
@@ -82,7 +85,7 @@ public class AutoShoot extends CommandBase {
                 shooter.setVelocity(this.targetVelocity); 
                 shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
             }    
-        }
+        } 
     }
 
     @Override 

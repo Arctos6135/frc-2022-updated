@@ -25,6 +25,7 @@ public class Shooter extends SubsystemBase {
 	private final SparkMaxPIDController pidControllerFollower; 
 
 	public static final double BASE_SPEED = 0;
+	public static final double VELOCITY_TOLERANCE = 100; 
 	public double shooterDist;
 	private double velocity = 0;
 
@@ -32,8 +33,8 @@ public class Shooter extends SubsystemBase {
 	
 	boolean protectionOverridden = false;
 
-	public static final double kP = 0.005, kI = 0, kD = 0, kF = 0;
-	public static final double kP2 = 0.005, kI2 = 0, kD2 = 0, kF2 = 0;
+	public static final double kP = 6e-5, kI = 0, kD = 0, kF = 0.000015, kIz = 0, maxRPM = 5000;
+	public static final double kP2 = 6e-5, kI2 = 0, kD2 = 0, kF2 = 0.000015, kIz2 = 0, maxRPM2 = 5000;
 
 	/**
 	 * Creates new instance of the shooter subsystem. 
@@ -63,7 +64,7 @@ public class Shooter extends SubsystemBase {
 		pidControllerMaster.setI(kI);
 		pidControllerMaster.setD(kD);
 		pidControllerMaster.setFF(kF);
-
+		pidControllerMaster.setIZone(kIz); 
 		pidControllerMaster.setOutputRange(-1.0, 1.0);
 		pidControllerMaster.setReference(0.0, CANSparkMax.ControlType.kVelocity);
 
@@ -71,7 +72,7 @@ public class Shooter extends SubsystemBase {
 		pidControllerFollower.setI(kI2);
 		pidControllerFollower.setD(kD2);
 		pidControllerFollower.setFF(kF2);
-
+		pidControllerFollower.setIZone(kIz2); 
 		pidControllerFollower.setOutputRange(-1.0, 1.0);
 		pidControllerFollower.setReference(0.0, CANSparkMax.ControlType.kVelocity);
 	}
@@ -114,12 +115,10 @@ public class Shooter extends SubsystemBase {
 	 * @param rpm the desired velocity of the shooter. 
 	 */
 	public void setVelocity(double rpm) {
-		//this.pidControllerMaster.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
-		//	? 0 : rpm, CANSparkMax.ControlType.kVelocity);
-		//this.pidControllerFollower.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
-		//	? 0 : rpm, CANSparkMax.ControlType.kVelocity);
-		this.pidControllerMaster.setReference(rpm, CANSparkMax.ControlType.kVelocity); 
-		this.pidControllerFollower.setReference(rpm, CANSparkMax.ControlType.kVelocity); 
+		this.pidControllerMaster.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
+			? 0 : rpm, CANSparkMax.ControlType.kVelocity);
+		this.pidControllerFollower.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
+			? 0 : rpm, CANSparkMax.ControlType.kVelocity);
 		this.velocity = rpm;
 	}
 

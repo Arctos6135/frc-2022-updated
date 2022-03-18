@@ -27,6 +27,7 @@ import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RotateArm;
 import frc.robot.commands.shooting.PrepareShooter;
+import frc.robot.commands.shooting.PrepareShooterPID;
 import frc.robot.commands.shooting.Shoot;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -40,6 +41,7 @@ import frc.robot.subsystems.ShooterFeederSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -99,7 +101,7 @@ public class RobotContainer {
 	public SimpleWidget climbStatus;
 
 	// Autonomous Mode 
-	private SendableChooser<Integer> preloadedBalls = new SendableChooser<>(); 
+	// private SendableChooser<Integer> preloadedBalls = new SendableChooser<>(); 
 	// private Autonomous autonomous;
 
 	public static final RobotLogger logger = new RobotLogger(); 
@@ -237,11 +239,11 @@ public class RobotContainer {
 			shooterSubsystem.setVelocity(notif.value.getDouble());
 		}, EntryListenerFlags.kUpdate);
 
-		/* shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(0, 6)
+		shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(0, 6)
 		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 1.0)).getEntry()
 		.addListener(notif -> {
 			shooterFeederSubsystem.setRollSpeed(notif.value.getDouble());
-		}, EntryListenerFlags.kUpdate); */ 
+		}, EntryListenerFlags.kUpdate); 
 		
 		/* 
 		// Climbing Configurations
@@ -252,11 +254,11 @@ public class RobotContainer {
 		climbTab.add("Override Climb Time", climbOverrideCommand).withWidget(BuiltInWidgets.kCommand).withPosition(0, 0).withSize(6, 6);
 
 		climbTab.add("Precision Climb", Climb.isPrecisionClimb()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0).withSize(4, 4).getEntry(); */ 
-		/* 
+		
 		// Color Detection of Balls 
 		colorTab.add("Red Color", shooterFeederSubsystem.getColorSensor().getRed());
 		colorTab.add("Blue Color", shooterFeederSubsystem.getColorSensor().getBlue());
-		colorTab.add("Unknown Color", shooterFeederSubsystem.getColorSensor().getIR()); */ 
+		colorTab.add("Unknown Color", shooterFeederSubsystem.getColorSensor().getIR()); 
 
 		// Overheating Warnings
 		drivetrain.getMonitorGroup().setOverheatShutoffCallback((motor, temp) -> {
@@ -302,10 +304,10 @@ public class RobotContainer {
 		});
 		
 		// Autonomous Mode 
-		// prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(12, 5);
+		/* prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(12, 5);
 		preloadedBalls.setDefaultOption("0", 0);
 		preloadedBalls.addOption("1", 1);
-		prematchTab.add("Preloaded Balls", preloadedBalls).withPosition(12, 0).withSize(5, 5); 
+		prematchTab.add("Preloaded Balls", preloadedBalls).withPosition(12, 0).withSize(5, 5); */ 
 		
 		lastError = driveTab.add("Last Error", "").withPosition(0, 12).withSize(20, 4).getEntry();
 		lastWarning = driveTab.add("Last Warning", "").withPosition(4, 12).withSize(20, 4).getEntry();
@@ -334,13 +336,16 @@ public class RobotContainer {
 		AnalogTrigger deployShooterLowerButton = new AnalogTrigger(operatorController, Constants.DEPLOY_SHOOTER_LOWER_BUTTON, 0.5);
 		AnalogTrigger deployShooterUpperButton = new AnalogTrigger(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON, 0.5);
 		Button stopShooterButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_BUTTON); 
+
+		// TESTING BUTTONS
 		Button shootLowHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_LOW_RPM_BUTTON);
 		Button shootHighHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_HIGH_RPM_BUTTON); 
+
 		Button shooterOverheatOverrideButton = new JoystickButton(operatorController, Constants.OVERRIDE_SHOOTER_PROTECTION_BUTTON); 
 		Button sensoredRollButton = new JoystickButton(operatorController, Constants.SENSORED_ROLL); 
+		Button stopShooterFeederButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_FEEDER_BUTTON); 
 
-		// Climb Related
-		Button overrideClimbTimeButton = new JoystickButton(operatorController, Constants.CLIMB_TIME_OVERRIDE_BUTTON); 
+		// Climb Related 
 		Button toggleClimbPrecision = new JoystickButton(operatorController, Constants.TOGGLE_CLIMB_PRECISION); 
 		
 		// Intake Related 
@@ -403,22 +408,30 @@ public class RobotContainer {
 			new Shoot(shooterSubsystem, shooterFeederSubsystem, false)
 		); 
 
+		// Setting RPM TODO: test PrepareShooterPID
 		stopShooterButton.whenPressed(
 			new PrepareShooter(shooterSubsystem, 0)
 		); 
 
-		// Setting RPM 
 		shootLowHubRPMButton.whenPressed(
-			new PrepareShooter(shooterSubsystem, 0.5) 
+			// new PrepareShooter(shooterSubsystem, Constants.LOW_HUB_RPM_DIRECT) 
+			// TODO: tune PID constant values
+			new PrepareShooterPID(shooterSubsystem, Constants.LOW_HUB_RPM)
 		);
 
 		shootHighHubRPMButton.whenPressed(
-			new PrepareShooter(shooterSubsystem, 0.9)
+			// new PrepareShooter(shooterSubsystem, Constants.HIGH_HUB_RPM_DIRECT)
+			// TODO: tune PID constant values
+			new PrepareShooterPID(shooterSubsystem, Constants.HIGH_HUB_RPM)
 		);
 
 		sensoredRollButton.whenPressed(
 			new SensoredRoll(shooterFeederSubsystem)
 		);
+
+		stopShooterFeederButton.whenHeld(new InstantCommand(() -> {
+			shooterFeederSubsystem.stopRoller();
+		}, shooterFeederSubsystem));
 
 		/* 
 		// Climber Button Bindings 
