@@ -19,8 +19,10 @@ public class Shooter extends SubsystemBase {
 	// Shooter Motors 
 	private final CANSparkMax masterShooterMotor;
 	private final CANSparkMax followerShooterMotor;
-	private final RelativeEncoder shooterEncoder;
-	private final SparkMaxPIDController pidController;
+	private final RelativeEncoder shooterEncoderMaster;
+	private final RelativeEncoder shooterEncoderFollower; 
+	private final SparkMaxPIDController pidControllerMaster;
+	private final SparkMaxPIDController pidControllerFollower; 
 
 	public static final double BASE_SPEED = 0;
 	public double shooterDist;
@@ -30,7 +32,8 @@ public class Shooter extends SubsystemBase {
 	
 	boolean protectionOverridden = false;
 
-	public static final double kP = 0, kI = 0, kD = 0, kF = 0;
+	public static final double kP = 0.005, kI = 0, kD = 0, kF = 0;
+	public static final double kP2 = 0.005, kI2 = 0, kD2 = 0, kF2 = 0;
 
 	/**
 	 * Creates new instance of the shooter subsystem. 
@@ -45,24 +48,32 @@ public class Shooter extends SubsystemBase {
 		monitorGroup = new MonitoredCANSparkMaxGroup("Shooter", Constants.MOTOR_WARNING_TEMP, Constants.MOTOR_SHUTOFF_TEMP,
 		this.masterShooterMotor, this.followerShooterMotor);
 
-		this.shooterEncoder = masterShooterMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
+		this.shooterEncoderMaster = masterShooterMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
+		this.shooterEncoderFollower = followerShooterMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION); 
 
-		this.pidController = masterShooterMotor.getPIDController();
+		this.pidControllerMaster = masterShooterMotor.getPIDController();
+		this.pidControllerFollower = followerShooterMotor.getPIDController(); 
 
 		// Spin Motors in the Opposite Direction
-		this.masterShooterMotor.setInverted(false);
-		this.followerShooterMotor.setInverted(true);
-
-		this.followerShooterMotor.follow(this.masterShooterMotor);
+		this.masterShooterMotor.setInverted(true);
+		this.followerShooterMotor.setInverted(false);
 
 		// Set Constants for the Shooter PID Controller
-		pidController.setP(kP);
-		pidController.setI(kI);
-		pidController.setD(kD);
-		pidController.setFF(kF);
+		pidControllerMaster.setP(kP);
+		pidControllerMaster.setI(kI);
+		pidControllerMaster.setD(kD);
+		pidControllerMaster.setFF(kF);
 
-		pidController.setOutputRange(-1.0, 1.0);
-		pidController.setReference(0.0, CANSparkMax.ControlType.kVelocity);
+		pidControllerMaster.setOutputRange(-1.0, 1.0);
+		pidControllerMaster.setReference(0.0, CANSparkMax.ControlType.kVelocity);
+
+		pidControllerFollower.setP(kP2);
+		pidControllerFollower.setI(kI2);
+		pidControllerFollower.setD(kD2);
+		pidControllerFollower.setFF(kF2);
+
+		pidControllerFollower.setOutputRange(-1.0, 1.0);
+		pidControllerFollower.setReference(0.0, CANSparkMax.ControlType.kVelocity);
 	}
 
 	/**
@@ -71,7 +82,7 @@ public class Shooter extends SubsystemBase {
 	 * @return the built in motor encoder on the shooter motor. 
 	 */
 	public RelativeEncoder getEncoder() {
-		return this.shooterEncoder;
+		return this.shooterEncoderMaster;
 	}
 	
 	/**
@@ -80,7 +91,7 @@ public class Shooter extends SubsystemBase {
 	 * @return the shooter velocity measured by the encoder. 
 	 */
 	public double getActualVelocity() {
-		return this.shooterEncoder.getVelocity();
+		return (this.shooterEncoderMaster.getVelocity() + this.shooterEncoderFollower.getVelocity()) / 2;
 	}
 
 	/**
@@ -92,14 +103,23 @@ public class Shooter extends SubsystemBase {
 		return this.velocity;
 	}
 
+	public void setVelocityDirectly(double rpm) {
+		this.masterShooterMotor.set(rpm); 
+		this.followerShooterMotor.set(rpm); 
+	}
+
 	/**
 	 * Set the velocity of the shooter using PID control. 
 
 	 * @param rpm the desired velocity of the shooter. 
 	 */
 	public void setVelocity(double rpm) {
-		this.pidController.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
-			? 0 : rpm, CANSparkMax.ControlType.kVelocity);
+		//this.pidControllerMaster.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
+		//	? 0 : rpm, CANSparkMax.ControlType.kVelocity);
+		//this.pidControllerFollower.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
+		//	? 0 : rpm, CANSparkMax.ControlType.kVelocity);
+		this.pidControllerMaster.setReference(rpm, CANSparkMax.ControlType.kVelocity); 
+		this.pidControllerFollower.setReference(rpm, CANSparkMax.ControlType.kVelocity); 
 		this.velocity = rpm;
 	}
 
@@ -109,7 +129,7 @@ public class Shooter extends SubsystemBase {
 	 * @return the PID controller of the shooter motor. 
 	 */
 	public SparkMaxPIDController getPIDController() {
-		return this.pidController;
+		return this.pidControllerMaster;
 	}
 
 	/**
@@ -144,8 +164,8 @@ public class Shooter extends SubsystemBase {
 		this.monitorGroup.monitorOnce();
 
 		if (this.monitorGroup.getOverheatShutoff()) {
-			setVelocity(0);
 			masterShooterMotor.stopMotor();
+			followerShooterMotor.stopMotor(); 
 		}
 	}
 

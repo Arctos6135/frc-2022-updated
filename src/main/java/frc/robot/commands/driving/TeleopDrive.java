@@ -30,6 +30,16 @@ public class TeleopDrive extends CommandBase {
     // Ramping
     private static double rampingRate = 0.375; // time (seconds) it takes to go from 0 to max speed. 
 
+    /**
+     * Create a new Teleoperated Driving command. 
+     * 
+     * @param drivetrain the robot driving system. 
+     * @param controller the driver controller. 
+     * @param fwdRevAxis the vertical component of the left driver joystick.
+     * @param leftRightAxis the horizontal component of the right driver joystick. 
+     * 
+     * @see {@link frc.robot.subsystems.Drivetrain}
+     */
     public TeleopDrive(Drivetrain drivetrain, XboxController controller, int fwdRevAxis, int leftRightAxis) {
         this.drivetrain = drivetrain;
         this.controller = controller;

@@ -22,7 +22,7 @@ public final class Constants {
 	public static final int INTAKE_ARM_MOTOR = 8;
 
 	// Shooter Feeder Motors
-	public static final int TOP_ROLLER_MOTOR = 9;
+	public static final int TOP_ROLLER_MOTOR = 7;
 	public static final int BOTTOM_ROLLER_MOTOR = 10; 
 
 	// Climb Motors 
@@ -31,7 +31,8 @@ public final class Constants {
 	public static final int RIGHT_CLIMB_MOTOR = 13; 
 
 	// Indexer Constants
-	public static final double ROLL_SPEED = 0.75;
+	public static final double ROLL_SPEED = 0.5;
+	public static final double ROLL_SPEED_SENSING = 0.25;
   
 	// Climb Related Constants
 	public static final double START_CLIMB_TIME = 30.0; // seconds
@@ -74,20 +75,21 @@ public final class Constants {
 	
 	// Operator Controller 
 	public static final int XBOX_OPERATOR = 1;
-	public static final int DEPLOY_SHOOTER_LOWER_BUTTON = XboxController.Button.kX.value;
-	public static final int DEPLOY_SHOOTER_UPPER_BUTTON = XboxController.Button.kY.value; 
+	public static final int DEPLOY_SHOOTER_LOWER_BUTTON = XboxController.Axis.kRightTrigger.value;
+	public static final int DEPLOY_SHOOTER_UPPER_BUTTON = XboxController.Axis.kLeftTrigger.value; 
+	public static final int SHOOT_LOW_RPM_BUTTON = XboxController.Button.kX.value;
+	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Button.kY.value;
+	public static final int SENSORED_ROLL = XboxController.Button.kA.value;
 	public static final int STOP_SHOOTER_BUTTON = XboxController.Button.kB.value;
 	public static final int OVERRIDE_SHOOTER_PROTECTION_BUTTON = XboxController.Button.kStart.value; 
-	public static final int CLIMB_TIME_OVERRIDE_BUTTON = XboxController.Button.kA.value; 
+	public static final int CLIMB_TIME_OVERRIDE_BUTTON = XboxController.Button.kBack.value; 
 	public static final int CLIMB_RUNG_AXIS = XboxController.Axis.kLeftY.value;
 	public static final int TOGGLE_CLIMB_PRECISION = XboxController.Button.kLeftStick.value;
 	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
 	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value; 
 	public static final int TELEOP_ROLL_UP_TRIGGER = XboxController.Button.kRightBumper.value;
 	public static final int TELEOP_ROLL_DOWN_TRIGGER = XboxController.Button.kLeftBumper.value; 
-	public static final int SHOOT_LOW_RPM_BUTTON = XboxController.Axis.kRightTrigger.value;
-	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Axis.kLeftTrigger.value;
-
+	
 	// Robot Dimensions
 	// TODO: change these to match robot
 	public static final double ROBOT_MAX_VELOCITY = 0;
@@ -116,8 +118,8 @@ public final class Constants {
 	public static final Color OPPOSING_ALLIANCE = Color.kRed; 
 
 	// TODO: test values for shooter RPM
-	public static final double LOW_HUB_RPM = 0; 
-	public static final double HIGH_HUB_RPM = 0; 
+	public static final double LOW_HUB_RPM = 1000.0; 
+	public static final double HIGH_HUB_RPM = 1.0; 
 
 	public static final double MAX_BALLS = 2; 
 	public static final double PRELOADED_BALLS = 1; 

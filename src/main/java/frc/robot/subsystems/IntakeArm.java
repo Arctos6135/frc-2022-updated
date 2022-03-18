@@ -1,8 +1,7 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -13,14 +12,10 @@ import frc.robot.constants.Constants;
  * The default command for this subsystem is {@link frc.robot.commands.intake.RotateArm}. 
  */
 public class IntakeArm extends SubsystemBase {
-    private final CANSparkMax intakeArmMotor;
-    private final SparkMaxPIDController intakeArmPIDController;
+    private final VictorSPX intakeArmMotor;
     
     private boolean intakeArmLowered = false;
     private double intakeArmPosition = 0;
-    
-    // TODO: tune these constants
-    public final static double kP = 0, kI = 0, kD = 0, kF = 0;
 
     /**
      * Get whether the intake arm is raised or lowered.
@@ -46,7 +41,6 @@ public class IntakeArm extends SubsystemBase {
      * @param setpoint the position of the intake arm, restricted to [-1.0, 1.0].
      */
     public void setIntakeArmPosition(double setpoint) {
-        this.intakeArmPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
         this.intakeArmPosition = setpoint;
 
         if (setpoint == Constants.INTAKE_ARM_LOWERED) {
@@ -62,27 +56,24 @@ public class IntakeArm extends SubsystemBase {
      * @param speed the desired speed of the intake arm in the interval [-1.0, 1.0]. 
      */
     public void setIntakeArmMotor(double speed) {
-        this.intakeArmMotor.set(speed);
+        this.intakeArmMotor.set(ControlMode.PercentOutput, speed);
     }
 
+    /**
+     * Stop the intake arm motor. 
+     */
     public void stopIntakeArmMotor() {
-        this.intakeArmMotor.stopMotor();
+        this.intakeArmMotor.set(ControlMode.PercentOutput, 0);
     }
 
+    /**
+     * Create a new intake arm subsystem. 
+     * 
+     * @param intakeArmMotor the CAN ID of the intake arm motor. 
+     */
     public IntakeArm(int intakeArmMotor) {
-        this.intakeArmMotor = new CANSparkMax(intakeArmMotor, MotorType.kBrushless);
-        this.intakeArmPIDController = this.intakeArmMotor.getPIDController();
-
+        this.intakeArmMotor = new VictorSPX(intakeArmMotor);
         this.intakeArmMotor.setInverted(false);
-
-        this.intakeArmMotor.stopMotor();
-        
-        intakeArmPIDController.setP(kP);
-        intakeArmPIDController.setI(kI);
-        intakeArmPIDController.setD(kD);
-        intakeArmPIDController.setFF(kF);
-
-        intakeArmPIDController.setOutputRange(-1.0, 1.0);
-        intakeArmPIDController.setReference(0.0, CANSparkMax.ControlType.kPosition);
+        stopIntakeArmMotor();
     }
 }

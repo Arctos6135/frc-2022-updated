@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ShooterFeederSubsystem extends SubsystemBase {
     // Roller Motors 
     private final CANSparkMax topRollerMotor;
-    private final TalonSRX bottomRollerMotor;  
+    // private final TalonSRX bottomRollerMotor;  
     
     private final ColorSensorV3 colorSensor; 
 
@@ -39,10 +39,10 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      */
     public ShooterFeederSubsystem(int topRollerMotor, int bottomRollerMotor) {
         this.topRollerMotor = new CANSparkMax(topRollerMotor, MotorType.kBrushless); 
-        this.bottomRollerMotor = new TalonSRX(bottomRollerMotor); 
+        // this.bottomRollerMotor = new TalonSRX(bottomRollerMotor); 
 
         this.topRollerMotor.setIdleMode(IdleMode.kBrake); 
-        this.bottomRollerMotor.setNeutralMode(NeutralMode.Coast); 
+        // this.bottomRollerMotor.setNeutralMode(NeutralMode.Coast); 
 
         this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
@@ -70,7 +70,7 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      */
     public void stopRoller() {
         topRollerMotor.stopMotor();
-        bottomRollerMotor.set(ControlMode.PercentOutput, 0);
+        // bottomRollerMotor.set(ControlMode.PercentOutput, 0);
     }
 
     /**
@@ -92,10 +92,10 @@ public class ShooterFeederSubsystem extends SubsystemBase {
 
         if (rollUpwards) {
             topRollerMotor.set(this.rollSpeed); 
-            bottomRollerMotor.set(ControlMode.PercentOutput, this.rollSpeed);
+            // bottomRollerMotor.set(ControlMode.PercentOutput, this.rollSpeed);
         } else {
             topRollerMotor.set(-this.rollSpeed); 
-            bottomRollerMotor.set(ControlMode.PercentOutput, -this.rollSpeed);
+            // bottomRollerMotor.set(ControlMode.PercentOutput, -this.rollSpeed);
         }
     }
 

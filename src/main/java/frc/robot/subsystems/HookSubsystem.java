@@ -49,5 +49,4 @@ public class HookSubsystem extends SubsystemBase {
     public void stopHookMotor() {
         this.climbMotorHook.set(ControlMode.PercentOutput, 0); 
     }
-
 }

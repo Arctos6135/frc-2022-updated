@@ -21,9 +21,9 @@ public class TeleopRoll extends CommandBase {
     private final int rollUpButton;
     private final int rollDownButton;  
 
-    private ColorMatch colorMatch; 
+    /* private ColorMatch colorMatch; 
     private Color detectedColor; 
-    private ColorMatchResult matchedColor; 
+    private ColorMatchResult matchedColor; */ 
 
     public static double rollPrecisionFactor = 0.5; 
 
@@ -42,26 +42,26 @@ public class TeleopRoll extends CommandBase {
 
         addRequirements(shooterFeederSubsystem);
 
-        colorMatch.addColorMatch(Constants.OUR_ALLIANCE); 
+        /* colorMatch.addColorMatch(Constants.OUR_ALLIANCE); 
         colorMatch.addColorMatch(Constants.OPPOSING_ALLIANCE); 
-        colorMatch.addColorMatch(Color.kWhite);  
+        colorMatch.addColorMatch(Color.kWhite);  */ 
         // TODO: change to whatever the color of the board of the color sensor
     }
 
     @Override 
     public void execute() {
         double rollSpeedUp = operatorController.getRawButton(this.rollUpButton) ? Constants.ROLL_SPEED : 0; 
-        double rollSpeedDown = operatorController.getRawButton(this.rollDownButton) ? -Constants.ROLL_SPEED : 0; 
+        double rollSpeedDown = operatorController.getRawButton(this.rollDownButton) ? Constants.ROLL_SPEED : 0; 
 
         if (rollSpeedUp == Constants.ROLL_SPEED && rollSpeedDown == 0) {
-            shooterFeederSubsystem.setRollSpeed(rollSpeedUp); 
-        } else if (rollSpeedUp == 0 && rollSpeedDown == -Constants.ROLL_SPEED) {
-            shooterFeederSubsystem.setRollSpeed(-rollSpeedDown);
+            shooterFeederSubsystem.setRollSpeed(-rollSpeedUp); 
+        } else if (rollSpeedUp == 0 && rollSpeedDown == Constants.ROLL_SPEED) {
+            shooterFeederSubsystem.setRollSpeed(rollSpeedDown);
         } else {
             shooterFeederSubsystem.setRollSpeed(0);
         }
 
-
+        /*
         detectedColor = this.shooterFeederSubsystem.getColorDetected(); 
         matchedColor = colorMatch.matchColor(detectedColor); 
 
@@ -75,7 +75,7 @@ public class TeleopRoll extends CommandBase {
             RobotContainer.getLogger().logInfo("Wrong ball in indexer."); 
             DriverStation.reportWarning("Wrong ball in indexer.", false); 
             shooterFeederSubsystem.setBallInShotPosition(false);
-        } 
+        } */ 
     }
 
     @Override 

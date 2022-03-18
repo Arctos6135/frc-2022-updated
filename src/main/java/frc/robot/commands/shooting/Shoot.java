@@ -38,7 +38,7 @@ public class Shoot extends CommandBase {
 
         addRequirements(shooter, shooterFeederSubsystem);
 
-        this.shooterFeederSubsystem.setRollDirection(true);
+        this.shooterFeederSubsystem.setRollDirection(false);
         this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED); 
     }
 
@@ -53,16 +53,18 @@ public class Shoot extends CommandBase {
         }
 
         if (lowerHub) {
-            shooter.setVelocity(Constants.LOW_HUB_RPM); 
-            targetVelocity = Constants.LOW_HUB_RPM; 
+            shooter.setVelocityDirectly(0.5);
+            targetVelocity = Constants.LOW_HUB_RPM;  
         } else {
-            shooter.setVelocity(Constants.HIGH_HUB_RPM); 
+            shooter.setVelocityDirectly(0.9); 
             targetVelocity = Constants.HIGH_HUB_RPM;
         }
+        shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
     }
 
     @Override 
     public void execute() {
+        /*
         if (Math.abs(shooter.getActualVelocity() - targetVelocity) < VELOCITY_TOLERANCE && shooterFeederSubsystem.getBallInShotPosition()) {
             // Shoot the ball 
             velocityReached = true; 
@@ -81,7 +83,7 @@ public class Shoot extends CommandBase {
                 } catch (Shooter.PowerException exception) {
                     RobotContainer.getLogger().logError("The shooter motor cannot support the upper hub shot!"); 
                 } 
-            } */
+            } */ /*
 
         } else {
             shooterFeederSubsystem.stopRoller(); 
@@ -89,7 +91,8 @@ public class Shoot extends CommandBase {
             if (velocityReached) {
                 shooterFeederSubsystem.decrementBallCount(); 
             }
-        }
+        } */ 
+
     }
 
     @Override 
