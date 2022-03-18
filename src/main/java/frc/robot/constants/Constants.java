@@ -33,6 +33,7 @@ public final class Constants {
 	// Indexer Constants
 	public static final double ROLL_SPEED = 0.5;
 	public static final double ROLL_SPEED_SENSING = 0.25;
+	public static final double OUTTAKE_TIME = 2.0;
   
 	// Climb Related Constants
 	public static final double START_CLIMB_TIME = 30.0; // seconds

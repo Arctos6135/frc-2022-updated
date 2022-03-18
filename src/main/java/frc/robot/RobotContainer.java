@@ -237,11 +237,11 @@ public class RobotContainer {
 			shooterSubsystem.setVelocity(notif.value.getDouble());
 		}, EntryListenerFlags.kUpdate);
 
-		/* shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(0, 6)
+		shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(0, 6)
 		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 1.0)).getEntry()
 		.addListener(notif -> {
 			shooterFeederSubsystem.setRollSpeed(notif.value.getDouble());
-		}, EntryListenerFlags.kUpdate); */ 
+		}, EntryListenerFlags.kUpdate); 
 		
 		/* 
 		// Climbing Configurations
@@ -252,11 +252,11 @@ public class RobotContainer {
 		climbTab.add("Override Climb Time", climbOverrideCommand).withWidget(BuiltInWidgets.kCommand).withPosition(0, 0).withSize(6, 6);
 
 		climbTab.add("Precision Climb", Climb.isPrecisionClimb()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0).withSize(4, 4).getEntry(); */ 
-		/* 
+		
 		// Color Detection of Balls 
 		colorTab.add("Red Color", shooterFeederSubsystem.getColorSensor().getRed());
 		colorTab.add("Blue Color", shooterFeederSubsystem.getColorSensor().getBlue());
-		colorTab.add("Unknown Color", shooterFeederSubsystem.getColorSensor().getIR()); */ 
+		colorTab.add("Unknown Color", shooterFeederSubsystem.getColorSensor().getIR()); 
 
 		// Overheating Warnings
 		drivetrain.getMonitorGroup().setOverheatShutoffCallback((motor, temp) -> {
@@ -302,10 +302,10 @@ public class RobotContainer {
 		});
 		
 		// Autonomous Mode 
-		// prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(12, 5);
+		/* prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(12, 5);
 		preloadedBalls.setDefaultOption("0", 0);
 		preloadedBalls.addOption("1", 1);
-		prematchTab.add("Preloaded Balls", preloadedBalls).withPosition(12, 0).withSize(5, 5); 
+		prematchTab.add("Preloaded Balls", preloadedBalls).withPosition(12, 0).withSize(5, 5); */ 
 		
 		lastError = driveTab.add("Last Error", "").withPosition(0, 12).withSize(20, 4).getEntry();
 		lastWarning = driveTab.add("Last Warning", "").withPosition(4, 12).withSize(20, 4).getEntry();
@@ -314,7 +314,7 @@ public class RobotContainer {
 	}
 
 	public void updateDashboard() {
-		// shooterRPMEntry.setNumber(shooterSubsystem.getActualVelocity());
+		shooterRPMEntry.setNumber(shooterSubsystem.getActualVelocity());
 	}
 
 	/**
@@ -403,11 +403,11 @@ public class RobotContainer {
 			new Shoot(shooterSubsystem, shooterFeederSubsystem, false)
 		); 
 
+		// Setting RPM TODO: test PrepareShooterPID
 		stopShooterButton.whenPressed(
 			new PrepareShooter(shooterSubsystem, 0)
 		); 
 
-		// Setting RPM 
 		shootLowHubRPMButton.whenPressed(
 			new PrepareShooter(shooterSubsystem, 0.5) 
 		);

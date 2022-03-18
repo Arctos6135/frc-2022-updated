@@ -44,6 +44,8 @@ public class ShooterFeederSubsystem extends SubsystemBase {
         this.topRollerMotor.setIdleMode(IdleMode.kBrake); 
         // this.bottomRollerMotor.setNeutralMode(NeutralMode.Coast); 
 
+        this.topRollerMotor.setInverted(true); 
+
         this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
