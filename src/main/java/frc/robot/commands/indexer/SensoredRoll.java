@@ -94,7 +94,8 @@ public class SensoredRoll extends CommandBase {
     @Override 
     public void end(boolean interrupted) {
         shooterFeederSubsystem.stopRoller(); 
-        shooterFeederSubsystem.setBallInShotPosition(false);
+        // shooterFeederSubsystem.setBallInShotPosition(false);
+        shooterFeederSubsystem.setBallInShotPosition(true);
         DriverStation.reportWarning("Sensored Roll Command Ended.", true); 
     }
 

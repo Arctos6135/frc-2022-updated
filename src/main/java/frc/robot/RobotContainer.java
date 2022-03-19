@@ -316,7 +316,7 @@ public class RobotContainer {
 	}
 
 	public void updateDashboard() {
-		// shooterRPMEntry.setNumber(shooterSubsystem.getActualVelocity());
+		shooterRPMEntry.setNumber(shooterSubsystem.getActualVelocity());
 	}
 
 	/**

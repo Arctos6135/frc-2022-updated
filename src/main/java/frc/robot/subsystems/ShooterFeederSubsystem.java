@@ -49,6 +49,8 @@ public class ShooterFeederSubsystem extends SubsystemBase {
         this.topRollerMotor.setInverted(false); 
         this.bottomRollerMotor.setInverted(false); 
 
+        this.topRollerMotor.setInverted(true); 
+
         this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
