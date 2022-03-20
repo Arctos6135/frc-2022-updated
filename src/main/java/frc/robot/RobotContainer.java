@@ -26,6 +26,7 @@ import frc.robot.commands.indexer.SensoredRoll;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.intake.RotateArm;
+import frc.robot.commands.shooting.PIDShoot;
 import frc.robot.commands.shooting.PrepareShooter;
 import frc.robot.commands.shooting.PrepareShooterPID;
 import frc.robot.commands.shooting.Shoot;
@@ -316,7 +317,7 @@ public class RobotContainer {
 	}
 
 	public void updateDashboard() {
-		shooterRPMEntry.setNumber(shooterSubsystem.getActualVelocity());
+		// shooterRPMEntry.setNumber(shooterSubsystem.getActualVelocity());
 	}
 
 	/**
@@ -401,26 +402,26 @@ public class RobotContainer {
 
 		// Shooting 
 		deployShooterLowerButton.whenActive(
-			new Shoot(shooterSubsystem, shooterFeederSubsystem, true)
+			new PIDShoot(shooterSubsystem, shooterFeederSubsystem, true)
 		);
 
 		deployShooterUpperButton.whenActive(
-			new Shoot(shooterSubsystem, shooterFeederSubsystem, false)
+			new PIDShoot(shooterSubsystem, shooterFeederSubsystem, false)
 		); 
 
 		// Setting RPM TODO: test PrepareShooterPID
 		stopShooterButton.whenPressed(
-			new PrepareShooter(shooterSubsystem, 0)
+			new PrepareShooter(shooterSubsystem, shooterFeederSubsystem, 0)
 		); 
 
 		shootLowHubRPMButton.whenPressed(
-			// new PrepareShooter(shooterSubsystem, Constants.LOW_HUB_RPM_DIRECT) 
+			// new PrepareShooter(shooterSubsystem, shooterFeederSubsystem, Constants.LOW_HUB_RPM_DIRECT) 
 			// TODO: tune PID constant values
 			new PrepareShooterPID(shooterSubsystem, Constants.LOW_HUB_RPM)
 		);
 
 		shootHighHubRPMButton.whenPressed(
-			// new PrepareShooter(shooterSubsystem, Constants.HIGH_HUB_RPM_DIRECT)
+			// new PrepareShooter(shooterSubsystem, shooterFeederSubsystem, Constants.HIGH_HUB_RPM_DIRECT)
 			// TODO: tune PID constant values
 			new PrepareShooterPID(shooterSubsystem, Constants.HIGH_HUB_RPM)
 		);

@@ -162,7 +162,7 @@ public class TeleopDrive extends CommandBase {
         y = Math.copySign(y * y, y);
 
         double x = -applyDeadband(controller.getRawAxis(X_AXIS), Constants.CONTROLLER_DEADZONE);
-        x = Math.copySign(x * x, x);
+        x = Math.copySign(x * x, x) * 0.5;
 
         drivetrain.arcadeDrive(y, x, precisionDrive ? precisionFactor : 1.0);
     }

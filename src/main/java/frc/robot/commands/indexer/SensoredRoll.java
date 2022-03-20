@@ -48,7 +48,8 @@ public class SensoredRoll extends CommandBase {
 
         colorMatch.addColorMatch(Color.kBlue); 
         colorMatch.addColorMatch(Color.kRed); 
-        colorMatch.addColorMatch(Color.kBlack); // TODO: put something in front of color sensor
+        // colorMatch.addColorMatch(Color.kOrange); // TODO: put something in front of color sensor
+        colorMatch.addColorMatch(Color.kWhite);
     }
 
     @Override 
@@ -72,31 +73,41 @@ public class SensoredRoll extends CommandBase {
             // Store the ball halfway up the belts
             shooterFeederSubsystem.setBallInShotPosition(true);
             this.ballAtColorSensor = true;
-            // shooterFeederSubsystem.stopRoller();
+            shooterFeederSubsystem.stopRoller();
         } else if (matchedColor.color == Constants.OPPOSING_ALLIANCE) {
             // Outtake the ball 
             this.outtake = true; 
             this.initialOuttakeTime = this.timer.get(); 
-            shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED); 
+            DriverStation.reportWarning(Double.toString(this.initialOuttakeTime), true);
         } else if (this.outtake) {
-            shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
+            DriverStation.reportWarning(Double.toString(this.timer.get()), true);
 
-            if (this.timer.get() - this.initialOuttakeTime >= Constants.OUTTAKE_TIME) {
+            /* if (this.timer.get() - this.initialOuttakeTime <= Constants.OUTTAKE_TIME) {
+                shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
+            } else {
                 this.outtakeFinished = true; 
-            }
+            } */ 
+
+            shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
+            Timer.delay(1.75);
+            this.outtakeFinished = true; 
         }
         else {
             shooterFeederSubsystem.setBallInShotPosition(false);
-            shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED); 
         } 
     }
 
     @Override 
     public void end(boolean interrupted) {
         shooterFeederSubsystem.stopRoller(); 
-        // shooterFeederSubsystem.setBallInShotPosition(false);
-        shooterFeederSubsystem.setBallInShotPosition(true);
+        /* if (!outtake) {
+            shooterFeederSubsystem.setBallInShotPosition(true);
+        } else {
+            shooterFeederSubsystem.setBallInShotPosition(false);
+        } */
+        
         DriverStation.reportWarning("Sensored Roll Command Ended.", true); 
+        shooterFeederSubsystem.setBallInShotPosition(false);
     }
 
     @Override 

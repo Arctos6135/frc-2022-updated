@@ -39,8 +39,8 @@ public class Drivetrain extends SubsystemBase {
   private final MotorControllerGroup m_leftMotors;
   private final MotorControllerGroup m_rightMotors;
 
-  // private final DifferentialDrive m_differentialDrive;
-  // private final DifferentialDriveOdometry m_differentialOdometry;
+  private final DifferentialDrive m_differentialDrive;
+  private final DifferentialDriveOdometry m_differentialOdometry;
 
   // Encoders
   private final RelativeEncoder rightEncoder;
@@ -280,7 +280,7 @@ public class Drivetrain extends SubsystemBase {
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftMotors.setVoltage(leftVolts);
     m_rightMotors.setVoltage(rightVolts);
-    // m_differentialDrive.feed();
+    m_differentialDrive.feed();
   }
 
   /**
@@ -289,7 +289,7 @@ public class Drivetrain extends SubsystemBase {
    * @param maxOutput factor for output percentage.
    */
   public void setMaxOutput(double maxOutput) {
-    // m_differentialDrive.setMaxOutput(maxOutput);
+    m_differentialDrive.setMaxOutput(maxOutput);
   }
 
   /**
@@ -404,8 +404,8 @@ public class Drivetrain extends SubsystemBase {
     m_leftMotors = new MotorControllerGroup(leftMotor, leftFollowerMotor);
 
     // Differential Drive and Odometry TODO: when AHRS attached uncomment
-    // m_differentialDrive = new DifferentialDrive(m_leftMotors, m_rightMotors);
-    // m_differentialOdometry = new DifferentialDriveOdometry(ahrs.getRotation2d());
+    m_differentialDrive = new DifferentialDrive(m_leftMotors, m_rightMotors);
+    m_differentialOdometry = new DifferentialDriveOdometry(ahrs.getRotation2d());
 
     // Encoder Instantiation
     // TODO: check to see if kQuadrature should be replaced with kHallSensor  
@@ -441,10 +441,10 @@ public class Drivetrain extends SubsystemBase {
       setMotors(0, 0);
     }
 
-    /* m_differentialOdometry.update(
+    m_differentialOdometry.update(
         ahrs.getRotation2d(),
         Units.inchesToMeters(leftEncoder.getPosition()),
-        Units.inchesToMeters(rightEncoder.getPosition())); */
+        Units.inchesToMeters(rightEncoder.getPosition()));
   }
 
   @Override

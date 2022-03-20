@@ -33,7 +33,7 @@ public final class Constants {
 	// Indexer Constants
 	public static final double ROLL_SPEED = 0.5;
 	public static final double ROLL_SPEED_SENSING = 0.25;
-	public static final double OUTTAKE_TIME = 2.0;
+	public static final double OUTTAKE_TIME = 0.002;
   
 	// Climb Related Constants
 	public static final double START_CLIMB_TIME = 30.0; // seconds
@@ -119,8 +119,8 @@ public final class Constants {
 	public static final Color OPPOSING_ALLIANCE = Color.kRed; 
 
 	// TODO: test values for shooter RPM
-	public static final double LOW_HUB_RPM = 1000.0; 
-	public static final double HIGH_HUB_RPM = 2000.0; 
+	public static final double LOW_HUB_RPM = 3000.0; 
+	public static final double HIGH_HUB_RPM = 4000.0; 
 
 	// Direct Shooter Velocity 
 	public static final double LOW_HUB_RPM_DIRECT = 0.5; 

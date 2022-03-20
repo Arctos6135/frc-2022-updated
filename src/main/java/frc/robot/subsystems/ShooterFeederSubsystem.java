@@ -46,8 +46,8 @@ public class ShooterFeederSubsystem extends SubsystemBase {
         // this.bottomRollerMotor.setNeutralMode(NeutralMode.Coast); 
         this.bottomRollerMotor.setIdleMode(IdleMode.kBrake); 
 
-        this.topRollerMotor.setInverted(false); 
-        this.bottomRollerMotor.setInverted(false); 
+        this.topRollerMotor.setInverted(true); 
+        this.bottomRollerMotor.setInverted(true); 
 
         this.topRollerMotor.setInverted(true); 
 

@@ -3,7 +3,8 @@ package frc.robot.commands.shooting;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Shooter; 
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterFeederSubsystem; 
 
 /**
  * Set the RPM of the shooter. 
@@ -12,6 +13,7 @@ import frc.robot.subsystems.Shooter;
  */
 public class PrepareShooter extends CommandBase {
     private final Shooter shooter;
+    private final ShooterFeederSubsystem shooterFeederSubsystem; 
 
     private final double rpm; 
     private boolean rpmReached = false; 
@@ -22,8 +24,9 @@ public class PrepareShooter extends CommandBase {
      * @param shooter the shooter subsystem. 
      * @param lowerHub whether to shoot lower or upper hub. 
      */
-    public PrepareShooter(Shooter shooter, double rpm) {
+    public PrepareShooter(Shooter shooter, ShooterFeederSubsystem shooterFeederSubsystem, double rpm) {
         this.shooter = shooter;
+        this.shooterFeederSubsystem = shooterFeederSubsystem;
         this.rpm = rpm; 
         addRequirements(shooter); 
     }
@@ -38,6 +41,10 @@ public class PrepareShooter extends CommandBase {
         }
  
         this.shooter.setVelocityDirectly(this.rpm);
+        // TODO: check if this stops the roller
+        if (this.rpm == 0) {
+            this.shooterFeederSubsystem.stopRoller(); 
+        }
         rpmReached = true;
     }
 
