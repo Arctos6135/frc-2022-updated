@@ -12,9 +12,6 @@ import frc.robot.subsystems.ShooterFeederSubsystem;
  * reach the shooter. 
  */
 public class AutoShoot extends CommandBase {
-
-    private static final double VELOCITY_TOLERANCE = 100;
-
     private final Shooter shooter; 
     private final ShooterFeederSubsystem shooterFeederSubsystem; 
 
@@ -55,19 +52,15 @@ public class AutoShoot extends CommandBase {
         if (lowerHub) {
             shooter.setVelocity(Constants.LOW_HUB_RPM); 
             this.targetVelocity = Constants.LOW_HUB_RPM;
-            // shooter.setVelocityDirectly(Constants.LOW_HUB_RPM_DIRECT);
-            // this.targetVelocity = Constants.LOW_HUB_RPM_DIRECT; 
         } else {
             shooter.setVelocity(Constants.HIGH_HUB_RPM); 
             this.targetVelocity = Constants.HIGH_HUB_RPM;
-            // shooter.setVelocityDirectly(Constants.HIGH_HUB_RPM_DIRECT);
-            // this.targetVelocity = Constants.HIGH_HUB_RPM_DIRECT; 
         }
     }
 
     @Override 
     public void execute() {
-        if (Math.abs(shooter.getActualVelocity() - targetVelocity) < VELOCITY_TOLERANCE) {
+        if (Math.abs(shooter.getActualVelocity() - targetVelocity) < Shooter.VELOCITY_TOLERANCE) {
             velocityReached = true; 
             shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
         } else {
@@ -78,13 +71,8 @@ public class AutoShoot extends CommandBase {
 
             // No balls left to shoot.
             if (this.numBallsLeft <= 0) {
-                shooterFeederSubsystem.stopRoller(); 
                 finished = true;
-            } else {
-                // Shoot one more ball.
-                shooter.setVelocity(this.targetVelocity); 
-                shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
-            }    
+            }
         } 
     }
 
@@ -96,7 +84,7 @@ public class AutoShoot extends CommandBase {
 
     @Override 
     public boolean isFinished() {
-        return finished || this.numBallsLeft == 0;
+        return finished || this.numBallsLeft <= 0;
     }
     
 }

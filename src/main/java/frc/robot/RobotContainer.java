@@ -175,32 +175,32 @@ public class RobotContainer {
 	 */
 	private void configureDashboard() {
 		// Motor Configuration Settings 
-		configTab.add("Precision Drive Factor", TeleopDrive.getPrecisionFactor()).withPosition(0, 0).withSize(6, 4)
+		configTab.add("Precision Drive Factor", TeleopDrive.getPrecisionFactor()).withPosition(0, 0).withSize(3, 2)
 		.withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.0, "max", 1.0)).getEntry()
 		.addListener(notif -> {
 			TeleopDrive.setPrecisionFactor(notif.value.getDouble());
 				}, EntryListenerFlags.kUpdate);
 		
-		configTab.add("Motor Ramping Rate", TeleopDrive.getRampingRate()).withPosition(6, 0).withSize(6, 4)
+		configTab.add("Motor Ramping Rate", TeleopDrive.getRampingRate()).withPosition(3, 0).withSize(3, 2)
 		.withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.0, "max", 1.0)).getEntry()
 		.addListener(notif -> {
 			TeleopDrive.setRampingRate(notif.value.getDouble());
 				}, EntryListenerFlags.kUpdate);
 				
 		configTab.add("Motor Warning Temp", Constants.MOTOR_WARNING_TEMP).withWidget(BuiltInWidgets.kNumberSlider)
-		.withPosition(12, 0).withSize(6, 4).withProperties(Map.of("min", 0.0, "max", 150.0)).getEntry()
+		.withPosition(6, 0).withSize(3, 2).withProperties(Map.of("min", 0.0, "max", 150.0)).getEntry()
 		.addListener(notif -> {
 			Constants.MOTOR_WARNING_TEMP = notif.value.getDouble();
 				}, EntryListenerFlags.kUpdate);
 				
 		configTab.add("Motor Shutoff Temp", Constants.MOTOR_SHUTOFF_TEMP).withWidget(BuiltInWidgets.kNumberSlider)
-		.withPosition(18, 0).withSize(6, 4).withProperties(Map.of("min", 0.0, "max", 150.0)).getEntry()
+		.withPosition(9, 0).withSize(3, 2).withProperties(Map.of("min", 0.0, "max", 150.0)).getEntry()
 		.addListener(notif -> {
 			Constants.MOTOR_SHUTOFF_TEMP = notif.value.getDouble();
 				}, EntryListenerFlags.kUpdate);
 
 		configTab.add("Shooter PID", new SendableCANPIDController(shooterSubsystem.getPIDController()))
-		.withWidget(BuiltInWidgets.kPIDController).withPosition(0, 4).withSize(6, 12);
+		.withWidget(BuiltInWidgets.kPIDController).withPosition(0, 2).withSize(3, 6);
 		
 		/* configTab.add("Intake Arm Precision", RotateArm.getPrecisionFactor()).withPosition(6, 4).withSize(6, 4)
 		.withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.0, "max", 1.0)).getEntry()
@@ -215,33 +215,33 @@ public class RobotContainer {
 		}); 
 
 		burnFlashCommand.setName("Burn Flash");
-		configTab.add("Burn Spark Motors", burnFlashCommand).withWidget(BuiltInWidgets.kCommand).withPosition(12, 4); 
+		configTab.add("Burn Spark Motors", burnFlashCommand).withWidget(BuiltInWidgets.kCommand).withSize(3, 4).withPosition(3, 4); 
 
 		// Drive Tabs
-		driveTab.add("Gyro", drivetrain.getAHRS()).withWidget(BuiltInWidgets.kGyro).withPosition(0, 4).withSize(6, 8);
+		driveTab.add("Gyro", drivetrain.getAHRS()).withWidget(BuiltInWidgets.kGyro).withPosition(0, 2).withSize(6, 8);
 
 		// Driving Related Entries
 		driveReversedEntry = driveTab.add("Reversed", TeleopDrive.isReversed()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 0)
-		.withSize(4, 4).getEntry();
+		.withSize(2, 2).getEntry();
 		
 		precisionDriveEntry = driveTab.add("Precision", TeleopDrive.isPrecisionDrive()).withWidget(BuiltInWidgets.kBooleanBox)
-		.withPosition(4, 0).withSize(4, 4).getEntry();
+		.withPosition(2, 0).withSize(2, 2).getEntry();
 
 		// Shooting Configurations
-		shooterTab.add("Shooter RPM (LOW)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
-		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 5000)).getEntry()
+		shooterTab.add("Shooter RPM (Top Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
+		.withSize(3, 3).withProperties(Map.of("min", 0, "max", Shooter.maxRPM)).getEntry()
 		.addListener(notif -> {
 			shooterSubsystem.setVelocity(notif.value.getDouble());
 		}, EntryListenerFlags.kUpdate);
 
-		shooterTab.add("Shooter RPM (HIGH)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(6, 0)
-		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 5000)).getEntry()
+		shooterTab.add("Shooter RPM (HIGH)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(3, 0)
+		.withSize(3, 3).withProperties(Map.of("min", 0, "max", Shooter.maxRPM2)).getEntry()
 		.addListener(notif -> {
 			shooterSubsystem.setVelocity(notif.value.getDouble());
 		}, EntryListenerFlags.kUpdate);
 
-		shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(0, 6)
-		.withSize(6, 6).withProperties(Map.of("min", 0, "max", 1.0)).getEntry()
+		shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(0, 3)
+		.withSize(4, 3).withProperties(Map.of("min", 0, "max", 1.0)).getEntry()
 		.addListener(notif -> {
 			shooterFeederSubsystem.setRollSpeed(notif.value.getDouble());
 		}, EntryListenerFlags.kUpdate); 
@@ -317,7 +317,7 @@ public class RobotContainer {
 	}
 
 	public void updateDashboard() {
-		// shooterRPMEntry.setNumber(shooterSubsystem.getActualVelocity());
+		shooterRPMEntry = shooterTab.add("Shooter RPM", shooterSubsystem.getActualVelocity()).withPosition(4, 3).withSize(3, 3).getEntry(); 
 	}
 
 	/**
@@ -409,20 +409,15 @@ public class RobotContainer {
 			new PIDShoot(shooterSubsystem, shooterFeederSubsystem, false)
 		); 
 
-		// Setting RPM TODO: test PrepareShooterPID
 		stopShooterButton.whenPressed(
 			new PrepareShooter(shooterSubsystem, shooterFeederSubsystem, 0)
 		); 
 
 		shootLowHubRPMButton.whenPressed(
-			// new PrepareShooter(shooterSubsystem, shooterFeederSubsystem, Constants.LOW_HUB_RPM_DIRECT) 
-			// TODO: tune PID constant values
 			new PrepareShooterPID(shooterSubsystem, Constants.LOW_HUB_RPM)
 		);
 
 		shootHighHubRPMButton.whenPressed(
-			// new PrepareShooter(shooterSubsystem, shooterFeederSubsystem, Constants.HIGH_HUB_RPM_DIRECT)
-			// TODO: tune PID constant values
 			new PrepareShooterPID(shooterSubsystem, Constants.HIGH_HUB_RPM)
 		);
 

@@ -33,8 +33,8 @@ public class Shooter extends SubsystemBase {
 	
 	boolean protectionOverridden = false;
 
-	public static final double kP = 0.00015, kI = 0, kD = 0.00125, kF = 0.00015, kIz = 0, maxRPM = 5000;
-	public static final double kP2 = 0.00015, kI2 = 0, kD2 = 0.00125, kF2 = 0.00015, kIz2 = 0, maxRPM2 = 5000;
+	public static final double kP = 0.00015, kI = 0, kD = 0.00125, kF = 0.00015, kIz = 0, maxRPM = 7500;
+	public static final double kP2 = 0.00015, kI2 = 0, kD2 = 0.00125, kF2 = 0.00015, kIz2 = 0, maxRPM2 = 7500;
 
 	/**
 	 * Creates new instance of the shooter subsystem. 

@@ -60,6 +60,8 @@ public final class Constants {
 	
 	// Xbox Controller
 	public static final double CONTROLLER_DEADZONE = 0.15;
+	public static final double FWD_REV_DAMPENING = 0.75; 
+	public static final double LEFT_RIGHT_DAMPENING = 0.75; 
 
 	// Driver Controller
 	public static final int XBOX_DRIVER = 0;
@@ -68,8 +70,8 @@ public final class Constants {
 	public static final int REVERSE_DRIVE_DIRECTION = XboxController.Button.kLeftStick.value;
 	public static final int OVERRIDE_MOTOR_PROTECTION = XboxController.Button.kB.value;
 	public static final int PRECISION_DRIVE_TOGGLE = XboxController.Button.kX.value;
-	public static final int DEPLOY_CLIMB_HOOK = XboxController.Button.kY.value; 
-	public static final int RETRACT_CLIMB_HOOK = XboxController.Button.kA.value; 
+	public static final int DEPLOY_CLIMB_HOOK = XboxController.Axis.kRightTrigger.value; 
+	public static final int RETRACT_CLIMB_HOOK = XboxController.Button.kY.value; 
 	public static final int PRECISION_DRIVE_HOLD = XboxController.Axis.kLeftTrigger.value;
 	public static final int INTAKE_FORWARD_BUTTON = XboxController.Button.kLeftBumper.value;
 	public static final int INTAKE_REVERSE_BUTTON = XboxController.Button.kRightBumper.value;
@@ -82,15 +84,15 @@ public final class Constants {
 	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Button.kY.value;
 	public static final int SENSORED_ROLL = XboxController.Button.kA.value;
 	public static final int STOP_SHOOTER_BUTTON = XboxController.Button.kB.value;
-	public static final int OVERRIDE_SHOOTER_PROTECTION_BUTTON = XboxController.Button.kStart.value; 
-	public static final int STOP_SHOOTER_FEEDER_BUTTON = XboxController.Button.kBack.value; 
+	public static final int OVERRIDE_SHOOTER_PROTECTION_BUTTON = XboxController.Button.kBack.value; 
+	public static final int STOP_SHOOTER_FEEDER_BUTTON = XboxController.Button.kStart.value; 
+	public static final int TELEOP_ROLL_UP_TRIGGER = XboxController.Button.kRightBumper.value;
+	public static final int TELEOP_ROLL_DOWN_TRIGGER = XboxController.Button.kLeftBumper.value; 
 	public static final int CLIMB_RUNG_AXIS = XboxController.Axis.kLeftY.value;
 	public static final int TOGGLE_CLIMB_PRECISION = XboxController.Button.kLeftStick.value;
 	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
-	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value; 
-	public static final int TELEOP_ROLL_UP_TRIGGER = XboxController.Button.kRightBumper.value;
-	public static final int TELEOP_ROLL_DOWN_TRIGGER = XboxController.Button.kLeftBumper.value; 
-	
+	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value;
+
 	// Robot Dimensions
 	// TODO: change these to match robot
 	public static final double ROBOT_MAX_VELOCITY = 0;

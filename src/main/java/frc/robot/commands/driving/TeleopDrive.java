@@ -159,10 +159,10 @@ public class TeleopDrive extends CommandBase {
                 Constants.CONTROLLER_DEADZONE);
 
         // Increase control by squaring input values. Negative values will, however, stay negative. 
-        y = Math.copySign(y * y, y);
+        y = Math.copySign(y * y, y) * Constants.FWD_REV_DAMPENING;
 
         double x = -applyDeadband(controller.getRawAxis(X_AXIS), Constants.CONTROLLER_DEADZONE);
-        x = Math.copySign(x * x, x) * 0.5;
+        x = Math.copySign(x * x, x) * Constants.LEFT_RIGHT_DAMPENING;
 
         drivetrain.arcadeDrive(y, x, precisionDrive ? precisionFactor : 1.0);
     }

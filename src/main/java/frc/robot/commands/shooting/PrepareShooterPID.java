@@ -5,6 +5,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 
+/**
+ * Sets the shooter's velocity with PID control. 
+ * Does not roll the ball up towards to shooter.
+ */
 public class PrepareShooterPID extends CommandBase {
     private final Shooter shooter; 
     private static final double VELOCITY_TOLERANCE = 100; 
@@ -12,6 +16,12 @@ public class PrepareShooterPID extends CommandBase {
     private final double targetRPM;
     private boolean rpmReached; 
 
+    /**
+     * Creates a new shooter preparation command. 
+     * 
+     * @param shooter the shooter subsystem. 
+     * @param rpm the desired velocity of the shooter.
+     */
     public PrepareShooterPID(Shooter shooter, double rpm) {
         this.shooter = shooter; 
         this.targetRPM = rpm;

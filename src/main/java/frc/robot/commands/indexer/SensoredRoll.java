@@ -48,8 +48,8 @@ public class SensoredRoll extends CommandBase {
 
         colorMatch.addColorMatch(Color.kBlue); 
         colorMatch.addColorMatch(Color.kRed); 
-        // colorMatch.addColorMatch(Color.kOrange); // TODO: put something in front of color sensor
-        colorMatch.addColorMatch(Color.kWhite);
+        colorMatch.addColorMatch(Color.kOrange); // TODO: put something in front of color sensor
+        // colorMatch.addColorMatch(Color.kWhite);
     }
 
     @Override 
@@ -76,18 +76,12 @@ public class SensoredRoll extends CommandBase {
             shooterFeederSubsystem.stopRoller();
         } else if (matchedColor.color == Constants.OPPOSING_ALLIANCE) {
             // Outtake the ball 
+            shooterFeederSubsystem.stopRoller(); 
             this.outtake = true; 
             this.initialOuttakeTime = this.timer.get(); 
             DriverStation.reportWarning(Double.toString(this.initialOuttakeTime), true);
         } else if (this.outtake) {
             DriverStation.reportWarning(Double.toString(this.timer.get()), true);
-
-            /* if (this.timer.get() - this.initialOuttakeTime <= Constants.OUTTAKE_TIME) {
-                shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
-            } else {
-                this.outtakeFinished = true; 
-            } */ 
-
             shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
             Timer.delay(1.75);
             this.outtakeFinished = true; 
@@ -100,19 +94,12 @@ public class SensoredRoll extends CommandBase {
     @Override 
     public void end(boolean interrupted) {
         shooterFeederSubsystem.stopRoller(); 
-        /* if (!outtake) {
-            shooterFeederSubsystem.setBallInShotPosition(true);
-        } else {
-            shooterFeederSubsystem.setBallInShotPosition(false);
-        } */
-        
         DriverStation.reportWarning("Sensored Roll Command Ended.", true); 
         shooterFeederSubsystem.setBallInShotPosition(false);
     }
 
     @Override 
     public boolean isFinished() { 
-        // Wrong colored ball.
         if (this.outtake) {
             return this.outtakeFinished; 
         } 

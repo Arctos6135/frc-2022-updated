@@ -1,5 +1,6 @@
 package frc.robot.commands.auto;
 
+import java.util.Collections;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -35,8 +36,13 @@ public class PathFinder extends CommandBase {
             
     private static Trajectory autoTrajectory; 
     private RamseteCommand autoCommand;
-    private static Drivetrain drivetrain; 
-    
+    private final Drivetrain drivetrain; 
+
+    private Pose2d startPosition = null; 
+    private List<Translation2d> waypointsTranslation = null; 
+    private Pose2d endPosition = null; 
+
+    private List<Pose2d> waypointsPose = null;
     /**
      * Creates a new instance of the Path Finder autonomous drive command. 
      * 
@@ -46,8 +52,12 @@ public class PathFinder extends CommandBase {
      * @param endPosition the ending position of the autonomous command.
      */
     public PathFinder(Drivetrain drivetrain, Pose2d startPosition, List<Translation2d> waypoints, Pose2d endPosition) {
-        PathFinder.drivetrain = drivetrain;
+        this.drivetrain = drivetrain;
         addRequirements(drivetrain);
+
+        this.startPosition = startPosition;
+        this.waypointsTranslation = waypoints; 
+        this.endPosition = endPosition;
 
         PathFinder.autoTrajectory = TrajectoryGenerator.generateTrajectory(
                 startPosition, waypoints, endPosition, this.config);
@@ -74,8 +84,10 @@ public class PathFinder extends CommandBase {
      * @param waypoints the points to pass through when driving, as Pose2d objects. 
      */
     public PathFinder(Drivetrain drivetrain, List<Pose2d> waypoints) {
-        PathFinder.drivetrain = drivetrain; 
+        this.drivetrain = drivetrain; 
         addRequirements(drivetrain);
+
+        this.waypointsPose = waypoints; 
 
         PathFinder.autoTrajectory = TrajectoryGenerator.generateTrajectory(waypoints, this.config);
 
@@ -97,10 +109,32 @@ public class PathFinder extends CommandBase {
     /**
      * Reset the robot to the starting position of the trajectory. 
      */
-    public static Command resetInitialPosition() {
+    public Command resetInitialPosition() {
         return new InstantCommand(() -> {
             drivetrain.resetOdometry(autoTrajectory.getInitialPose());
         });
+    }
+
+    public Pose2d getStartPosition() {
+        if (this.startPosition == null && this.waypointsPose.size() > 0) {
+            return this.waypointsPose.get(0); 
+        }
+        return this.startPosition; 
+    }
+
+    public List<Translation2d> getWaypointsTranslations() {
+        return this.waypointsTranslation;
+    }
+
+    public Pose2d getEndPosition() {
+        if (this.endPosition == null && this.waypointsPose.size() > 0) {
+            return this.waypointsPose.get(waypointsPose.size() - 1); 
+        }
+        return this.endPosition;
+    }
+
+    public List<Pose2d> getWaypointsPose() {
+        return this.waypointsPose;
     }
      
     /**
@@ -110,6 +144,17 @@ public class PathFinder extends CommandBase {
      */
     public RamseteCommand getAutoCommand() {
         return this.autoCommand;
+    }
+
+    public static RamseteCommand invertPathfinderCommand(PathFinder path) {
+        List<Translation2d> pathTranslations = path.getWaypointsTranslations();
+        Collections.reverse(pathTranslations); 
+
+        return new PathFinder(
+            path.drivetrain, 
+            path.getEndPosition(), 
+            pathTranslations, 
+            path.getStartPosition()).getAutoCommand();
     }
 
     @Override 

@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.auto.PathFinder;
+import frc.robot.commands.auto.routines.DriveDistance;
+import frc.robot.commands.auto.routines.TwoBallAuto;
 import frc.robot.commands.intake.AutoIntake;
 import frc.robot.commands.shooting.AutoShoot;
 import frc.robot.constants.AutoConstants;
@@ -98,7 +100,10 @@ public class Autonomous {
          * <li>Scores: 2 Balls</li> 
          * <li>Preload: 1 Ball</li>
          */
-        TWO_BALL_AUTO_PRELOAD("Two Ball Auto Preload"), 
+        TWO_BALL_AUTO_1("Two Ball Auto 1"), 
+        TWO_BALL_AUTO_2("Two Ball Auto 2"),
+        TWO_BALL_AUTO_3("Two Ball Auto 3"), 
+        TWO_BALL_AUTO_4("Two Ball Auto 4"),
         /**
          * Intake 2 balls and shoot them.
          * 
@@ -142,12 +147,12 @@ public class Autonomous {
      * @param mode the autonomous mode. 
      * @param drivetrain the robot driving subsystem. 
      * @param intake the intake system.
-     * @param intakeArm the intake arm.
+     * @param intakeArm the intake arm. 
      * @param shooter the shooter subsystem. 
      * @param shooterFeeder the essie subsystem. 
      * @return the autonomous routine, as a {@link edu.wpi.first.wpilibj2.command.SequentialCommandGroup}.
      */
-    public Command getAuto(AutoMode mode, Drivetrain drivetrain, IntakeSubsystem intake,
+    public Command getAuto(AutoMode mode, Drivetrain drivetrain, IntakeSubsystem intakeSubsystem,
         IntakeArm intakeArm, Shooter shooter, ShooterFeederSubsystem shooterFeeder) {
         // Measurements in Meters
         switch(mode) {
@@ -163,84 +168,24 @@ public class Autonomous {
                     // Drive Backwards (Exit Tarmac)
                     .andThen(new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d()), 
                         null, new Pose2d(-4, 0, new Rotation2d())).getAutoCommand())
-                    .andThen(PathFinder.resetInitialPosition())
                 );
             case INIT_FORWARD:
-                return new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)), 
-                    null, new Pose2d(2, 0, new Rotation2d(0))).getAutoCommand();
+                return new DriveDistance(drivetrain, 2).getAutoCommand();
             case INIT_REVERSE:
-                return new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d(0)),
-                null, new Pose2d(-2, 0, new Rotation2d(0))).getAutoCommand();
+                return new DriveDistance(drivetrain, -2).getAutoCommand(); 
             case INTAKE:
-                return new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false);
-            case TWO_BALL_AUTO_PRELOAD:
-                return new ParallelRaceGroup(
-                    // Intake for all of autonomous
-                    new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false),
-                    new SequentialCommandGroup(
-                        // Drive towards center of fender
-                        new PathFinder(
-                            drivetrain,
-                            new Pose2d(0, 0, new Rotation2d(0)), 
-                            null, 
-                            FieldConstants.FENDER_2)
-                        .getAutoCommand()
-                        // Shoot preloads
-                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS))
-                        // Drive to the bottom left blue ball
-                        .andThen(new PathFinder(
-                            drivetrain,
-                            List.of(FieldConstants.FENDER_2, 
-                                    FieldConstants.TARMAC_BOTTOM_LEFT_2_REFERENCE, 
-                                    FieldConstants.BOTTOM_CARGO_BLUE)
-                        ).getAutoCommand())
-                        // Drive to the center of the fender
-                        .andThen(new PathFinder(
-                            drivetrain, 
-                            List.of(FieldConstants.BOTTOM_CARGO_BLUE, 
-                                    FieldConstants.TARMAC_BOTTOM_LEFT_2_REFERENCE, 
-                                    FieldConstants.FENDER_2)
-                        ).getAutoCommand())
-                        // Shoot 
-                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS)))
-                );
-            case TWO_BALL_AUTO: 
-                return new ParallelRaceGroup(
-                    new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false), 
-                    new SequentialCommandGroup(
-                        // Drive to the bottom left ball
-                        new PathFinder(
-                            drivetrain, new Pose2d(0, 0, new Rotation2d(0)), 
-                            null, 
-                            FieldConstants.BOTTOM_CARGO_BLUE
-                        ).getAutoCommand()
-                        // Drive to the center of the fender 
-                        .andThen(new PathFinder(
-                            drivetrain, List.of(FieldConstants.BOTTOM_CARGO_BLUE, 
-                            FieldConstants.TARMAC_BOTTOM_LEFT_2_REFERENCE, 
-                            FieldConstants.FENDER_2)).getAutoCommand())
-                        // Shoot the ball
-                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS))
-                        // Drive to the middle ball
-                        .andThen(new PathFinder(
-                            drivetrain, List.of(
-                            FieldConstants.FENDER_2, 
-                            FieldConstants.TARMAC_BOTTOM_LEFT_1_REFERENCE, 
-                            FieldConstants.MIDDLE_CARGO_BLUE)).getAutoCommand())
-                        // Drive back to center of fender
-                        .andThen(new PathFinder(
-                            drivetrain, List.of(
-                                FieldConstants.MIDDLE_CARGO_BLUE, 
-                                FieldConstants.TARMAC_BOTTOM_LEFT_1_REFERENCE, 
-                                FieldConstants.FENDER_2
-                            )).getAutoCommand())
-                        // Shoot the ball
-                        .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS))
-                    )
-                );
+                return new AutoIntake(intakeSubsystem, AutoConstants.AUTO_INTAKE_SPEED);
+            case TWO_BALL_AUTO_1:
+                return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 1, true).getAutoCommand();
+            case TWO_BALL_AUTO_2: 
+                return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 2, true).getAutoCommand(); 
+            case TWO_BALL_AUTO_3:
+                return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 3, true).getAutoCommand();
+            case TWO_BALL_AUTO_4:
+                return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 4, true).getAutoCommand();
             case TERMINAL_AUTO: 
                 return new ParallelRaceGroup(
-                    new AutoIntake(intake, intakeArm, AutoConstants.AUTO_INTAKE_SPEED, false), 
+                    new AutoIntake(intakeSubsystem, AutoConstants.AUTO_INTAKE_SPEED), 
                     new SequentialCommandGroup(
                         // Drive to the center of fender
                         new PathFinder(drivetrain, 
@@ -254,13 +199,13 @@ public class Autonomous {
                             drivetrain, 
                             List.of(FieldConstants.FENDER_2, 
                             FieldConstants.TARMAC_BOTTOM_LEFT_1_REFERENCE, 
-                            FieldConstants.MIDDLE_CARGO_BLUE, 
-                            FieldConstants.TERMINAL_CARGO)))
+                            FieldConstants.MIDDLE_LEFT_CARGO_BLUE, 
+                            FieldConstants.TERMINAL_CARGO_BLUE)))
                         // Drive back to fender
                         .andThen(new PathFinder(
                             drivetrain, 
-                            List.of(FieldConstants.TERMINAL_CARGO, 
-                            FieldConstants.MIDDLE_CARGO_BLUE, 
+                            List.of(FieldConstants.TERMINAL_CARGO_BLUE, 
+                            FieldConstants.MIDDLE_LEFT_CARGO_BLUE, 
                             FieldConstants.TARMAC_BOTTOM_LEFT_1_REFERENCE, 
                             FieldConstants.FENDER_2)).getAutoCommand())
                         // Shoot both balls 

@@ -1,24 +1,34 @@
 package frc.robot.commands.shooting;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 
+/**
+ * Shoot a ball by rolling to the shooters. 
+ * The shooter velocity is set using PID control.
+ * @see {@link PrepareShooterPID}
+ */
 public class PIDShoot extends CommandBase {
     
     private final Shooter shooter; 
     private final ShooterFeederSubsystem shooterFeederSubsystem; 
 
     private double targetVelocity = 0; 
-    private boolean velocityReached = false; 
     private boolean lowerHub;
 
     private boolean rpmReached = false; 
     private boolean finished = false; 
 
+    /**
+     * Creates a new command for shooting with PID control.
+     * 
+     * @param shooter the shooter subsystem, with integrated PID controllers.
+     * @param shooterFeederSubsystem the shooter feeder subsystem (rollers).
+     * @param lowerHub whether to shoot low or high hub. 
+     */
     public PIDShoot(Shooter shooter, ShooterFeederSubsystem shooterFeederSubsystem, boolean lowerHub) {
         this.shooter = shooter; 
         this.shooterFeederSubsystem = shooterFeederSubsystem; 
@@ -45,47 +55,24 @@ public class PIDShoot extends CommandBase {
 
     @Override 
     public void execute() {
-        // Waiting for shooter to reach desired RPM for first time. 
-        /* if (!velocityReached) {
-            shooter.setVelocity(this.targetVelocity);
-        } */
+        this.shooter.setVelocity(this.targetVelocity);
 
-        /* if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) < Shooter.VELOCITY_TOLERANCE) {
-            velocityReached = true; 
-            shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);             
-        } else {
-            shooterFeederSubsystem.stopRoller(); 
-
-            // Ball was shot, command can finish.
-            if (velocityReached) {
-                finished = true;
-            }
-        } */ 
-
-        if (!rpmReached) {
-            this.shooter.setVelocity(this.targetVelocity);
-
-            if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) < Shooter.VELOCITY_TOLERANCE) {
-                rpmReached = true;
-                RobotContainer.shooterRumbleOperator.execute();
+        if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) < Shooter.VELOCITY_TOLERANCE) {
+            rpmReached = true;
+            RobotContainer.shooterRumbleOperator.execute();
                 
-                this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
-            } 
-        } /* else {
-            if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) < Shooter.VELOCITY_TOLERANCE) {
-                this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
-            } else {
+            this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
+        } else {
+            if (rpmReached) {
                 finished = true; 
             }
-
-        } */
+        }
     }
 
     @Override 
     public void end(boolean interrupted) {
         shooter.setVelocity(0);
         shooterFeederSubsystem.setRollSpeed(0); 
-        this.rpmReached = false;
     }
 
     @Override 
