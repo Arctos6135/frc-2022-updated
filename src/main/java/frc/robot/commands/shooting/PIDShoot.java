@@ -20,7 +20,6 @@ public class PIDShoot extends CommandBase {
     private boolean lowerHub;
 
     private boolean rpmReached = false; 
-    private boolean finished = false; 
 
     /**
      * Creates a new command for shooting with PID control.
@@ -40,10 +39,12 @@ public class PIDShoot extends CommandBase {
     @Override 
     public void initialize() {
         if (!shooter.getOverheatShutoffOverride() && shooter.getMonitorGroup().getOverheatShutoff()) {
-            finished = true; 
+            rpmReached = true; 
             RobotContainer.getLogger().logError("Shooter is overheating, cannot shoot."); 
         } 
 
+        this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
+        
         if (this.lowerHub) {
             shooter.setVelocity(Constants.LOW_HUB_RPM);
             targetVelocity = Constants.LOW_HUB_RPM;
@@ -55,28 +56,18 @@ public class PIDShoot extends CommandBase {
 
     @Override 
     public void execute() {
-        this.shooter.setVelocity(this.targetVelocity);
-
         if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) < Shooter.VELOCITY_TOLERANCE) {
-            rpmReached = true;
+            rpmReached = true; 
             RobotContainer.shooterRumbleOperator.execute();
-                
-            this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
-        } else {
-            if (rpmReached) {
-                finished = true; 
-            }
-        }
+        } 
     }
 
     @Override 
     public void end(boolean interrupted) {
-        shooter.setVelocity(0);
-        shooterFeederSubsystem.setRollSpeed(0); 
     }
 
     @Override 
     public boolean isFinished() {
-        return finished; 
+        return rpmReached; 
     }
 }

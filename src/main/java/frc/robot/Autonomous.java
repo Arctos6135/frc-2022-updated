@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.auto.PathFinder;
 import frc.robot.commands.auto.routines.DriveDistance;
+import frc.robot.commands.auto.routines.NonTrajectory;
 import frc.robot.commands.auto.routines.TwoBallAuto;
 import frc.robot.commands.intake.AutoIntake;
 import frc.robot.commands.shooting.AutoShoot;
@@ -42,6 +43,17 @@ public class Autonomous {
          * </ul>   
          */
         NONE("None"), 
+        /**
+         * Drive forwards, shoot, drive off tarmac. 
+         * 
+         * <ul> 
+         * <li>Starts: Anywhere</li> 
+         * <li>Ends: Off Tarmac</li> 
+         * <li>Scores: 1 Ball</li> 
+         * <li>Preload: 1 Ball</li>
+         * </ul>
+         */
+        NON_TRAJECTORY("No Trajectory"),
         /**
          * <ul> 
          * <li>Starts: Anywhere</li> 
@@ -158,6 +170,8 @@ public class Autonomous {
         switch(mode) {
             case NONE:
                 return null;
+            case NON_TRAJECTORY: 
+                return new NonTrajectory(drivetrain, shooter, shooterFeeder).getAutoCommand(); 
             case FORWARD_SHOOT_LOW_HUB:
                 return new SequentialCommandGroup(
                     // Drive Forwards

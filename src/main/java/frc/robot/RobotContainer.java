@@ -119,7 +119,7 @@ public class RobotContainer {
 		/* intakeSubsystem = new IntakeSubsystem(Constants.MECANUM_INTAKE_MOTOR);
 		intakeSubsystem.setDefaultCommand( 
 			new Intake(intakeSubsystem, driverController, Constants.INTAKE_FORWARD_BUTTON, Constants.INTAKE_REVERSE_BUTTON)
-		); */ 
+		); */
 
 		/* intakeArm = new IntakeArm(Constants.INTAKE_ARM_MOTOR);
 		intakeArm.setDefaultCommand(
@@ -218,7 +218,7 @@ public class RobotContainer {
 		configTab.add("Burn Spark Motors", burnFlashCommand).withWidget(BuiltInWidgets.kCommand).withSize(3, 4).withPosition(3, 4); 
 
 		// Drive Tabs
-		driveTab.add("Gyro", drivetrain.getAHRS()).withWidget(BuiltInWidgets.kGyro).withPosition(0, 2).withSize(6, 8);
+		driveTab.add("Gyro", drivetrain.getAHRS()).withWidget(BuiltInWidgets.kGyro).withPosition(0, 2).withSize(3, 4);
 
 		// Driving Related Entries
 		driveReversedEntry = driveTab.add("Reversed", TeleopDrive.isReversed()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 0)
@@ -234,7 +234,7 @@ public class RobotContainer {
 			shooterSubsystem.setVelocity(notif.value.getDouble());
 		}, EntryListenerFlags.kUpdate);
 
-		shooterTab.add("Shooter RPM (HIGH)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(3, 0)
+		shooterTab.add("Shooter RPM (Bottom Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(3, 0)
 		.withSize(3, 3).withProperties(Map.of("min", 0, "max", Shooter.maxRPM2)).getEntry()
 		.addListener(notif -> {
 			shooterSubsystem.setVelocity(notif.value.getDouble());
@@ -313,11 +313,11 @@ public class RobotContainer {
 		lastError = driveTab.add("Last Error", "").withPosition(0, 12).withSize(20, 4).getEntry();
 		lastWarning = driveTab.add("Last Warning", "").withPosition(4, 12).withSize(20, 4).getEntry();
 		
-		debugTab.add(drivetrain).withPosition(0, 0).withSize(19, 15); 
+		debugTab.add(drivetrain).withPosition(0, 0).withSize(10, 8); 
 	}
 
 	public void updateDashboard() {
-		shooterRPMEntry = shooterTab.add("Shooter RPM", shooterSubsystem.getActualVelocity()).withPosition(4, 3).withSize(3, 3).getEntry(); 
+		// shooterRPMEntry = shooterTab.add("Shooter RPM", shooterSubsystem.getActualVelocity()).withPosition(4, 3).withSize(3, 3).getEntry(); 
 	}
 
 	/**

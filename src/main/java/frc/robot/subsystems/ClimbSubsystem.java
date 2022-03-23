@@ -30,6 +30,9 @@ public class ClimbSubsystem extends SubsystemBase {
         this.climbMotorUpLeft = new TalonSRX(climbMotorUpLeft); 
         this.climbMotorUpRight = new TalonSRX(climbMotorUpRight); 
 
+        this.climbMotorUpLeft.setInverted(true);
+        this.climbMotorUpRight.setInverted(false); 
+
         this.climbMotorUpLeft.follow(this.climbMotorUpRight); 
 
         setNeutralModeClimb(NeutralMode.Brake);

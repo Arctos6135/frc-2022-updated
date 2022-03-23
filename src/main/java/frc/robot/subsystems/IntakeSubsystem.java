@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxRelativeEncoder;
@@ -14,7 +15,8 @@ import frc.robot.constants.Constants;
  * The default command for this subsystem is {@link frc.robot.commands.intake.Intake}. 
  */
 public class IntakeSubsystem extends SubsystemBase {
-    // Motors to Spin Mecanum Wheels 
+    // Motors to Spin Mecanum Wheels
+    // . private final TalonSRX bottomIntakeMotor; 
     private final CANSparkMax mecanumWheelMotor;
     private final RelativeEncoder mecanumWheelEncoder; 
  

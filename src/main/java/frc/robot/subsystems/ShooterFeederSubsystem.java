@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ShooterFeederSubsystem extends SubsystemBase {
     // Roller Motors 
     private final CANSparkMax topRollerMotor;
-    // private final TalonSRX bottomRollerMotor;  
-    private final CANSparkMax bottomRollerMotor; 
+    private final TalonSRX bottomRollerMotor;  
+    // private final CANSparkMax bottomRollerMotor; 
     
     private final ColorSensorV3 colorSensor; 
 
@@ -39,17 +39,13 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      */
     public ShooterFeederSubsystem(int topRollerMotor, int bottomRollerMotor) {
         this.topRollerMotor = new CANSparkMax(topRollerMotor, MotorType.kBrushless); 
-        // this.bottomRollerMotor = new TalonSRX(bottomRollerMotor); 
-        this.bottomRollerMotor = new CANSparkMax(bottomRollerMotor, MotorType.kBrushed); 
+        this.bottomRollerMotor = new TalonSRX(bottomRollerMotor); 
 
         this.topRollerMotor.setIdleMode(IdleMode.kBrake); 
-        // this.bottomRollerMotor.setNeutralMode(NeutralMode.Coast); 
-        this.bottomRollerMotor.setIdleMode(IdleMode.kBrake); 
+        this.bottomRollerMotor.setNeutralMode(NeutralMode.Brake);  
 
         this.topRollerMotor.setInverted(true); 
-        this.bottomRollerMotor.setInverted(true); 
-
-        this.topRollerMotor.setInverted(true); 
+        this.bottomRollerMotor.setInverted(false); 
 
         this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
@@ -77,8 +73,8 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      */
     public void stopRoller() {
         topRollerMotor.stopMotor();
-        // bottomRollerMotor.set(ControlMode.PercentOutput, 0);
-        bottomRollerMotor.stopMotor(); 
+        bottomRollerMotor.set(ControlMode.PercentOutput, 0);
+        // bottomRollerMotor.stopMotor(); 
     }
 
     /**
@@ -99,12 +95,13 @@ public class ShooterFeederSubsystem extends SubsystemBase {
         this.rollSpeed = rollSpeed; 
 
         topRollerMotor.set(this.rollSpeed); 
-        bottomRollerMotor.set(this.rollSpeed); 
-        // bottomRollerMotor.set(ControlMode.PercentOutput, this.rollSpeed);
+        // bottomRollerMotor.set(this.rollSpeed); 
+        bottomRollerMotor.set(ControlMode.PercentOutput, this.rollSpeed);
     }
 
     public void setIntakeSpeed(double rollSpeed) {
-        bottomRollerMotor.set(rollSpeed);
+        // bottomRollerMotor.set(rollSpeed);
+        bottomRollerMotor.set(ControlMode.PercentOutput, this.rollSpeed);
     }
 
     public void setTopMotorSpeed(double rollSpeed) {

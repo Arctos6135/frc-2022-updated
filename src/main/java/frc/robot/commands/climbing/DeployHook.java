@@ -51,7 +51,7 @@ public class DeployHook extends CommandBase {
 
     @Override 
     public void end(boolean interrupted) {
-
+        this.hookSubsystem.stopHookMotor();
     }
 
     @Override 

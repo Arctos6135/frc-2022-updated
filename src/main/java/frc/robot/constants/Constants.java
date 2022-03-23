@@ -18,20 +18,20 @@ public final class Constants {
 	public static final int AUXILLIARY_SHOOTER_MOTOR = 6;
 
 	// Intake Motors
-	public static final int MECANUM_INTAKE_MOTOR = 7;
-	public static final int INTAKE_ARM_MOTOR = 8;
+	public static final int MECANUM_INTAKE_MOTOR = 12;
+	public static final int INTAKE_ARM_MOTOR = 13;
 
 	// Shooter Feeder Motors
 	public static final int TOP_ROLLER_MOTOR = 7;
 	public static final int BOTTOM_ROLLER_MOTOR = 8; 
 
 	// Climb Motors 
-	public static final int HOOK_DEPLOYMENT_MOTOR = 11; 
-	public static final int LEFT_CLIMB_MOTOR = 12; 
-	public static final int RIGHT_CLIMB_MOTOR = 13; 
+	public static final int HOOK_DEPLOYMENT_MOTOR = 9; 
+	public static final int LEFT_CLIMB_MOTOR = 10; 
+	public static final int RIGHT_CLIMB_MOTOR = 11; 
 
 	// Indexer Constants
-	public static final double ROLL_SPEED = 0.5;
+	public static final double ROLL_SPEED = 0.75;
 	public static final double ROLL_SPEED_SENSING = 0.25;
 	public static final double OUTTAKE_TIME = 0.002;
   
@@ -122,7 +122,7 @@ public final class Constants {
 
 	// TODO: test values for shooter RPM
 	public static final double LOW_HUB_RPM = 3000.0; 
-	public static final double HIGH_HUB_RPM = 4000.0; 
+	public static final double HIGH_HUB_RPM = 4250.0; 
 
 	// Direct Shooter Velocity 
 	public static final double LOW_HUB_RPM_DIRECT = 0.5; 

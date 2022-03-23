@@ -68,27 +68,31 @@ public class SensoredRoll extends CommandBase {
         DriverStation.reportWarning(Double.toString(detectedColor.blue), true); 
         DriverStation.reportWarning(Double.toString(detectedColor.red), true);
         
+        if (matchedColor.color == Constants.OPPOSING_ALLIANCE) {
+            // Outtake the ball 
+            shooterFeederSubsystem.stopRoller(); 
+            this.outtake = true; 
+            this.initialOuttakeTime = Timer.getFPGATimestamp(); 
+            DriverStation.reportWarning(Double.toString(this.initialOuttakeTime), true);
+        }
         // Assumes that we are in allicance BLUE  
-        if (matchedColor.color == Constants.OUR_ALLIANCE) {
+        else if (matchedColor.color == Constants.OUR_ALLIANCE) {
             // Store the ball halfway up the belts
             shooterFeederSubsystem.setBallInShotPosition(true);
             this.ballAtColorSensor = true;
             shooterFeederSubsystem.stopRoller();
-        } else if (matchedColor.color == Constants.OPPOSING_ALLIANCE) {
-            // Outtake the ball 
-            shooterFeederSubsystem.stopRoller(); 
-            this.outtake = true; 
-            this.initialOuttakeTime = this.timer.get(); 
-            DriverStation.reportWarning(Double.toString(this.initialOuttakeTime), true);
-        } else if (this.outtake) {
-            DriverStation.reportWarning(Double.toString(this.timer.get()), true);
-            shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
-            Timer.delay(1.75);
-            this.outtakeFinished = true; 
-        }
-        else {
+        } else {
             shooterFeederSubsystem.setBallInShotPosition(false);
         } 
+        
+        if (this.outtake) {
+            DriverStation.reportWarning(Double.toString(this.timer.get()), true);
+            shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
+            
+            if (Math.abs(Timer.getFPGATimestamp() - this.initialOuttakeTime) >= 1.75) {
+                this.outtakeFinished = true; 
+            }
+        }
     }
 
     @Override 

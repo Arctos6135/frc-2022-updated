@@ -12,7 +12,6 @@ import frc.robot.subsystems.ClimbSubsystem;
  * Pulls the robot up using two motors on the climb subsystem to roll the winch.    
  * This is the default command for 
  * @see ClimbSubsystem.java 
- * .
  */
 public class Climb extends CommandBase {
     
@@ -70,17 +69,13 @@ public class Climb extends CommandBase {
     @Override 
     public void execute() {
         double climbSpeed = operatorController.getRawAxis(this.deployClimbAxis);
-        climbSpeed = TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE); 
+        climbSpeed = climbSpeed > 0 ? TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE) : 0; 
         climbSpeed = precisionClimb ? precisionFactor : normalPrecision; 
 
         // Nearing the end of the match, climb system is activated. 
         if (!overrideTime && DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME) {
             this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
         } 
-        // Bring climb system down. 
-        else if (!overrideTime && climbSpeed < 0) {
-            this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
-        }
         // Override climb time. 
         else if (overrideTime) {
             this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
