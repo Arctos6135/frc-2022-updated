@@ -95,6 +95,14 @@ public class Shooter extends SubsystemBase {
 		return (this.shooterEncoderMaster.getVelocity() + this.shooterEncoderFollower.getVelocity()) / 2;
 	}
 
+	public double getTopWheelVelocity() {
+		return this.shooterEncoderMaster.getVelocity();
+	}
+
+	public double getBottomWheelVelocity() {
+		return this.shooterEncoderFollower.getVelocity(); 
+	}
+
 	/**
 	 * Get the desired velocity of the shooter wheels. 
 	 *

@@ -44,7 +44,7 @@ public class NonTrajectory {
 
         // Drive towards fender. 
         driveForwards = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(1, 0, 0.5);
+            this.drivetrain.arcadeDrive(1.0, 0, 0.5);
             this.initialDriveForwardsTime = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveForwardsTime >= 2.5) {
@@ -52,7 +52,7 @@ public class NonTrajectory {
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0, 0); 
-        }, () -> this.driveForwardsFinished, drivetrain); 
+        }, () -> this.driveForwardsFinished, this.drivetrain); 
 
         // Set the RPM of the shooter for all of autonomous. 
         setShooterRPM = new FunctionalCommand(() -> {
@@ -62,7 +62,7 @@ public class NonTrajectory {
                 this.shootingFinished = true; 
             } 
         }, (interrupted) -> {
-            shooter.setVelocity(0);
+            
         }, () -> this.shootingFinished, this.shooter); 
 
         // Roll balls up to shooter. 
@@ -70,7 +70,7 @@ public class NonTrajectory {
             this.initialRollUpTime = Timer.getFPGATimestamp();
             this.shooterFeeder.setRollSpeed(Constants.ROLL_SPEED); 
         }, () -> {
-            if (Timer.getFPGATimestamp() - this.initialRollUpTime > 1.00) {
+            if (Timer.getFPGATimestamp() - this.initialRollUpTime >= 2.0) {
                 this.rollUpFinished = true; 
             }
         }, (interrupted) -> {
@@ -90,14 +90,12 @@ public class NonTrajectory {
         }, () -> this.driveBackwardsFinished, this.drivetrain); 
     }
     
-    public ParallelRaceGroup getAutoCommand() {
-        return new ParallelRaceGroup(
-            this.setShooterRPM, 
-            new SequentialCommandGroup(
+    public Command getAutoCommand() {
+        return new SequentialCommandGroup(
                 this.driveForwards, 
+                this.setShooterRPM,
                 this.rollBallUp, 
                 this.driveBackwards
-            )
         ); 
     }
     

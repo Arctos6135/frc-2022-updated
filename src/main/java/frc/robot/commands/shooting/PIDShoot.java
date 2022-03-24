@@ -1,5 +1,6 @@
 package frc.robot.commands.shooting;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -19,7 +20,7 @@ public class PIDShoot extends CommandBase {
     private double targetVelocity = 0; 
     private boolean lowerHub;
 
-    private boolean rpmReached = false; 
+    private boolean rpmReached = false;  
 
     /**
      * Creates a new command for shooting with PID control.
@@ -54,21 +55,29 @@ public class PIDShoot extends CommandBase {
 
     @Override 
     public void execute() { 
-        if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) < Shooter.VELOCITY_TOLERANCE) {
+        DriverStation.reportWarning(Double.toString(shooter.getActualVelocity()), true); 
+
+        if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) <= Shooter.VELOCITY_TOLERANCE) {
             this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
             RobotContainer.shooterRumbleOperator.execute();
             
             this.rpmReached = true; 
-        } 
+        } else if (rpmReached) {
+            // Shoot a second ball after a delay. 
+            this.shooter.setVelocity(this.targetVelocity);
+            this.shooterFeederSubsystem.setRollSpeed(0); 
+        }
     }
 
     @Override 
     public void end(boolean interrupted) {
-        this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
+        // Stop all motors for shooter and shooter roller subsystems.
+        this.shooterFeederSubsystem.setRollSpeed(0);
+        this.shooter.setVelocity(0);
     }
 
     @Override 
     public boolean isFinished() {
-        return rpmReached; 
+        return false; 
     }
 }

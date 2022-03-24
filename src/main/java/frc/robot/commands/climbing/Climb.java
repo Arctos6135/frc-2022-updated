@@ -19,7 +19,7 @@ public class Climb extends CommandBase {
     private final XboxController operatorController;
     private final int deployClimbAxis; 
 
-    public static boolean overrideTime; 
+    public static boolean overrideTime = false; 
     public static boolean precisionClimb = false; 
     public static double normalPrecision = 0.5; 
     public static double precisionFactor = 0.25; 
@@ -41,8 +41,8 @@ public class Climb extends CommandBase {
     /**
      * Toggle whether to override the time restriction on the climb command.
      */
-    public static void toggleOverride() {
-        overrideTime = !overrideTime; 
+    public static void toggleTimeOverride() {
+        Climb.overrideTime = !Climb.overrideTime; 
     }
 
     /**
@@ -69,8 +69,11 @@ public class Climb extends CommandBase {
     @Override 
     public void execute() {
         double climbSpeed = operatorController.getRawAxis(this.deployClimbAxis);
-        climbSpeed = climbSpeed > 0 ? TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE) : 0; 
-        climbSpeed = precisionClimb ? precisionFactor : normalPrecision; 
+        // Only climb upwards, do not climb downwards. 
+        // climbSpeed = climbSpeed > 0 ? TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE) : 0; 
+        // climbSpeed = precisionClimb ? climbSpeed * precisionFactor : climbSpeed * normalPrecision; 
+
+        climbSpeed = Math.abs(climbSpeed) > 0.5 ? 0.01 : 0;
 
         // Nearing the end of the match, climb system is activated. 
         if (!overrideTime && DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME) {

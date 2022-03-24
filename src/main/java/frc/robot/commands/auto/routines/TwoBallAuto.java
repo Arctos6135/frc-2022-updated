@@ -6,6 +6,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.auto.PathFinder;
@@ -27,6 +30,8 @@ public class TwoBallAuto {
 
     private Pose2d cargo; 
     private List<Translation2d> waypoints; 
+
+    private Command autoIntake; 
     
     private final Drivetrain drivetrain; 
     private final Shooter shooter; 
@@ -81,24 +86,31 @@ public class TwoBallAuto {
             this.waypoints, 
             this.cargo
         ); 
+
+        this.autoIntake = new FunctionalCommand(() -> {
+            this.intakeSubsystem.runIntake(AutoConstants.AUTO_INTAKE_SPEED, AutoConstants.AUTO_INTAKE_SPEED);
+        }, () -> {
+
+        }, (interrupted) -> {
+            this.intakeSubsystem.runIntake(0, 0);
+        }, () -> false, 
+        this.intakeSubsystem);
     }
 
-    public ParallelRaceGroup getAutoCommand() {
-        return new ParallelRaceGroup(
-            new AutoIntake(intakeSubsystem, AutoConstants.AUTO_INTAKE_SPEED), 
-            new PrepareShooterPID(shooter, shooterRPM), 
-            new SequentialCommandGroup(
-                // Shoot from in front of the fender. 
-                new AutoFeed(shooterFeeder), 
-                // Drive to retrieve cargo.
-                this.retrieveFirstBall.getAutoCommand(),
-                // Intake the ball and store it at the color sensor. 
-                new SensoredRoll(shooterFeeder),
-                // Drive back to fender.  
-                PathFinder.invertPathfinderCommand(this.retrieveFirstBall), 
-                // Shoot the ball.
-                new AutoFeed(shooterFeeder)
-            )
+    public ParallelDeadlineGroup getAutoCommand() {
+        Command deadlineCommand = new SequentialCommandGroup(
+            // Shoot from in front of the fender. 
+            new AutoFeed(shooterFeeder), 
+            // Drive to retrieve cargo.
+            this.retrieveFirstBall.getAutoCommand(),
+            // Intake the ball and store it at the color sensor. 
+            new SensoredRoll(shooterFeeder),
+            // Drive back to fender.  
+            PathFinder.invertPathfinderCommand(this.retrieveFirstBall), 
+            // Shoot the ball.
+            new AutoFeed(shooterFeeder)
         );
+
+        return new ParallelDeadlineGroup(deadlineCommand, this.autoIntake, new PrepareShooterPID(shooter, shooterRPM));
     }
 }

@@ -22,18 +22,15 @@ public class ClimbSubsystem extends SubsystemBase {
     /**
      * Creates new instance of the climbing subsystem. 
      *
-     * @param climbMotorHook the PDP pin of the hook deployment motor. 
-     * @param climbMotorUpLeft the PDP pin of the leftset climbing motor. 
-     * @param climbMotorUpRight the PDP pin of the right climbing motor. 
+     * @param climbMotorUpLeft the CAN ID of the left climbing motor. 
+     * @param climbMotorUpRight the CAN ID of the right climbing motor. 
      */
     public ClimbSubsystem(int climbMotorUpLeft, int climbMotorUpRight) {
         this.climbMotorUpLeft = new TalonSRX(climbMotorUpLeft); 
         this.climbMotorUpRight = new TalonSRX(climbMotorUpRight); 
 
-        this.climbMotorUpLeft.setInverted(true);
+        this.climbMotorUpLeft.setInverted(false);
         this.climbMotorUpRight.setInverted(false); 
-
-        this.climbMotorUpLeft.follow(this.climbMotorUpRight); 
 
         setNeutralModeClimb(NeutralMode.Brake);
     }
@@ -72,6 +69,7 @@ public class ClimbSubsystem extends SubsystemBase {
      */
     public void setClimbMotorSpeed(double climbSpeed) {
         this.climbMotorUpRight.set(ControlMode.PercentOutput, climbSpeed); 
+        this.climbMotorUpLeft.set(ControlMode.PercentOutput, climbSpeed);
     }
 
     /**

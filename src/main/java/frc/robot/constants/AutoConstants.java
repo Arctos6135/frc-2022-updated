@@ -5,7 +5,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 public class AutoConstants {
     public static final double ksVolts = 0;
     public static final double kvVoltSecondsPerMeter = 0;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.2;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.0;
 
     public static final double kPDriveVel = 0;
     public static final double kDDriveVel = 0; 
@@ -24,5 +24,5 @@ public class AutoConstants {
     public static final double kRamseteB = 2; 
     public static final double kRamseteZeta = 0.7;
 
-    public static final double AUTO_INTAKE_SPEED = 1.0; 
+    public static final double AUTO_INTAKE_SPEED = 0.75; 
 }
