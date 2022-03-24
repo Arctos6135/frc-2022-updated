@@ -56,7 +56,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain drivetrain;
-	// private final IntakeSubsystem intakeSubsystem;
+	private final IntakeSubsystem intakeSubsystem;
 	// private final IntakeArm intakeArm; 
 	private final ShooterFeederSubsystem shooterFeederSubsystem; 
 	private final Shooter shooterSubsystem;
@@ -101,9 +101,8 @@ public class RobotContainer {
 	public SimpleWidget shooterFeederStatus;
 	public SimpleWidget climbStatus;
 
-	// Autonomous Mode 
-	// private SendableChooser<Integer> preloadedBalls = new SendableChooser<>(); 
-	// private Autonomous autonomous;
+	// Autonomous Mode  
+	private Autonomous autonomous;
 
 	public static final RobotLogger logger = new RobotLogger(); 
 
@@ -114,19 +113,20 @@ public class RobotContainer {
 		drivetrain = new Drivetrain(Constants.RIGHT_CANSPARKMAX, Constants.LEFT_CANSPARKMAX,
 			Constants.RIGHT_CANSPARKMAX_FOLLOWER, Constants.LEFT_CANSPARKMAX_FOLLOWER);
 		drivetrain.setDefaultCommand(
-			new TeleopDrive(drivetrain, driverController, Constants.DRIVE_FWD_REV, Constants.DRIVE_LEFT_RIGHT));
+			new TeleopDrive(drivetrain, driverController, Constants.DRIVE_FWD_REV, Constants.DRIVE_LEFT_RIGHT)
+		);
 
-		/* intakeSubsystem = new IntakeSubsystem(Constants.MECANUM_INTAKE_MOTOR);
+		intakeSubsystem = new IntakeSubsystem(Constants.BOTTOM_ROLLER_MOTOR, Constants.MECANUM_INTAKE_MOTOR);
 		intakeSubsystem.setDefaultCommand( 
-			new Intake(intakeSubsystem, driverController, Constants.INTAKE_FORWARD_BUTTON, Constants.INTAKE_REVERSE_BUTTON)
-		); */
+			new Intake(intakeSubsystem, driverController, Constants.INTAKE_BUTTON, Constants.OUTTAKE_BUTTON)
+		);
 
 		/* intakeArm = new IntakeArm(Constants.INTAKE_ARM_MOTOR);
 		intakeArm.setDefaultCommand(
 			new RotateArm(intakeArm, operatorController, Constants.INTAKE_ARM_ROTATE)
 		); */
 
-		shooterFeederSubsystem = new ShooterFeederSubsystem(Constants.TOP_ROLLER_MOTOR, Constants.BOTTOM_ROLLER_MOTOR); 
+		shooterFeederSubsystem = new ShooterFeederSubsystem(Constants.TOP_ROLLER_MOTOR); 
 		shooterFeederSubsystem.setDefaultCommand(
 			new TeleopRoll(shooterFeederSubsystem, operatorController, Constants.TELEOP_ROLL_UP_TRIGGER, Constants.TELEOP_ROLL_DOWN_TRIGGER) 
 		); 
@@ -143,7 +143,7 @@ public class RobotContainer {
 			new DeployHook(hookSubsystem, driverController)
 		); */ 
 
-		// autonomous = new Autonomous(); 
+		autonomous = new Autonomous(); 
 
 		// Shuffle Board Tabs
 		configTab = Shuffleboard.getTab("Config");
@@ -305,10 +305,7 @@ public class RobotContainer {
 		});
 		
 		// Autonomous Mode 
-		/* prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(12, 5);
-		preloadedBalls.setDefaultOption("0", 0);
-		preloadedBalls.addOption("1", 1);
-		prematchTab.add("Preloaded Balls", preloadedBalls).withPosition(12, 0).withSize(5, 5); */ 
+		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5); 
 		
 		lastError = driveTab.add("Last Error", "").withPosition(0, 12).withSize(20, 4).getEntry();
 		lastWarning = driveTab.add("Last Warning", "").withPosition(4, 12).withSize(20, 4).getEntry();
@@ -452,8 +449,7 @@ public class RobotContainer {
 	 * @return the autonomous command for the match.
 	 */
 	public Command getAutonomousCommand() {
-		// return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, intakeSubsystem, intakeArm, shooterSubsystem, shooterFeederSubsystem); 
-		return null;
+		return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, intakeSubsystem, null, shooterSubsystem, shooterFeederSubsystem); 
 	}
 
 	private void initLogger() {

@@ -2,6 +2,7 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 /**
@@ -11,28 +12,28 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class Intake extends CommandBase {
     private final IntakeSubsystem intakeSubsystem;
     private final XboxController controller; 
-    private final int forwardButton;
-    private final int reverseButton;
+    private final int intakeButton;
+    private final int outtakeButton;
    
-    public Intake(IntakeSubsystem intakeSubsystem, XboxController controller, int forwardButton, int reverseButton) {
+    public Intake(IntakeSubsystem intakeSubsystem, XboxController controller, int intakeButton, int outtakeButton) {
         this.intakeSubsystem = intakeSubsystem;
         this.controller = controller;
-        this.forwardButton = forwardButton;
-        this.reverseButton = reverseButton;
+        this.intakeButton = intakeButton;
+        this.outtakeButton = outtakeButton;
         addRequirements(intakeSubsystem);
     }
 
     @Override
     public void execute() {
-        boolean forward = controller.getRawButton(forwardButton);
-        boolean reverse = controller.getRawButton(reverseButton);
+        boolean intake = controller.getRawButton(intakeButton);
+        boolean outtake = controller.getRawButton(outtakeButton);
 
-        if (forward & !reverse) {
-            intakeSubsystem.setMecanumWheelMotor(1.0);
-        } else if (!forward & reverse) {
-            intakeSubsystem.setMecanumWheelMotor(-1.0);
+        if (intake & !outtake) {
+            intakeSubsystem.runIntake(Constants.INTAKE_SPEED, Constants.INTAKE_SPEED); 
+        } else if (!intake & outtake) {
+            intakeSubsystem.runIntake(-Constants.INTAKE_SPEED, -Constants.INTAKE_SPEED);
         } else {
-            intakeSubsystem.setMecanumWheelMotor(0);
+            intakeSubsystem.runIntake(0, 0);
         }
     }
 
@@ -43,7 +44,8 @@ public class Intake extends CommandBase {
    
     @Override
     public void end(boolean interrupted) { 
-        intakeSubsystem.setMecanumWheelMotor(0);
+        // intakeSubsystem.setMecanumWheelMotor(0);
+        intakeSubsystem.runIntake(0, 0);
     }
    
     @Override

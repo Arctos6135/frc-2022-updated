@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.auto.PathFinder;
 import frc.robot.commands.auto.routines.DriveDistance;
 import frc.robot.commands.auto.routines.NonTrajectory;
+import frc.robot.commands.auto.routines.TerminalAuto;
 import frc.robot.commands.auto.routines.TwoBallAuto;
 import frc.robot.commands.intake.AutoIntake;
 import frc.robot.commands.shooting.AutoShoot;
@@ -135,7 +136,11 @@ public class Autonomous {
          * <li>Scores: x Balls</li> 
          * <li>Preload: 1 Balls</li>
          */
-        TERMINAL_AUTO("Terminal Auto"); 
+        TERMINAL_AUTO("Terminal Auto"), 
+        TERMINAL_AUTO_1("Terminal Auto 1"), 
+        TERMINAL_AUTO_2("Terminal Auto 2"), 
+        TERMINAL_AUTO_3("Terminal Auto 3"), 
+        TERMINAL_AUTO_4("Terminal Auto 4"); 
 
         String autoName; 
 
@@ -226,6 +231,14 @@ public class Autonomous {
                         .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.MAX_BALLS))
                     )
                 );
+            case TERMINAL_AUTO_1: 
+                return new TerminalAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 1, true).getAutoCommand();
+            case TERMINAL_AUTO_2:
+                return new TerminalAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 2, true).getAutoCommand(); 
+            case TERMINAL_AUTO_3:
+                return new TerminalAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 3, true).getAutoCommand(); 
+            case TERMINAL_AUTO_4: 
+                return new TerminalAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 4, true).getAutoCommand();  
             default:
                 return null;
         }

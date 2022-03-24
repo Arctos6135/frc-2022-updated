@@ -42,8 +42,6 @@ public class PIDShoot extends CommandBase {
             rpmReached = true; 
             RobotContainer.getLogger().logError("Shooter is overheating, cannot shoot."); 
         } 
-
-        this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
         
         if (this.lowerHub) {
             shooter.setVelocity(Constants.LOW_HUB_RPM);
@@ -55,15 +53,18 @@ public class PIDShoot extends CommandBase {
     }
 
     @Override 
-    public void execute() {
+    public void execute() { 
         if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) < Shooter.VELOCITY_TOLERANCE) {
-            rpmReached = true; 
+            this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
             RobotContainer.shooterRumbleOperator.execute();
+            
+            this.rpmReached = true; 
         } 
     }
 
     @Override 
     public void end(boolean interrupted) {
+        this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
     }
 
     @Override 

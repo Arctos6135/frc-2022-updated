@@ -1,5 +1,6 @@
 package frc.robot.commands.intake;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.IntakeArm;
@@ -7,14 +8,15 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 /**
  * Performs ball intake without any driver controller input. 
+ * Intake will go for 3 seconds. 
  */
 public class AutoIntake extends CommandBase {
     
     private final IntakeSubsystem intakeSubsystem; 
     private final double speed; 
 
-    public double lastIntakeRPM = 0; 
-    public double lastTime = 0; 
+    public double initialIntakeTime = 0; 
+    public static double autoIntakeTime = 3.0;
 
     // Whether the intake subsystem dipped in acceleration. 
     public boolean ballIntake = false; 
@@ -37,33 +39,20 @@ public class AutoIntake extends CommandBase {
 
     @Override 
     public void initialize() {
-        intakeSubsystem.setMecanumWheelMotor(speed);
+        intakeSubsystem.runIntake(this.speed, this.speed); 
+        this.initialIntakeTime = Timer.getFPGATimestamp();
     }
 
     @Override 
     public void execute() {
-        /* double currentIntakeRPM = intakeSubsystem.getMecanumWheelVelocity();
-        double currentTime = Timer.getFPGATimestamp();
-
-        // Change in velocity divided by change in time.
-        double acceleration = (currentIntakeRPM - lastIntakeRPM) / (currentTime - lastTime); 
-
-        // Ball is rubbing against the mecanum wheels. 
-        if (acceleration < 0) {
-            ballIntake = true; 
-        } 
-        // Mecanum wheels are returning to regular speed. 
-        else if (ballIntake && acceleration > 0) {
-            finished = true; 
+        if (Timer.getFPGATimestamp() - this.initialIntakeTime >= AutoIntake.autoIntakeTime) {
+            this.finished = true; 
         }
-
-        lastIntakeRPM = currentIntakeRPM; 
-        lastTime = currentTime; */ 
     }
 
     @Override 
     public void end(boolean interrupted) {
-        intakeSubsystem.setMecanumWheelMotor(0);
+        intakeSubsystem.runIntake(0, 0);
     }
 
     @Override 

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -15,10 +17,9 @@ import frc.robot.constants.Constants;
  * The default command for this subsystem is {@link frc.robot.commands.intake.Intake}. 
  */
 public class IntakeSubsystem extends SubsystemBase {
-    // Motors to Spin Mecanum Wheels
-    // . private final TalonSRX bottomIntakeMotor; 
-    private final CANSparkMax mecanumWheelMotor;
-    private final RelativeEncoder mecanumWheelEncoder; 
+    private final TalonSRX bottomIntakeMotor; 
+    // private final CANSparkMax mecanumWheelMotor;
+    // private final RelativeEncoder mecanumWheelEncoder; 
  
     private IdleMode idleMode;
 
@@ -31,14 +32,16 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param leftIntake the CAN ID of the left intake motor controller.
      * @param rightIntake the CAN ID of the right intake motor controller.
      */
-    public IntakeSubsystem(int mecanumWheelMotor) {
-        this.mecanumWheelMotor = new CANSparkMax(mecanumWheelMotor, MotorType.kBrushless);
-        this.mecanumWheelEncoder = this.mecanumWheelMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION); 
+    public IntakeSubsystem(int bottomIntakeMotor, int mecanumWheelMotor) {
+        this.bottomIntakeMotor = new TalonSRX(bottomIntakeMotor); 
+        // this.mecanumWheelMotor = new CANSparkMax(mecanumWheelMotor, MotorType.kBrushless);
+        // this.mecanumWheelEncoder = this.mecanumWheelMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION); 
        
-        // Invert the left motor to spin in the same direction.
-        this.mecanumWheelMotor.setInverted(true);
+        this.bottomIntakeMotor.setNeutralMode(NeutralMode.Brake);
+        // this.mecanumWheelMotor.setIdleMode(IdleMode.kCoast);
 
-        this.mecanumWheelMotor.stopMotor();
+        this.bottomIntakeMotor.setInverted(false);
+        // this.mecanumWheelMotor.setInverted(true);
     }
 
     /**
@@ -47,7 +50,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param scale the speed of the motors.
      */
     public void setMecanumWheelMotor(double scale) {
-        mecanumWheelMotor.set(scale); 
+        // mecanumWheelMotor.set(scale); 
     }
 
     /**
@@ -55,18 +58,18 @@ public class IntakeSubsystem extends SubsystemBase {
      * 
      * @return the RPM of the intake mecanum wheels.
      */
-    public double getMecanumWheelVelocity() {
-        return this.mecanumWheelEncoder.getVelocity();
-    }
+    // public double getMecanumWheelVelocity() {
+    //    return this.mecanumWheelEncoder.getVelocity();
+    // }
 
     /**
      * Get the relative encoder of the intake subsystem. 
      * 
      * @return the intake encoder. 
      */
-    public RelativeEncoder getMecanumWheelEncoder() {
-        return this.mecanumWheelEncoder;
-    }
+    // public RelativeEncoder getMecanumWheelEncoder() {
+    //    return this.mecanumWheelEncoder;
+    // }
 
     /**
      * Get the Idle Mode of the Intake motors (brake/coast).
@@ -84,6 +87,15 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public void setMecanumWheelMotorMode(IdleMode idleMode) {
         this.idleMode = idleMode;
-        this.mecanumWheelMotor.setIdleMode(this.idleMode); 
+    //    this.mecanumWheelMotor.setIdleMode(this.idleMode); 
+    }
+
+    public void setIntakeMotor(double speed) {
+        this.bottomIntakeMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public void runIntake(double intakeSpeed, double mecanumSpeed) {
+        setIntakeMotor(intakeSpeed);
+        // setMecanumWheelMotor(mecanumSpeed);
     }
 }

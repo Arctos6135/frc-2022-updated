@@ -31,7 +31,8 @@ public final class Constants {
 	public static final int RIGHT_CLIMB_MOTOR = 11; 
 
 	// Indexer Constants
-	public static final double ROLL_SPEED = 0.75;
+	public static final double INTAKE_SPEED = 0.75; 
+	public static final double ROLL_SPEED = 0.3;
 	public static final double ROLL_SPEED_SENSING = 0.25;
 	public static final double OUTTAKE_TIME = 0.002;
   
@@ -73,8 +74,8 @@ public final class Constants {
 	public static final int DEPLOY_CLIMB_HOOK = XboxController.Axis.kRightTrigger.value; 
 	public static final int RETRACT_CLIMB_HOOK = XboxController.Button.kY.value; 
 	public static final int PRECISION_DRIVE_HOLD = XboxController.Axis.kLeftTrigger.value;
-	public static final int INTAKE_FORWARD_BUTTON = XboxController.Button.kLeftBumper.value;
-	public static final int INTAKE_REVERSE_BUTTON = XboxController.Button.kRightBumper.value;
+	public static final int INTAKE_BUTTON = XboxController.Button.kRightBumper.value;
+	public static final int OUTTAKE_BUTTON = XboxController.Button.kLeftBumper.value;
 	
 	// Operator Controller 
 	public static final int XBOX_OPERATOR = 1;
