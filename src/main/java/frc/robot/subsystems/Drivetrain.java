@@ -19,7 +19,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.MonitoredCANSparkMaxGroup;
@@ -206,6 +205,15 @@ public class Drivetrain extends SubsystemBase {
     return leftEncoder.getVelocity();
   }
 
+  /**
+   * Get the average distance of the two encoders. 
+   * 
+   * @return the average of the two encoder readings.
+   */
+  public double getAverageEncoderDistance() {
+    return (getRightDistance() + getLeftDistance()) / 2.0; 
+  }
+
   public double[] getAccelerations() {
     double dt = Timer.getFPGATimestamp() - lastTime;
     double rightRate = getRightVelocity();
@@ -269,7 +277,14 @@ public class Drivetrain extends SubsystemBase {
     ahrs.reset();
   }
 
-  // Autonomous Mode
+  /**
+   * Get the turn rate of the robot. 
+   * 
+   * @return the turn rate of the robot, in degrees/second. 
+   */
+  public double getTurnRate() {
+    return -this.ahrs.getRate(); 
+  }
 
   /**
    * Set the motor controllers using direct voltage.
@@ -298,8 +313,7 @@ public class Drivetrain extends SubsystemBase {
    * @return the pose as a Pose2d object.
    */
   public Pose2d getPose() {
-    // return m_differentialOdometry.getPoseMeters();
-    return null;
+    return m_differentialOdometry.getPoseMeters();
   }
 
   /**
@@ -318,7 +332,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    //m_differentialOdometry.resetPosition(pose, ahrs.getRotation2d());
+    m_differentialOdometry.resetPosition(pose, ahrs.getRotation2d());
   }
 
   /**
@@ -399,11 +413,21 @@ public class Drivetrain extends SubsystemBase {
     rightFollowerMotor = new CANSparkMax(rightFollower, MotorType.kBrushless);
     leftFollowerMotor = new CANSparkMax(leftFollower, MotorType.kBrushless);
 
+    rightFollowerMotor.follow(rightMotor);
+    leftFollowerMotor.follow(leftMotor);
+
+    rightMotor.stopMotor();
+    leftMotor.stopMotor();
+
+    // Invert master motors to drive in the correct direction.
+    rightMotor.setInverted(false);
+    leftMotor.setInverted(true);
+
     // Speed Group Initialization
     m_rightMotors = new MotorControllerGroup(rightMotor, rightFollowerMotor);
     m_leftMotors = new MotorControllerGroup(leftMotor, leftFollowerMotor);
 
-    // Differential Drive and Odometry TODO: when AHRS attached uncomment
+    // Differential Drive and Odometry 
     m_differentialDrive = new DifferentialDrive(m_leftMotors, m_rightMotors);
     m_differentialOdometry = new DifferentialDriveOdometry(ahrs.getRotation2d());
 
@@ -416,16 +440,6 @@ public class Drivetrain extends SubsystemBase {
     motorMonitorGroup = new MonitoredCANSparkMaxGroup("Drivetrain", Constants.MOTOR_WARNING_TEMP,
         Constants.MOTOR_SHUTOFF_TEMP,
         rightMotor, leftMotor, rightFollowerMotor, leftFollowerMotor);
-
-    rightFollowerMotor.follow(rightMotor);
-    leftFollowerMotor.follow(leftMotor);
-
-    rightMotor.stopMotor();
-    leftMotor.stopMotor();
-
-    // Invert master motors to drive in the correct direction.
-    rightMotor.setInverted(false);
-    leftMotor.setInverted(true);
 
     rightEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR_METERS);
     leftEncoder.setPositionConversionFactor(Constants.POSITION_CONVERSION_FACTOR_METERS);
@@ -443,8 +457,8 @@ public class Drivetrain extends SubsystemBase {
 
     m_differentialOdometry.update(
         ahrs.getRotation2d(),
-        Units.inchesToMeters(leftEncoder.getPosition()),
-        Units.inchesToMeters(rightEncoder.getPosition()));
+        leftEncoder.getPosition(),
+        rightEncoder.getPosition());
   }
 
   @Override

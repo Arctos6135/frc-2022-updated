@@ -48,8 +48,8 @@ public class SensoredRoll extends CommandBase {
 
         colorMatch.addColorMatch(Color.kBlue); 
         colorMatch.addColorMatch(Color.kRed); 
-        colorMatch.addColorMatch(Color.kOrange); // TODO: put something in front of color sensor
-        // colorMatch.addColorMatch(Color.kWhite);
+        colorMatch.addColorMatch(Color.kOrange); 
+        colorMatch.addColorMatch(Color.kWhite);
     }
 
     @Override 

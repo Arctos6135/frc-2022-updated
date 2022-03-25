@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import frc.robot.commands.climbing.Climb;
 import frc.robot.commands.climbing.DeployHook;
 import frc.robot.commands.driving.TeleopDrive;
+import frc.robot.commands.indexer.SensoredIntakeRoll;
 import frc.robot.commands.indexer.SensoredRoll;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
@@ -246,7 +247,7 @@ public class RobotContainer {
 		climbTab.add("Override Climb Time", climbOverrideCommand).withWidget(BuiltInWidgets.kCommand).withPosition(0, 0).withSize(4, 4);
 
 		climbTab.add("Precision Climb", Climb.isPrecisionClimb()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(4, 0).withSize(2, 2).getEntry(); 
-		climbTab.add("Override Climb Time", Climb.overrideTime).withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0).withSize(2, 2).getEntry(); 
+		climbTab.add("Override Climb Time Boolean", Climb.overrideTime).withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0).withSize(2, 2).getEntry(); 
 		
 		// Color Detection of Balls 
 		colorTab.add("Red Color", shooterFeederSubsystem.getColorSensor().getRed());
@@ -299,7 +300,7 @@ public class RobotContainer {
 		// Autonomous Mode 
 		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5); 
 		
-		lastError = driveTab.add("Last Error", "").withPosition(0, 0).withSize(10, 4).getEntry();
+		lastError = driveTab.add("Last Error", "").withPosition(10, 15).withSize(10, 4).getEntry();
 		lastWarning = driveTab.add("Last Warning", "").withPosition(0, 4).withSize(10, 4).getEntry();
 		
 		debugTab.add(drivetrain).withPosition(0, 0).withSize(10, 8); 
@@ -332,7 +333,6 @@ public class RobotContainer {
 		AnalogTrigger deployShooterUpperButton = new AnalogTrigger(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON, 0.5);
 		Button stopShooterButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_BUTTON); 
 
-		// TESTING BUTTONS
 		Button shootLowHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_LOW_RPM_BUTTON);
 		Button shootHighHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_HIGH_RPM_BUTTON); 
 
@@ -417,10 +417,10 @@ public class RobotContainer {
 		);
 
 		sensoredRollButton.whenPressed(
-			new SensoredRoll(shooterFeederSubsystem)
+			new SensoredIntakeRoll(shooterFeederSubsystem, intakeSubsystem)
+		 	// new SensoredRoll(shooterFeederSubsystem)
 		);
 
-		// TODO: try .whenHeld
 		stopShooterFeederButton.whenPressed(new InstantCommand(() -> {
 			shooterFeederSubsystem.stopRoller();
 		}, shooterFeederSubsystem));

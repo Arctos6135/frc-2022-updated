@@ -57,7 +57,7 @@ public class PIDShoot extends CommandBase {
     public void execute() { 
         DriverStation.reportWarning(Double.toString(shooter.getActualVelocity()), true); 
 
-        if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) <= Shooter.VELOCITY_TOLERANCE) {
+        if (Math.abs(shooter.getTopWheelVelocity() - this.targetVelocity) <= Shooter.VELOCITY_TOLERANCE) {
             this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
             RobotContainer.shooterRumbleOperator.execute();
             

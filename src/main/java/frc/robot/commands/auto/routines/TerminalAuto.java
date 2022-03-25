@@ -119,6 +119,11 @@ public class TerminalAuto {
         );
     } 
 
+    /**
+     * Get the terminal autonomous routine. 
+     * 
+     * @return the autonomous routine, as a {@link edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup}. 
+     */
     public Command getAutoCommand() {
         return new ParallelDeadlineGroup(this.terminalAuto, this.autoIntake,
             new PrepareShooterPID(shooter, shooterRPM)

@@ -25,13 +25,17 @@ import frc.robot.subsystems.Drivetrain;
  */
 public class PathFinder extends CommandBase {
     private DifferentialDriveVoltageConstraint voltageConstraint = 
-    new DifferentialDriveVoltageConstraint(
-        new SimpleMotorFeedforward(AutoConstants.ksVolts, AutoConstants.kvVoltSecondsPerMeter,
-            AutoConstants.kaVoltSecondsSquaredPerMeter),
+        new DifferentialDriveVoltageConstraint(
+            new SimpleMotorFeedforward(
+                AutoConstants.ksVolts, 
+                AutoConstants.kvVoltSecondsPerMeter,
+                AutoConstants.kaVoltSecondsSquaredPerMeter),
             AutoConstants.kDriveKinematics, AutoConstants.maxVoltage);
             
-    private TrajectoryConfig config = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(AutoConstants.kDriveKinematics)
+    private TrajectoryConfig config = new TrajectoryConfig(
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        .setKinematics(AutoConstants.kDriveKinematics)
         .addConstraint(voltageConstraint);
             
     private static Trajectory autoTrajectory; 
@@ -60,7 +64,8 @@ public class PathFinder extends CommandBase {
         this.endPosition = endPosition;
 
         PathFinder.autoTrajectory = TrajectoryGenerator.generateTrajectory(
-                startPosition, waypoints, endPosition, this.config);
+                startPosition, waypoints, endPosition, this.config
+        );
         
         this.autoCommand = new RamseteCommand(autoTrajectory, drivetrain::getPose,
             new RamseteController(

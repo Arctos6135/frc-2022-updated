@@ -38,6 +38,17 @@ public class TwoBallAuto {
     // Driving Trajectories 
     private PathFinder retrieveFirstBall; 
 
+    /**
+     * Initializes a two ball autonomous routine based on the starting position of the robot and the cargo that is 
+     * near the robot and tarmacs. 
+     * 
+     * @param drivetrain the driving subsystem.
+     * @param shooter the shooting subsystem. 
+     * @param shooterFeeder the shooter feeder subsystem. 
+     * @param intakeSubsystem the intake subsystem. 
+     * @param tarmac the starting position of the robot. 
+     * @param lowHub whether to shoot low or high hub.
+     */
     public TwoBallAuto(Drivetrain drivetrain, Shooter shooter, ShooterFeederSubsystem shooterFeeder, IntakeSubsystem intakeSubsystem,
         int tarmac, boolean lowHub) {
 
@@ -92,7 +103,12 @@ public class TwoBallAuto {
         this.intakeSubsystem);
     }
 
-    public ParallelDeadlineGroup getAutoCommand() {
+    /**
+     * Get the two ball autonomous routine of the robot. 
+     * 
+     * @return the autonomous routine, as a {@link edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup}. 
+     */
+    public Command getAutoCommand() {
         Command deadlineCommand = new SequentialCommandGroup(
             // Shoot from in front of the fender. 
             new AutoFeed(shooterFeeder), 
