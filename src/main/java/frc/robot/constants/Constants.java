@@ -104,7 +104,7 @@ public final class Constants {
 			ROBOT_BASE_WIDTH);
 
 	// Drive
-	public static final double COLLISION_THRESHOLD = .5; // TODO: tune the collision threshold
+	public static final double COLLISION_THRESHOLD = .5;
 
 	public static final int COLOR_MOTOR_OK = 0x00FF00FF;
 	public static final int COLOR_MOTOR_WARNING = 0xFFFF00FF;
@@ -122,8 +122,7 @@ public final class Constants {
 	public static final Color OUR_ALLIANCE = Color.kBlue; 
 	public static final Color OPPOSING_ALLIANCE = Color.kRed; 
 
-	// TODO: test values for shooter RPM
-	public static final double LOW_HUB_RPM = 3000.0; 
+	public static final double LOW_HUB_RPM = 2500.0; 
 	public static final double HIGH_HUB_RPM = 4250.0; 
 
 	// Direct Shooter Velocity 

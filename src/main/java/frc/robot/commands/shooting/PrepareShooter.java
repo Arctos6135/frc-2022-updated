@@ -41,7 +41,7 @@ public class PrepareShooter extends CommandBase {
         }
  
         this.shooter.setVelocityDirectly(this.rpm);
-        // TODO: check if this stops the roller
+
         if (this.rpm == 0) {
             this.shooterFeederSubsystem.stopRoller(); 
         }
