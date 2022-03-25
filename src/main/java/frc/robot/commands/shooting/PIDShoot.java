@@ -57,15 +57,15 @@ public class PIDShoot extends CommandBase {
     public void execute() { 
         DriverStation.reportWarning(Double.toString(shooter.getActualVelocity()), true); 
 
-        if (Math.abs(shooter.getTopWheelVelocity() - this.targetVelocity) <= Shooter.VELOCITY_TOLERANCE) {
-            this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
-            RobotContainer.shooterRumbleOperator.execute();
-            
-            this.rpmReached = true; 
-        } else if (rpmReached) {
-            // Shoot a second ball after a delay. 
+        if (!rpmReached) {
             this.shooter.setVelocity(this.targetVelocity);
-            this.shooterFeederSubsystem.setRollSpeed(0); 
+
+            if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) <= Shooter.VELOCITY_TOLERANCE) {
+                rpmReached = true;
+                RobotContainer.shooterRumbleOperator.execute();
+                
+                this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
+            } 
         }
     }
 

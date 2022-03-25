@@ -97,8 +97,6 @@ public class RobotContainer {
 	// Drivetrain Status
 	public SimpleWidget drivetrainMotorStatus;
 	public SimpleWidget shooterMotorStatus;
-	public SimpleWidget shooterFeederStatus;
-	public SimpleWidget climbStatus;
 
 	// Autonomous Mode  
 	private Autonomous autonomous;
@@ -232,6 +230,15 @@ public class RobotContainer {
 
 		shooterBottomRPMEntry = shooterTab.add("Shooter RPM (Bottom Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(3, 0)
 		.withSize(3, 3).withProperties(Map.of("min", 0, "max", Shooter.maxRPM2)).getEntry();
+
+		drivetrainMotorStatus = driveTab.add("Drivetrain", true).withWidget(BuiltInWidgets.kBooleanBox)
+                // Set the size and custom colours
+                .withPosition(8, 0).withSize(4, 4).withProperties(Map.of("color when true", Constants.COLOR_MOTOR_OK,
+                        "color when false", Constants.COLOR_MOTOR_WARNING));
+
+        shooterMotorStatus = driveTab.add("Shooter", true).withWidget(BuiltInWidgets.kBooleanBox).withPosition(12, 0)
+                .withSize(4, 4).withProperties(Map.of("color when true", Constants.COLOR_MOTOR_OK, "color when false",
+                        Constants.COLOR_MOTOR_WARNING));
 
 		shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(0, 3)
 		.withSize(4, 3).withProperties(Map.of("min", 0, "max", 1.0)).getEntry()
