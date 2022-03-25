@@ -1,8 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -22,8 +19,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ShooterFeederSubsystem extends SubsystemBase {
     // Roller Motors 
     private final CANSparkMax topRollerMotor;
-    // private final TalonSRX bottomRollerMotor;  
-    // private final CANSparkMax bottomRollerMotor; 
     
     private final ColorSensorV3 colorSensor; 
 
@@ -39,13 +34,9 @@ public class ShooterFeederSubsystem extends SubsystemBase {
      */
     public ShooterFeederSubsystem(int topRollerMotor) {
         this.topRollerMotor = new CANSparkMax(topRollerMotor, MotorType.kBrushless); 
-        // this.bottomRollerMotor = new TalonSRX(bottomRollerMotor); 
 
         this.topRollerMotor.setIdleMode(IdleMode.kBrake); 
-        // this.bottomRollerMotor.setNeutralMode(NeutralMode.Brake);  
-
         this.topRollerMotor.setInverted(true); 
-        // this.bottomRollerMotor.setInverted(false); 
 
         this.colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }

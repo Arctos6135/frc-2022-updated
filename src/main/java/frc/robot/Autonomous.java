@@ -1,23 +1,13 @@
 package frc.robot;
 
-import java.util.List;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.auto.PathFinder;
 import frc.robot.commands.auto.routines.DriveDistance;
 import frc.robot.commands.auto.routines.NonTrajectory;
 import frc.robot.commands.auto.routines.TerminalAuto;
 import frc.robot.commands.auto.routines.TwoBallAuto;
 import frc.robot.commands.intake.AutoIntake;
-import frc.robot.commands.shooting.AutoShoot;
 import frc.robot.constants.AutoConstants;
-import frc.robot.constants.Constants;
-import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -85,16 +75,6 @@ public class Autonomous {
          */
         INIT_REVERSE("Drive Backwards (Off Tarmac)"), 
         /**
-         * Drive to the hub and shoot the ball in the lower hub. 
-         * 
-         * <ul> 
-         * <li>Starts: Anywhere</li> 
-         * <li>Ends: Forwards</li> 
-         * <li>Scores: 2 Match Points (One Ball, Lower Hub)</li> 
-         * <li>Preload: 1 or 2 Balls</li>
-         */
-        FORWARD_SHOOT_LOW_HUB("Drive Forwards & Shoot"), 
-        /**
          * Intake a ball from the ground. 
          * 
          * <ul> 
@@ -108,14 +88,41 @@ public class Autonomous {
          * Intake 2 balls and shoot them.
          * 
          * <ul> 
-         * <li>Starts: Anywhere</li> 
+         * <li>Starts: Top Blue Tarmac</li> 
          * <li>Ends: Near Hub</li> 
          * <li>Scores: 2 Balls</li> 
          * <li>Preload: 1 Ball</li>
          */
         TWO_BALL_AUTO_1("Two Ball Auto 1"), 
+        /**
+         * Intake 2 balls and shoot them.
+         * 
+         * <ul> 
+         * <li>Starts: Bottom Blue Tarmac</li> 
+         * <li>Ends: Near Hub</li> 
+         * <li>Scores: 2 Balls</li> 
+         * <li>Preload: 1 Ball</li>
+         */
         TWO_BALL_AUTO_2("Two Ball Auto 2"),
+        /**
+         * Intake 2 balls and shoot them.
+         * 
+         * <ul> 
+         * <li>Starts: Bottom Red Tarmac</li> 
+         * <li>Ends: Near Hub</li> 
+         * <li>Scores: 2 Balls</li> 
+         * <li>Preload: 1 Ball</li>
+         */
         TWO_BALL_AUTO_3("Two Ball Auto 3"), 
+        /**
+         * Intake 2 balls and shoot them.
+         * 
+         * <ul> 
+         * <li>Starts: Top Red Tarmac</li> 
+         * <li>Ends: Near Hub</li> 
+         * <li>Scores: 2 Balls</li> 
+         * <li>Preload: 1 Ball</li>
+         */
         TWO_BALL_AUTO_4("Two Ball Auto 4"),
         /**
          * Intake 2 balls and shoot them.
@@ -131,15 +138,42 @@ public class Autonomous {
          * Intake balls from the terminal.
          * 
          * <ul> 
-         * <li>Starts: Anywhere</li> 
+         * <li>Starts: Top Blue Tarmac</li> 
          * <li>Ends: N/A </li> 
          * <li>Scores: x Balls</li> 
          * <li>Preload: 1 Balls</li>
          */
-        TERMINAL_AUTO("Terminal Auto"), 
+        // TERMINAL_AUTO("Terminal Auto"), 
         TERMINAL_AUTO_1("Terminal Auto 1"), 
+        /**
+         * Intake balls from the terminal.
+         * 
+         * <ul> 
+         * <li>Starts: Bottom Blue Tarmac</li> 
+         * <li>Ends: N/A </li> 
+         * <li>Scores: x Balls</li> 
+         * <li>Preload: 1 Balls</li>
+         */
         TERMINAL_AUTO_2("Terminal Auto 2"), 
+        /**
+         * Intake balls from the terminal.
+         * 
+         * <ul> 
+         * <li>Starts: Bottom Red Tarmac</li> 
+         * <li>Ends: N/A </li> 
+         * <li>Scores: x Balls</li> 
+         * <li>Preload: 1 Balls</li>
+         */
         TERMINAL_AUTO_3("Terminal Auto 3"), 
+        /**
+         * Intake balls from the terminal.
+         * 
+         * <ul> 
+         * <li>Starts: Top Red Tarmac</li> 
+         * <li>Ends: N/A </li> 
+         * <li>Scores: x Balls</li> 
+         * <li>Preload: 1 Balls</li>
+         */
         TERMINAL_AUTO_4("Terminal Auto 4"); 
 
         String autoName; 
@@ -177,17 +211,6 @@ public class Autonomous {
                 return null;
             case NON_TRAJECTORY: 
                 return new NonTrajectory(drivetrain, shooter, shooterFeeder).getAutoCommand(); 
-            case FORWARD_SHOOT_LOW_HUB:
-                return new SequentialCommandGroup(
-                    // Drive Forwards
-                    new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d()),
-                        null, new Pose2d(2, 0, new Rotation2d())).getAutoCommand()
-                    // Shoot 
-                    .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.PRELOADED_BALLS))
-                    // Drive Backwards (Exit Tarmac)
-                    .andThen(new PathFinder(drivetrain, new Pose2d(0, 0, new Rotation2d()), 
-                        null, new Pose2d(-4, 0, new Rotation2d())).getAutoCommand())
-                );
             case INIT_FORWARD:
                 return new DriveDistance(drivetrain, 2).getAutoCommand();
             case INIT_REVERSE:
@@ -202,7 +225,7 @@ public class Autonomous {
                 return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 3, true).getAutoCommand();
             case TWO_BALL_AUTO_4:
                 return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 4, true).getAutoCommand();
-            case TERMINAL_AUTO: 
+/*             case TERMINAL_AUTO: 
                 return new ParallelRaceGroup(
                     new AutoIntake(intakeSubsystem, AutoConstants.AUTO_INTAKE_SPEED), 
                     new SequentialCommandGroup(
@@ -230,7 +253,7 @@ public class Autonomous {
                         // Shoot both balls 
                         .andThen(new AutoShoot(shooter, shooterFeeder, true, Constants.MAX_BALLS))
                     )
-                );
+                ); */
             case TERMINAL_AUTO_1: 
                 return new TerminalAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem, 1, true).getAutoCommand();
             case TERMINAL_AUTO_2:

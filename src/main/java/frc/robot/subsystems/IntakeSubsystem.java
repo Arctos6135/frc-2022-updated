@@ -94,6 +94,12 @@ public class IntakeSubsystem extends SubsystemBase {
         this.bottomIntakeMotor.set(ControlMode.PercentOutput, speed);
     }
 
+    /**
+     * Run intake of the rollers and mecanum wheels.
+     * 
+     * @param intakeSpeed speed of the bottom intake motor.
+     * @param mecanumSpeed speed of the mecanum wheel motors. 
+     */
     public void runIntake(double intakeSpeed, double mecanumSpeed) {
         setIntakeMotor(intakeSpeed);
         // setMecanumWheelMotor(mecanumSpeed);

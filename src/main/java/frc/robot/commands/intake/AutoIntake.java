@@ -2,8 +2,6 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.constants.Constants;
-import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.IntakeSubsystem;
 
 /**
@@ -13,7 +11,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class AutoIntake extends CommandBase {
     
     private final IntakeSubsystem intakeSubsystem; 
-    private final double speed; 
+    private final double intakeSpeed; 
 
     public double initialIntakeTime = 0; 
     public static double autoIntakeTime = 3.0;
@@ -32,14 +30,14 @@ public class AutoIntake extends CommandBase {
      */ 
     public AutoIntake(IntakeSubsystem intakeSubsystem, double speed) {
         this.intakeSubsystem = intakeSubsystem;
-        this.speed = speed; 
+        this.intakeSpeed = speed; 
 
         addRequirements(intakeSubsystem);
     }
 
     @Override 
     public void initialize() {
-        intakeSubsystem.runIntake(this.speed, this.speed); 
+        intakeSubsystem.runIntake(this.intakeSpeed, this.intakeSpeed); 
         this.initialIntakeTime = Timer.getFPGATimestamp();
     }
 

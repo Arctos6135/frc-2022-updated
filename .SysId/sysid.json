@@ -1,5 +1,6 @@
 {
   "SysId": {
-    "Analysis Type": "Drivetrain"
+    "Analysis Type": "Drivetrain",
+    "mode": "Client"
   }
 }

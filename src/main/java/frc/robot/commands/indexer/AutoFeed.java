@@ -54,7 +54,7 @@ public class AutoFeed extends CommandBase {
     public void execute() {
         double time = Timer.getFPGATimestamp(); 
 
-        if (Math.abs(time - initialTime) >= AutoFeed.autoFeedTime) {
+        if (time - this.initialTime >= AutoFeed.autoFeedTime) {
             finished = true; 
         }
     }

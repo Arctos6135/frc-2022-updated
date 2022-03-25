@@ -28,7 +28,6 @@ import frc.robot.commands.intake.RotateArm;
 import frc.robot.commands.shooting.PIDShoot;
 import frc.robot.commands.shooting.PrepareShooter;
 import frc.robot.commands.shooting.PrepareShooterPID;
-import frc.robot.commands.shooting.Shoot;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.Drivetrain;
@@ -41,7 +40,6 @@ import frc.robot.subsystems.ShooterFeederSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -301,12 +299,16 @@ public class RobotContainer {
 		// Autonomous Mode 
 		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5); 
 		
-		lastError = driveTab.add("Last Error", "").withPosition(0, 12).withSize(20, 4).getEntry();
-		lastWarning = driveTab.add("Last Warning", "").withPosition(4, 12).withSize(20, 4).getEntry();
+		lastError = driveTab.add("Last Error", "").withPosition(0, 0).withSize(10, 4).getEntry();
+		lastWarning = driveTab.add("Last Warning", "").withPosition(0, 4).withSize(10, 4).getEntry();
 		
 		debugTab.add(drivetrain).withPosition(0, 0).withSize(10, 8); 
 	}
 
+	/**
+	 * Update the shooter RPM entries on Shuffleboard. 
+	 * @see {@link frc.robot.commands.shooting.PIDShoot}
+	 */
 	public void updateDashboard() {
 		shooterRPMEntry.setNumber(shooterSubsystem.getTopWheelVelocity());
 		shooterBottomRPMEntry.setNumber(shooterSubsystem.getBottomWheelVelocity()); 
@@ -343,7 +345,7 @@ public class RobotContainer {
 		Button overrideClimbTimeButton = new JoystickButton(driverController, Constants.OVERRIDE_CLIMB_TIME_BUTTON); 
 		
 		// Intake Related 
-		Button reverseIntakeArmButton = new JoystickButton(operatorController, Constants.INTAKE_ARM_REVERSE_BUTTON); 
+		// Button reverseIntakeArmButton = new JoystickButton(operatorController, Constants.INTAKE_ARM_REVERSE_BUTTON); 
 
 		// Driver Button Bindings
 		reverseDriveButton.whenPressed(() -> {

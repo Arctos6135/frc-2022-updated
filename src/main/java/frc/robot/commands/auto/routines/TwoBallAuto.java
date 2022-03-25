@@ -4,18 +4,13 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.auto.PathFinder;
 import frc.robot.commands.indexer.AutoFeed;
 import frc.robot.commands.indexer.SensoredRoll;
-import frc.robot.commands.intake.AutoIntake;
-import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooting.PrepareShooterPID;
 import frc.robot.constants.AutoConstants;
 import frc.robot.constants.Constants;
@@ -31,7 +26,7 @@ public class TwoBallAuto {
     private Pose2d cargo; 
     private List<Translation2d> waypoints; 
 
-    private Command autoIntake; 
+    public static Command autoIntake; 
     
     private final Drivetrain drivetrain; 
     private final Shooter shooter; 
@@ -86,8 +81,8 @@ public class TwoBallAuto {
             this.waypoints, 
             this.cargo
         ); 
-
-        this.autoIntake = new FunctionalCommand(() -> {
+        
+        autoIntake = new FunctionalCommand(() -> {
             this.intakeSubsystem.runIntake(AutoConstants.AUTO_INTAKE_SPEED, AutoConstants.AUTO_INTAKE_SPEED);
         }, () -> {
 
@@ -111,6 +106,6 @@ public class TwoBallAuto {
             new AutoFeed(shooterFeeder)
         );
 
-        return new ParallelDeadlineGroup(deadlineCommand, this.autoIntake, new PrepareShooterPID(shooter, shooterRPM));
+        return new ParallelDeadlineGroup(deadlineCommand, TwoBallAuto.autoIntake, new PrepareShooterPID(shooter, shooterRPM));
     }
 }
