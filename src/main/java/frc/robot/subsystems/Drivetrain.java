@@ -431,8 +431,7 @@ public class Drivetrain extends SubsystemBase {
     m_differentialDrive = new DifferentialDrive(m_leftMotors, m_rightMotors);
     m_differentialOdometry = new DifferentialDriveOdometry(ahrs.getRotation2d());
 
-    // Encoder Instantiation
-    // TODO: check to see if kQuadrature should be replaced with kHallSensor  
+    // Encoder Instantiation 
     rightEncoder = rightMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
     leftEncoder = leftMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
 
