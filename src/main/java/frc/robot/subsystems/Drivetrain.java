@@ -420,8 +420,8 @@ public class Drivetrain extends SubsystemBase {
     leftMotor.stopMotor();
 
     // Invert master motors to drive in the correct direction.
-    rightMotor.setInverted(false);
-    leftMotor.setInverted(true);
+    rightMotor.setInverted(true);
+    leftMotor.setInverted(false);
 
     // Speed Group Initialization
     m_rightMotors = new MotorControllerGroup(rightMotor, rightFollowerMotor);

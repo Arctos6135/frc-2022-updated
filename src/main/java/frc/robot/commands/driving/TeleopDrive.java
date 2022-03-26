@@ -155,7 +155,7 @@ public class TeleopDrive extends CommandBase {
     @Override 
     public void execute() {
         // Pushing a joystick forward is a negative Y value (if the drive is not reversed). 
-        double y = -applyDeadband(reverseDrive ? controller.getRawAxis(Y_AXIS) : -controller.getRawAxis(Y_AXIS),
+        double y = applyDeadband(reverseDrive ? controller.getRawAxis(Y_AXIS) : -controller.getRawAxis(Y_AXIS),
                 Constants.CONTROLLER_DEADZONE);
 
         // Increase control by squaring input values. Negative values will, however, stay negative. 
