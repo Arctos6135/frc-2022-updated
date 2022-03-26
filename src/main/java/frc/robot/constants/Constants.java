@@ -119,8 +119,8 @@ public final class Constants {
 
 	// Colors 
 	// TODO: change if necessary
-	public static final Color OUR_ALLIANCE = Color.kBlue; 
-	public static final Color OPPOSING_ALLIANCE = Color.kRed; 
+	public static final Color OUR_ALLIANCE = Color.kRed; 
+	public static final Color OPPOSING_ALLIANCE = Color.kBlue; 
 
 	public static final double LOW_HUB_RPM = 2500.0; 
 	public static final double HIGH_HUB_RPM = 4750.0; 

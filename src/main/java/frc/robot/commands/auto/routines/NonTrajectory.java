@@ -3,9 +3,7 @@ package frc.robot.commands.auto.routines;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.constants.AutoConstants;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
@@ -36,8 +34,6 @@ public class NonTrajectory {
     public Command rollBallUp; 
     public Command driveBackwards;
 
-    // 0.75 + 1 + 2.0 = 3.75
-
     /**
      * Create a new autonomous routine, without the use of trajectory.
      * 
@@ -54,10 +50,10 @@ public class NonTrajectory {
 
         // Drive towards fender (from close). 
         driveForwards = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(0.75, 0, 1);
+            this.drivetrain.arcadeDrive(0.5, 0, 1);
             this.initialDriveForwardsTime = Timer.getFPGATimestamp(); 
         }, () -> {
-            if (Timer.getFPGATimestamp() - this.initialDriveForwardsTime >= 0.75) {
+            if (Timer.getFPGATimestamp() - this.initialDriveForwardsTime >= 0.5) {
                 this.driveForwardsFinished = true; 
             }
         }, (interrupted) -> {
@@ -78,7 +74,7 @@ public class NonTrajectory {
         // Roll balls up to shooter. 
         rollBallUp = new FunctionalCommand(() -> {
             this.initialRollUpTime = Timer.getFPGATimestamp();
-            this.shooterFeeder.setRollSpeed(AutoConstants.AUTO_ROLL_SPEED); 
+            this.shooterFeeder.setRollSpeed(Constants.ROLL_SPEED); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialRollUpTime >= 2.0) {
                 this.rollUpFinished = true; 
@@ -90,9 +86,9 @@ public class NonTrajectory {
         // Drive backwards off tarmac. 
         driveBackwards = new FunctionalCommand(() -> {
             this.initialDriveBackwardsTime = Timer.getFPGATimestamp(); 
-            this.drivetrain.arcadeDrive(-0.75, 0, 1); 
+            this.drivetrain.arcadeDrive(-0.5, 0, 1); 
         }, () -> {
-            if (Timer.getFPGATimestamp() >= 7.50) {
+            if (Timer.getFPGATimestamp() - this.initialDriveBackwardsTime >= 3.00) {
                 this.driveBackwardsFinished = true; 
             }
         }, (interrupted) -> {
@@ -101,14 +97,11 @@ public class NonTrajectory {
     }
     
     public Command getAutoCommand() {
-        return new ParallelDeadlineGroup(
-            this.driveBackwards, 
-            new SequentialCommandGroup(
+        return new SequentialCommandGroup(
                 this.driveForwards, 
                 this.setShooterRPM,
-                this.rollBallUp
-            )
+                this.rollBallUp, 
+                this.driveBackwards
         ); 
     }
-    
 }
