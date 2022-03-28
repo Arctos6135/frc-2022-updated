@@ -423,10 +423,10 @@ public class RobotContainer {
 			new PrepareShooterPID(shooterSubsystem, Constants.HIGH_HUB_RPM)
 		);
 
-		sensoredRollButton.whenPressed(
+		/* sensoredRollButton.whenPressed(
 			new SensoredIntakeRoll(shooterFeederSubsystem, intakeSubsystem)
 		 	// new SensoredRoll(shooterFeederSubsystem)
-		);
+		); */
 
 		stopShooterFeederButton.whenPressed(new InstantCommand(() -> {
 			shooterFeederSubsystem.stopRoller();

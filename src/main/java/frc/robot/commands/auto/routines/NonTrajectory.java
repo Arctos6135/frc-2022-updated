@@ -50,14 +50,16 @@ public class NonTrajectory {
 
         // Drive towards fender (from close). 
         driveForwards = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(0.5, 0, 1);
+            this.drivetrain.arcadeDrive(0.75, 0, 1);
             this.initialDriveForwardsTime = Timer.getFPGATimestamp(); 
         }, () -> {
-            if (Timer.getFPGATimestamp() - this.initialDriveForwardsTime >= 0.5) {
+            if (Timer.getFPGATimestamp() - this.initialDriveForwardsTime >= 1.5) {
                 this.driveForwardsFinished = true; 
+            } else {
+                this.drivetrain.setMotors(0.75, 0.75);
             }
         }, (interrupted) -> {
-            this.drivetrain.arcadeDrive(0, 0, 0); 
+            this.drivetrain.arcadeDrive(0, 0, 1); 
         }, () -> this.driveForwardsFinished, this.drivetrain); 
 
         // Set the RPM of the shooter for all of autonomous. 
@@ -74,13 +76,15 @@ public class NonTrajectory {
         // Roll balls up to shooter. 
         rollBallUp = new FunctionalCommand(() -> {
             this.initialRollUpTime = Timer.getFPGATimestamp();
-            this.shooterFeeder.setRollSpeed(Constants.ROLL_SPEED); 
+            this.shooterFeeder.setRollSpeed(Constants.ROLL_SPEED + 0.25); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialRollUpTime >= 2.0) {
                 this.rollUpFinished = true; 
             }
         }, (interrupted) -> {
             this.shooterFeeder.setRollSpeed(0); 
+            this.drivetrain.arcadeDrive(0.5, 0, -1);
+            this.shooter.setVelocity(0);
         }, () -> this.rollUpFinished, this.shooterFeeder);
         
         // Drive backwards off tarmac. 
@@ -88,11 +92,13 @@ public class NonTrajectory {
             this.initialDriveBackwardsTime = Timer.getFPGATimestamp(); 
             this.drivetrain.arcadeDrive(-0.5, 0, 1); 
         }, () -> {
-            if (Timer.getFPGATimestamp() - this.initialDriveBackwardsTime >= 3.00) {
+            if (Timer.getFPGATimestamp() - this.initialDriveBackwardsTime >= 2.75) {
                 this.driveBackwardsFinished = true; 
+            } else {
+                this.drivetrain.setMotors(-0.35, -0.35);
             }
         }, (interrupted) -> {
-            this.drivetrain.arcadeDrive(0, 0, 0); 
+            this.drivetrain.arcadeDrive(0, 0, 1); 
         }, () -> this.driveBackwardsFinished, this.drivetrain); 
     }
     
