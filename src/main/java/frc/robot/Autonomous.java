@@ -249,6 +249,6 @@ public class Autonomous {
             chooser.addOption(mode.autoName, mode); 
         }
 
-        chooser.setDefaultOption(AutoMode.NONE.autoName, AutoMode.NONE); 
+        chooser.setDefaultOption(AutoMode.NON_TRAJECTORY.autoName, AutoMode.NON_TRAJECTORY); 
     }
 }
