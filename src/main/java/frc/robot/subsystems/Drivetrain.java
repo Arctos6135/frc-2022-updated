@@ -168,6 +168,24 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
+   * Get the drivetrain left encoder. 
+   * 
+   * @return the left encoder.
+   */
+  public RelativeEncoder getLeftEncoder() {
+    return this.leftEncoder; 
+  }
+
+  /**
+   * Get the drivetrain right encoder. 
+   * 
+   * @return the right encoder.
+   */
+  public RelativeEncoder getRightEncoder() {
+    return this.rightEncoder;
+  }
+
+  /**
    * Get the distance that the right encoder has travelled.
    * Position conversion factors are already considered.
    * 
@@ -389,6 +407,15 @@ public class Drivetrain extends SubsystemBase {
    */
   public MonitoredCANSparkMaxGroup getMonitorGroup() {
     return this.motorMonitorGroup;
+  }
+
+  /**
+   * Get the differential drive of the drivetrain. 
+   * 
+   * @return the differential drive. 
+   */
+  public DifferentialDriveOdometry getDifferentialDriveOdometry() {
+    return this.m_differentialOdometry;
   }
 
   /**
