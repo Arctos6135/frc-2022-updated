@@ -168,6 +168,24 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
+   * Get the drivetrain left encoder. 
+   * 
+   * @return the left encoder.
+   */
+  public RelativeEncoder getLeftEncoder() {
+    return this.leftEncoder; 
+  }
+
+  /**
+   * Get the drivetrain right encoder. 
+   * 
+   * @return the right encoder.
+   */
+  public RelativeEncoder getRightEncoder() {
+    return this.rightEncoder;
+  }
+
+  /**
    * Get the distance that the right encoder has travelled.
    * Position conversion factors are already considered.
    * 
@@ -392,6 +410,15 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
+   * Get the differential drive of the drivetrain. 
+   * 
+   * @return the differential drive. 
+   */
+  public DifferentialDriveOdometry getDifferentialDriveOdometry() {
+    return this.m_differentialOdometry;
+  }
+
+  /**
    * Creates a new drivetrain.
    * 
    * @param rightMaster   the corresponding PDP port for the right motor
@@ -420,8 +447,8 @@ public class Drivetrain extends SubsystemBase {
     leftMotor.stopMotor();
 
     // Invert master motors to drive in the correct direction.
-    rightMotor.setInverted(false);
-    leftMotor.setInverted(true);
+    rightMotor.setInverted(true);
+    leftMotor.setInverted(false);
 
     // Speed Group Initialization
     m_rightMotors = new MotorControllerGroup(rightMotor, rightFollowerMotor);

@@ -155,16 +155,22 @@ public class TeleopDrive extends CommandBase {
     @Override 
     public void execute() {
         // Pushing a joystick forward is a negative Y value (if the drive is not reversed). 
-        double y = -applyDeadband(reverseDrive ? controller.getRawAxis(Y_AXIS) : -controller.getRawAxis(Y_AXIS),
+        double y = applyDeadband(reverseDrive ? controller.getRawAxis(Y_AXIS) : -controller.getRawAxis(Y_AXIS),
                 Constants.CONTROLLER_DEADZONE);
 
         // Increase control by squaring input values. Negative values will, however, stay negative. 
         y = Math.copySign(y * y, y) * Constants.FWD_REV_DAMPENING;
 
-        double x = -applyDeadband(controller.getRawAxis(X_AXIS), Constants.CONTROLLER_DEADZONE);
+        double x = applyDeadband(controller.getRawAxis(X_AXIS), Constants.CONTROLLER_DEADZONE);
         x = Math.copySign(x * x, x) * Constants.LEFT_RIGHT_DAMPENING;
 
         drivetrain.arcadeDrive(y, x, precisionDrive ? precisionFactor : 1.0);
+
+        drivetrain.getDifferentialDriveOdometry().update(
+            drivetrain.getAHRS().getRotation2d(), 
+            drivetrain.getLeftEncoder().getPosition(), 
+            drivetrain.getRightEncoder().getPosition()
+        );
     }
 
     @Override 
