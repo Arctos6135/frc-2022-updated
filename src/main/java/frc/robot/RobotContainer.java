@@ -58,8 +58,8 @@ public class RobotContainer {
 	// private final IntakeArm intakeArm; 
 	private final ShooterFeederSubsystem shooterFeederSubsystem; 
 	private final Shooter shooterSubsystem;
-	private final ClimbSubsystem climbSubsystem; 
-	private final HookSubsystem hookSubsystem; 
+	/* private final ClimbSubsystem climbSubsystem; 
+	private final HookSubsystem hookSubsystem; */
 
 	// Controllers
 	private static final XboxController driverController = new XboxController(Constants.XBOX_DRIVER);
@@ -130,7 +130,7 @@ public class RobotContainer {
 
 		shooterSubsystem = new Shooter(Constants.MAIN_SHOOTER_MOTOR, Constants.AUXILLIARY_SHOOTER_MOTOR);
 
-		climbSubsystem = new ClimbSubsystem(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
+		/* climbSubsystem = new ClimbSubsystem(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
 		climbSubsystem.setDefaultCommand(
 			new Climb(climbSubsystem, operatorController, Constants.CLIMB_RUNG_AXIS)
 		);
@@ -138,7 +138,7 @@ public class RobotContainer {
 		hookSubsystem = new HookSubsystem(Constants.HOOK_DEPLOYMENT_MOTOR); 
 		hookSubsystem.setDefaultCommand(
 			new DeployHook(hookSubsystem, driverController)
-		);  
+		); */
 
 		autonomous = new Autonomous(); 
 
