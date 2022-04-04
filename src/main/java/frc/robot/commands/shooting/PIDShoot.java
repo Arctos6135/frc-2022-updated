@@ -55,18 +55,23 @@ public class PIDShoot extends CommandBase {
 
     @Override 
     public void execute() { 
-        DriverStation.reportWarning(Double.toString(shooter.getActualVelocity()), true); 
+        DriverStation.reportWarning(Double.toString(shooter.getActualVelocity()), true);
+        
+        // double distance = shooter.getLimelight().estimateDistance(
+        //    Constants.LIMELIGHT_HEIGHT, Constants.TARGET_HEIGHT, Constants.LIMELIGHT_ANGLE); 
 
-        if (!rpmReached) {
-            this.shooter.setVelocity(this.targetVelocity);
+        // if (Math.abs(distance - Constants.TARGET_DISTANCE) < Constants.TARGET_DISTANCE_TOLERANCE) {
+            if (!rpmReached) {
+                this.shooter.setVelocity(this.targetVelocity);
 
-            if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) <= Shooter.VELOCITY_TOLERANCE) {
-                rpmReached = true;
-                RobotContainer.shooterRumbleOperator.execute();
-                
-                this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
-            } 
-        }
+                if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) <= Shooter.VELOCITY_TOLERANCE) {
+                    rpmReached = true;
+                    RobotContainer.shooterRumbleOperator.execute();
+                    
+                    this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
+                } 
+            }
+        // }
     }
 
     @Override 

@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.util.Limelight;
 import frc.robot.util.MonitoredCANSparkMaxGroup;
 
 /**
@@ -24,8 +25,12 @@ public class Shooter extends SubsystemBase {
 	private final SparkMaxPIDController pidControllerMaster;
 	private final SparkMaxPIDController pidControllerFollower; 
 
+	// Vision System 
+	// private Limelight limelight; 
+
 	public static final double BASE_SPEED = 0;
 	public static final double VELOCITY_TOLERANCE = 100; 
+	public static final double AUTO_VELOCITY_TOLERANCE = 200; 
 	public double shooterDist;
 	private double velocity = 0;
 
@@ -75,7 +80,28 @@ public class Shooter extends SubsystemBase {
 		pidControllerFollower.setIZone(kIz2); 
 		pidControllerFollower.setOutputRange(-1.0, 1.0);
 		pidControllerFollower.setReference(0.0, CANSparkMax.ControlType.kVelocity);
+
+		// this.limelight = new Limelight(); 
 	}
+
+	// Vision System 
+	/**
+	 * Return the shooter limelight. 
+	 * 
+	 * @return the limelight. 
+	 */
+	//public Limelight getLimelight() {
+	//	return this.limelight; 
+	//}
+
+	/**
+	 * Return whether the shooter detects the vision tape on the hub.
+	 * 
+	 * @return whether the shooter has a target. 
+	 */
+	//public boolean hasTarget() {
+	//	return limelight.hasValidTargets(); 
+	//}
 
 	/**
 	 * Get the encoder used to measure velocity (in rpm). 

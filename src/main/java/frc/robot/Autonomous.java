@@ -6,6 +6,7 @@ import frc.robot.commands.auto.routines.DriveDistance;
 import frc.robot.commands.auto.routines.NonTrajectory;
 import frc.robot.commands.auto.routines.TerminalAuto;
 import frc.robot.commands.auto.routines.TwoBallAuto;
+import frc.robot.commands.auto.routines.TwoBallNonTrajectory;
 import frc.robot.commands.intake.AutoIntake;
 import frc.robot.constants.AutoConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -45,6 +46,17 @@ public class Autonomous {
          * </ul>
          */
         NON_TRAJECTORY("No Trajectory"),
+        /**
+         * Shoot high hub and drive off the tarmac. 
+         * 
+         * <ul> 
+         * <li>Starts: Edge of Tarmac</li> 
+         * <li>Ends: Off Tarmac</li> 
+         * <li>Scores: 10 Points</li> 
+         * <li>Preload: 1 Ball</li>
+         * </ul>
+         */
+        TWO_BALL_AUTO_NON_TRAJECTORY("Two Ball Auto (No Trajectory)"), 
         /**
          * <ul> 
          * <li>Starts: Anywhere</li> 
@@ -211,6 +223,8 @@ public class Autonomous {
                 return null;
             case NON_TRAJECTORY: 
                 return new NonTrajectory(drivetrain, shooter, shooterFeeder).getAutoCommand(); 
+            case TWO_BALL_AUTO_NON_TRAJECTORY: 
+                return new TwoBallNonTrajectory(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand(); 
             case INIT_FORWARD:
                 return new DriveDistance(drivetrain, 2).getAutoCommand();
             case INIT_REVERSE:

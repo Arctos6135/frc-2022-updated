@@ -24,6 +24,7 @@ public class AutoConstants {
     public static final double kRamseteB = 2; 
     public static final double kRamseteZeta = 0.7;
 
-    public static final double AUTO_INTAKE_SPEED = 0.75; 
+    public static final double AUTO_INTAKE_SPEED = 0.90; 
     public static final double AUTO_ROLL_SPEED = 0.6;
+
 }

@@ -3,6 +3,7 @@ package frc.robot.commands.shooting;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
 
 /**
@@ -43,20 +44,26 @@ public class PrepareShooterPID extends CommandBase {
 
     @Override 
     public void execute() {
-        if (!rpmReached) {
-            this.shooter.setVelocity(this.targetRPM);
+        // double distance = shooter.getLimelight().estimateDistance(
+        //    Constants.LIMELIGHT_HEIGHT, Constants.TARGET_HEIGHT, Constants.LIMELIGHT_ANGLE); 
 
-            if (Math.abs(shooter.getActualVelocity() - targetRPM) < VELOCITY_TOLERANCE) {
-                rpmReached = true;
-                RobotContainer.shooterRumbleOperator.execute(); 
+        // if (Math.abs(distance - Constants.TARGET_DISTANCE) < Constants.TARGET_DISTANCE_TOLERANCE) {
+            if (!rpmReached) {
+                this.shooter.setVelocity(this.targetRPM);
+    
+                if (Math.abs(shooter.getActualVelocity() - targetRPM) < VELOCITY_TOLERANCE) {
+                    rpmReached = true;
+                    RobotContainer.shooterRumbleOperator.execute(); 
+                }
             }
-        }
+        /* } else {
+            RobotContainer.shooterRumbleOperator.execute();
+        } */ 
     }
 
     @Override 
     public void end(boolean interrupted) {
-        // Indicate that the RPM has been reached. 
-        RobotContainer.shooterRumbleOperator.execute(); 
+        // Indicate that the RPM has been reached.  
         RobotContainer.getLogger().logInfo("Shooter RPM has been reached."); 
         DriverStation.reportWarning("Shooter RPM has been reached.", true);
     } 
