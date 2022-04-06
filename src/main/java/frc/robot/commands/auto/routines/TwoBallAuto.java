@@ -1,127 +1,252 @@
 package frc.robot.commands.auto.routines;
 
-import java.util.List;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.auto.PathFinder;
-import frc.robot.commands.indexer.AutoFeed;
-import frc.robot.commands.indexer.SensoredRoll;
-import frc.robot.commands.shooting.PrepareShooterPID;
 import frc.robot.constants.AutoConstants;
-import frc.robot.constants.Constants;
-import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 
 public class TwoBallAuto {
-    private Pose2d startPosition;  
-
-    private Pose2d cargo; 
-    private List<Translation2d> waypoints; 
-
-    public static Command autoIntake; 
-    
     private final Drivetrain drivetrain; 
     private final Shooter shooter; 
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    private double shooterRPM;
+    public static final double shooterTargetRPM = 5000.0;
+    public static final double driveForwardSpeed = 0.75;  
 
-    // Driving Trajectories 
-    private PathFinder retrieveFirstBall; 
+    // Intake ball for all of autonomous. 
+    public Command intakeBall;
+    public boolean intakeBallFinished = false;
 
+    // Drive backwards off the tarmac to move the arm down. 
+    public Command moveArm; 
+    public double initialMoveArmTime; 
+    public static double moveArmTime = 0.20; 
+    public boolean moveArmFinished = false; 
+
+    // Drive forwards to reset position. 
+    public Command resetPosition; 
+    public double initialResetPositionTime; 
+    public static double resetPositionTime = 0.20; 
+    public boolean resetPositionFinished = false;
+
+    // Set shooter RPM. 
+    public Command setShooterRPM;
+    public boolean setShooterRPMFinished = false; 
+    public static double setShootRPMTime = 1.5; 
+    public double initialSetShooterRPMTime; 
+
+    // Roll ball up to shooter. 
+    public Command feedShooter; 
+    public double initialFeedShooterTime; 
+    public static double feedShooterTime = 2.0;
+    public boolean feedShooterFinished = false; 
+
+    // Drive backwards off the tarmac to retrieve ball. 
+    public Command driveBackwards; 
+    public double initialDriveBackwardsTime; 
+    public boolean driveBackwardsFinished = false; 
+    public static double driveBackwardsTime = 2.25;
+    public static double driveBackwardsSpeed = -0.25;
+    public static double driveBackwardsRotation = -0.325; 
+
+    public Command pauseDrive; 
+    public double initialPauseDriveTime; 
+    public boolean pauseDriveFinished = false; 
+    public static double pauseDriveTime = 1.0;
+
+    // Drive back to shooting spot. 
+    public Command driveToShoot; 
+    public double initialDriveToShootTime; 
+    public boolean driveToShootFinished = false; 
+    public static double driveToShootTime = 2.15; 
+    public static double driveToShootSpeed = 0.25;
+
+    // Set shooter RPM. 
+    public Command setSecondShooterRPM;
+    public boolean setSecondShooterRPMFinished = false; 
+    public static double setSecondShootRPMTime = 2.5; 
+    public double initialSetSecondShooterRPMTime; 
+
+    public Command feedSecondBall; 
+    public double initialFeedSecondBall;
+    public boolean feedSecondBallFinished = false; 
+    public static double feedSecondBallTime = 2.5; 
+
+    public Command stopShooter; 
+    public boolean stopShooterFinished = false; 
+    public double initialStopShooter;
+    
     /**
-     * Initializes a two ball autonomous routine based on the starting position of the robot and the cargo that is 
-     * near the robot and tarmacs. 
+     * Creates a new instance of the Two Ball Auto Command. 
      * 
-     * @param drivetrain the driving subsystem.
-     * @param shooter the shooting subsystem. 
-     * @param shooterFeeder the shooter feeder subsystem. 
+     * @param drivetrain the driving subsystem. 
+     * @param shooter the shooter. 
+     * @param shooterFeeder the shooter rollers. 
      * @param intakeSubsystem the intake subsystem. 
-     * @param tarmac the starting position of the robot. 
-     * @param lowHub whether to shoot low or high hub.
      */
-    public TwoBallAuto(Drivetrain drivetrain, Shooter shooter, ShooterFeederSubsystem shooterFeeder, IntakeSubsystem intakeSubsystem,
-        int tarmac, boolean lowHub) {
-
-        this.drivetrain = drivetrain;
-        this.shooter = shooter; 
+    public TwoBallAuto(Drivetrain drivetrain, Shooter shooter, ShooterFeederSubsystem shooterFeeder, 
+        IntakeSubsystem intakeSubsystem) {
+        this.drivetrain = drivetrain; 
+        this.shooter = shooter;
         this.shooterFeeder = shooterFeeder; 
         this.intakeSubsystem = intakeSubsystem; 
 
-        if (lowHub) {
-            shooterRPM = Constants.LOW_HUB_RPM;
-        } else {
-            shooterRPM = Constants.HIGH_HUB_RPM; 
-        }
-
-        switch (tarmac) {
-            case FieldConstants.TOP_BLUE_TARMAC: 
-                this.startPosition = FieldConstants.FENDER_1; 
-                this.cargo = FieldConstants.TOP_LEFT_CARGO_BLUE;
-                this.waypoints.add(FieldConstants.TARMAC_TOP_LEFT_1_REFERENCE.getTranslation()); 
-                break; 
-            case FieldConstants.BOTTOM_BLUE_TARMAC:
-                this.startPosition = FieldConstants.FENDER_2; 
-                this.cargo = FieldConstants.BOTTOM_LEFT_CARGO_BLUE; 
-                this.waypoints.add(FieldConstants.TARMAC_BOTTOM_LEFT_2_REFERENCE.getTranslation());
-                break; 
-            case FieldConstants.BOTTOM_RED_TARMAC:
-                this.startPosition = FieldConstants.FENDER_3; 
-                this.cargo = FieldConstants.BOTTOM_RIGHT_CARGO_RED; 
-                this.waypoints.add(FieldConstants.TARMAC_BOTTOM_RIGHT_1_REFERENCE.getTranslation()); 
-                break; 
-            case FieldConstants.TOP_RED_TARMAC: 
-                this.startPosition = FieldConstants.FENDER_4;
-                this.cargo = FieldConstants.TOP_RIGHT_CARGO_RED; 
-                this.waypoints.add(FieldConstants.TARMAC_TOP_RIGHT_2_REFERENCE.getTranslation()); 
-                break;
-        }
-
-        this.retrieveFirstBall = new PathFinder(
-            this.drivetrain, 
-            this.startPosition, 
-            this.waypoints, 
-            this.cargo
-        ); 
-        
-        autoIntake = new FunctionalCommand(() -> {
+        this.intakeBall = new FunctionalCommand(() -> {
             this.intakeSubsystem.runIntake(AutoConstants.AUTO_INTAKE_SPEED, AutoConstants.AUTO_INTAKE_SPEED);
         }, () -> {
-
+            if (Timer.getFPGATimestamp() >= 14.5) {
+                this.intakeBallFinished = true; 
+            } else {
+                this.intakeSubsystem.runIntake(AutoConstants.AUTO_INTAKE_SPEED, AutoConstants.AUTO_INTAKE_SPEED);
+            }
         }, (interrupted) -> {
             this.intakeSubsystem.runIntake(0, 0);
-        }, () -> false, 
-        this.intakeSubsystem);
+        }, () -> this.intakeBallFinished, this.intakeSubsystem);
+
+        this.moveArm = new FunctionalCommand(() -> {
+            this.drivetrain.arcadeDrive(driveForwardSpeed, Math.abs(driveBackwardsRotation));
+            this.initialMoveArmTime = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialMoveArmTime >= moveArmTime) {
+                this.moveArmFinished = true; 
+            } else {
+                this.drivetrain.arcadeDrive(driveForwardSpeed, 0);
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0);
+        }, () -> this.moveArmFinished, this.drivetrain);
+
+        this.resetPosition = new FunctionalCommand(() -> {
+            this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0); 
+            this.initialResetPositionTime = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialResetPositionTime >= resetPositionTime) {
+                this.resetPositionFinished = true;
+            } else {
+                this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0); 
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0); 
+        }, () -> this.resetPositionFinished, this.drivetrain);
+
+        this.setShooterRPM = new FunctionalCommand(() -> {
+            this.shooter.setVelocity(shooterTargetRPM);
+            this.initialSetShooterRPMTime = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialSetShooterRPMTime >= setShootRPMTime) {
+                this.setShooterRPMFinished = true;
+            } 
+        }, (interrupted) -> {
+
+        }, () -> this.setShooterRPMFinished, this.shooter); 
+
+        this.feedShooter = new FunctionalCommand(() -> {
+            this.shooterFeeder.setRollSpeed(AutoConstants.AUTO_ROLL_SPEED);
+            this.initialFeedShooterTime = Timer.getFPGATimestamp();
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialFeedShooterTime >= feedShooterTime) {
+                this.feedShooterFinished = true; 
+            } else {
+                this.shooterFeeder.setRollSpeed(AutoConstants.AUTO_ROLL_SPEED);
+            }
+        }, (interrupted) -> {
+            this.shooterFeeder.setRollSpeed(0); 
+            this.shooter.setVelocity(0);
+        }, () -> this.feedShooterFinished, this.shooterFeeder);
+
+        this.driveBackwards = new FunctionalCommand(() -> {
+            this.drivetrain.arcadeDrive(driveBackwardsSpeed, driveBackwardsRotation);
+            this.initialDriveBackwardsTime = Timer.getFPGATimestamp();
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialDriveBackwardsTime >= driveBackwardsTime) {
+                this.driveBackwardsFinished = true; 
+            } else {
+                this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0); 
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0);
+        }, () -> this.driveBackwardsFinished, this.drivetrain); 
+
+        this.driveToShoot = new FunctionalCommand(() -> {
+            this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
+            this.initialDriveToShootTime = Timer.getFPGATimestamp();
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialDriveToShootTime >= driveToShootTime) {
+                this.driveToShootFinished = true; 
+            } else {
+                this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0); 
+        }, () -> this.driveToShootFinished, this.drivetrain); 
+
+        this.pauseDrive = new FunctionalCommand(() -> {
+            this.initialPauseDriveTime = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialPauseDriveTime >= pauseDriveTime) {
+                this.pauseDriveFinished = true; 
+            } else {
+                this.drivetrain.arcadeDrive(0, 0); 
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0); 
+        } , () -> this.pauseDriveFinished, this.drivetrain); 
+
+        this.setSecondShooterRPM = new FunctionalCommand(() -> {
+            this.shooter.setVelocity(shooterTargetRPM);
+            this.initialSetSecondShooterRPMTime = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialSetSecondShooterRPMTime >= setSecondShootRPMTime) {
+                this.setSecondShooterRPMFinished = true;
+            } 
+
+        }, (interrupted) -> {
+
+        }, () -> this.setSecondShooterRPMFinished, this.shooter); 
+
+        this.feedSecondBall = new FunctionalCommand(() -> {
+            this.shooterFeeder.setRollSpeed(AutoConstants.AUTO_ROLL_SPEED);
+            this.initialFeedSecondBall = Timer.getFPGATimestamp();
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialFeedSecondBall >= feedShooterTime) {
+                this.feedSecondBallFinished = true; 
+            } else {
+                this.shooterFeeder.setRollSpeed(AutoConstants.AUTO_ROLL_SPEED);
+            }
+        }, (interrupted) -> {
+            this.shooterFeeder.setRollSpeed(0); 
+            this.shooter.setVelocity(0);
+        }, () -> this.feedSecondBallFinished, this.shooterFeeder);
+
+        this.stopShooter = new InstantCommand(() -> {
+            this.shooter.setVelocity(0); 
+        }, this.shooter);
     }
 
-    /**
-     * Get the two ball autonomous routine of the robot. 
-     * 
-     * @return the autonomous routine, as a {@link edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup}. 
-     */
     public Command getAutoCommand() {
-        Command deadlineCommand = new SequentialCommandGroup(
-            // Shoot from in front of the fender. 
-            new AutoFeed(shooterFeeder), 
-            // Drive to retrieve cargo.
-            this.retrieveFirstBall.getAutoCommand(),
-            // Intake the ball and store it at the color sensor. 
-            new SensoredRoll(shooterFeeder),
-            // Drive back to fender.  
-            PathFinder.invertPathfinderCommand(this.retrieveFirstBall), 
-            // Shoot the ball.
-            new AutoFeed(shooterFeeder)
-        );
-
-        return new ParallelDeadlineGroup(deadlineCommand, TwoBallAuto.autoIntake, new PrepareShooterPID(shooter, shooterRPM));
+        return new ParallelCommandGroup(
+            this.intakeBall, 
+            new SequentialCommandGroup(
+                this.moveArm,
+                this.resetPosition, 
+                this.setShooterRPM,
+                this.feedShooter, 
+                this.driveBackwards, 
+                this.pauseDrive,
+                this.driveToShoot,
+                this.setSecondShooterRPM, 
+                this.feedSecondBall,
+                this.stopShooter
+            )
+        ); 
     }
+
 }

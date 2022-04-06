@@ -19,21 +19,15 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import frc.robot.commands.climbing.Climb;
-import frc.robot.commands.climbing.DeployHook;
 import frc.robot.commands.driving.TeleopDrive;
-import frc.robot.commands.indexer.SensoredIntakeRoll;
-import frc.robot.commands.indexer.SensoredRoll;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
-import frc.robot.commands.intake.RotateArm;
 import frc.robot.commands.shooting.PIDShoot;
 import frc.robot.commands.shooting.PrepareShooter;
 import frc.robot.commands.shooting.PrepareShooterPID;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.HookSubsystem;
-import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.SendableCANPIDController;
@@ -55,7 +49,6 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	private final Drivetrain drivetrain;
 	private final IntakeSubsystem intakeSubsystem;
-	// private final IntakeArm intakeArm; 
 	private final ShooterFeederSubsystem shooterFeederSubsystem; 
 	private final Shooter shooterSubsystem;
 	/* private final ClimbSubsystem climbSubsystem; 
@@ -344,15 +337,11 @@ public class RobotContainer {
 		Button shootHighHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_HIGH_RPM_BUTTON); 
 
 		Button shooterOverheatOverrideButton = new JoystickButton(operatorController, Constants.OVERRIDE_SHOOTER_PROTECTION_BUTTON); 
-		Button sensoredRollButton = new JoystickButton(operatorController, Constants.SENSORED_ROLL); 
 		Button stopShooterFeederButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_FEEDER_BUTTON); 
 
 		// Climb Related 
 		Button toggleClimbPrecision = new JoystickButton(operatorController, Constants.TOGGLE_CLIMB_PRECISION); 
 		Button overrideClimbTimeButton = new JoystickButton(driverController, Constants.OVERRIDE_CLIMB_TIME_BUTTON); 
-		
-		// Intake Related 
-		// Button reverseIntakeArmButton = new JoystickButton(operatorController, Constants.INTAKE_ARM_REVERSE_BUTTON); 
 
 		// Driver Button Bindings
 		reverseDriveButton.whenPressed(() -> {
@@ -423,11 +412,6 @@ public class RobotContainer {
 			new PrepareShooterPID(shooterSubsystem, Constants.HIGH_HUB_RPM)
 		);
 
-		/* sensoredRollButton.whenPressed(
-			new SensoredIntakeRoll(shooterFeederSubsystem, intakeSubsystem)
-		 	// new SensoredRoll(shooterFeederSubsystem)
-		); */
-
 		stopShooterFeederButton.whenPressed(new InstantCommand(() -> {
 			shooterFeederSubsystem.stopRoller();
 		}, shooterFeederSubsystem));
@@ -440,13 +424,6 @@ public class RobotContainer {
 		toggleClimbPrecision.whenPressed(() -> {
 			Climb.togglePrecisionClimb();
 		}); 
-		
-		/*
-		// Intake Button Bindings 
-		reverseIntakeArmButton.whenPressed(() -> {
-			RotateArm.toggleReverseRotation();
-			getLogger().logInfo("Intake arm direction set to " + RotateArm.isRotationReversed());
-		}); */
 	}
 
 	/**
@@ -455,7 +432,7 @@ public class RobotContainer {
 	 * @return the autonomous command for the match.
 	 */
 	public Command getAutonomousCommand() {
-		return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, intakeSubsystem, null, shooterSubsystem, shooterFeederSubsystem); 
+		return autonomous.getAuto(autonomous.getChooser().getSelected(), drivetrain, intakeSubsystem, shooterSubsystem, shooterFeederSubsystem); 
 	}
 
 	private void initLogger() {

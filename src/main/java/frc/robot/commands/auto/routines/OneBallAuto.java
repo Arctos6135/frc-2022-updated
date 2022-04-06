@@ -12,7 +12,7 @@ import frc.robot.subsystems.ShooterFeederSubsystem;
 /**
  * Drive forwards, shoot preloaded ball, drive off tarmac. 
  */
-public class NonTrajectory {
+public class OneBallAuto {
     private final Drivetrain drivetrain;
     private final Shooter shooter; 
     private final ShooterFeederSubsystem shooterFeeder;
@@ -41,7 +41,7 @@ public class NonTrajectory {
      * @param shooter the shooting subsystem of the robot.
      * @param shooterFeeder the shooter rollers of the robot.
      */
-    public NonTrajectory(Drivetrain drivetrain, Shooter shooter, ShooterFeederSubsystem shooterFeeder) {
+    public OneBallAuto(Drivetrain drivetrain, Shooter shooter, ShooterFeederSubsystem shooterFeeder) {
         this.drivetrain = drivetrain; 
         this.shooter = shooter; 
         this.shooterFeeder = shooterFeeder; 
