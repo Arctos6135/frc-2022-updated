@@ -443,6 +443,9 @@ public class Drivetrain extends SubsystemBase {
     rightFollowerMotor.follow(rightMotor);
     leftFollowerMotor.follow(leftMotor);
 
+    rightMotor.setInverted(true);
+    leftMotor.setInverted(false);
+
     rightMotor.stopMotor();
     leftMotor.stopMotor();
 
