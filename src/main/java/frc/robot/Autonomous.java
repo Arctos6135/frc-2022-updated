@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.routines.DriveDistance;
 import frc.robot.commands.auto.routines.OneBallAuto;
+import frc.robot.commands.auto.routines.ThreeBallAuto;
+import frc.robot.commands.auto.routines.ThreeBallTerminalAuto;
 import frc.robot.commands.auto.routines.TwoBallAuto;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -52,6 +54,27 @@ public class Autonomous {
          * </ul>
          */
         TWO_BALL_AUTO("Two Ball Auto (High Hub)"), 
+        /**
+         * Shoot high hub, intake two cargo ring balls.
+         * 
+         * <ul> 
+         * <li>Starts: Edge of Tarmac</li> 
+         * <li>Ends: Forwards</li> 
+         * <li>Scores: 14 Points</li> 
+         * <li>Preload: 1 Ball</li>
+         * </ul> 
+         */
+        THREE_BALL_CARGO_RING_AUTO("Three Ball Auto (Cargo Rings)"),
+        /**
+         * Shoot high hub, intake one cargo ring and one terminal ball.
+         *  
+         * <ul> 
+         * <li>Starts: Edge of Tarmac</li> 
+         * <li>Ends: Forwards</li> 
+         * <li>Scores: 14 Points</li> 
+         * <li>Preload: 1 Ball</li> 
+         */
+        THREE_BALL_TERMINAL_AUTO("Three Ball Auto (Terminal)"), 
         /**
          * <ul> 
          * <li>Starts: Anywhere</li> 
@@ -103,12 +126,14 @@ public class Autonomous {
         Shooter shooter, ShooterFeederSubsystem shooterFeeder) {
         // Measurements in Meters
         switch(mode) {
-            case NONE:
-                return null;
             case ONE_BALL_AUTO: 
                 return new OneBallAuto(drivetrain, shooter, shooterFeeder).getAutoCommand(); 
             case TWO_BALL_AUTO: 
-                return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand(); 
+                return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
+            case THREE_BALL_CARGO_RING_AUTO: 
+                return new ThreeBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
+            case THREE_BALL_TERMINAL_AUTO: 
+                return new ThreeBallTerminalAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
             case INIT_FORWARD:
                 return new DriveDistance(drivetrain, 2).getAutoCommand();
             case INIT_REVERSE:

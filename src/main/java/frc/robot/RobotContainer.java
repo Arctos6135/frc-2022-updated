@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import com.arctos6135.robotlib.logging.RobotLogger;
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 import com.arctos6135.robotlib.oi.Rumble;
+import com.arctos6135.stdplug.api.StdPlugWidgets;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -22,6 +23,7 @@ import frc.robot.commands.climbing.Climb;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
+import frc.robot.commands.shooting.DistanceAim;
 import frc.robot.commands.shooting.PIDShoot;
 import frc.robot.commands.shooting.PrepareShooter;
 import frc.robot.commands.shooting.PrepareShooterPID;
@@ -30,6 +32,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
+import frc.robot.util.Limelight;
 import frc.robot.util.SendableCANPIDController;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -82,6 +85,7 @@ public class RobotContainer {
 	public NetworkTableEntry overrideModeEntry;
 	public NetworkTableEntry shooterRPMEntry; 
 	public NetworkTableEntry shooterBottomRPMEntry; 
+	public NetworkTableEntry shooterDistance; 
 	
 	// Logging Related
 	public NetworkTableEntry lastError;
@@ -111,17 +115,15 @@ public class RobotContainer {
 			new Intake(intakeSubsystem, driverController, Constants.INTAKE_BUTTON, Constants.OUTTAKE_BUTTON)
 		);
 
-		/* intakeArm = new IntakeArm(Constants.INTAKE_ARM_MOTOR);
-		intakeArm.setDefaultCommand(
-			new RotateArm(intakeArm, operatorController, Constants.INTAKE_ARM_ROTATE)
-		); */
-
 		shooterFeederSubsystem = new ShooterFeederSubsystem(Constants.TOP_ROLLER_MOTOR); 
 		shooterFeederSubsystem.setDefaultCommand(
 			new TeleopRoll(shooterFeederSubsystem, operatorController, Constants.TELEOP_ROLL_UP_TRIGGER, Constants.TELEOP_ROLL_DOWN_TRIGGER) 
 		); 
 
 		shooterSubsystem = new Shooter(Constants.MAIN_SHOOTER_MOTOR, Constants.AUXILLIARY_SHOOTER_MOTOR);
+		shooterSubsystem.setDefaultCommand(
+			new DistanceAim(shooterSubsystem)
+		);
 
 		/* climbSubsystem = new ClimbSubsystem(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
 		climbSubsystem.setDefaultCommand(
@@ -217,6 +219,9 @@ public class RobotContainer {
 		precisionDriveEntry = driveTab.add("Precision", TeleopDrive.isPrecisionDrive()).withWidget(BuiltInWidgets.kBooleanBox)
 		.withPosition(2, 0).withSize(2, 2).getEntry();
 
+		shooterDistance = driveTab.add("Shooter Distance", DistanceAim.shooterDistance).withWidget(BuiltInWidgets.kBooleanBox)
+		.withPosition(4, 0).withSize(2, 2).getEntry(); 
+
 		// Shooting Configurations
 		shooterRPMEntry = shooterTab.add("Shooter RPM (Top Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
 		.withSize(3, 3).withProperties(Map.of("min", 0, "max", Shooter.maxRPM)).getEntry();
@@ -296,6 +301,11 @@ public class RobotContainer {
 			getLogger().logWarning(error);
 			DriverStation.reportError(error, true);
 		});
+
+		// Vision System
+		shooterSubsystem.getLimelight().setStreamingMode(Limelight.StreamingMode.STANDARD); 
+		driveTab.add("Camera", Limelight.STREAM_URL).withWidget(StdPlugWidgets.MJPEG_STREAM_VIEWER)
+			.withPosition(5, 5).withSize(10, 10); 
 		
 		// Autonomous Mode 
 		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5); 

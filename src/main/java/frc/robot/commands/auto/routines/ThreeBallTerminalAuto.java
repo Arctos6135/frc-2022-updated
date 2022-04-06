@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.constants.AutoConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -12,7 +13,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 
-public class TwoBallAuto {
+public class ThreeBallTerminalAuto {
     private final Drivetrain drivetrain; 
     private final Shooter shooter; 
     private final ShooterFeederSubsystem shooterFeeder; 
@@ -40,7 +41,7 @@ public class TwoBallAuto {
     // Set shooter RPM. 
     public Command setShooterRPM;
     public boolean setShooterRPMFinished = false; 
-    public static double setShootRPMTime = 1.5; 
+    public static double setShootRPMTime = 1.0; 
     public double initialSetShooterRPMTime; 
 
     // Roll ball up to shooter. 
@@ -53,32 +54,66 @@ public class TwoBallAuto {
     public Command driveBackwards; 
     public double initialDriveBackwardsTime; 
     public boolean driveBackwardsFinished = false; 
-    public static double driveBackwardsTime = 2.25;
-    public static double driveBackwardsSpeed = -0.25;
+    public static double driveBackwardsTime = 1.0;
+    public static double driveBackwardsSpeed = -0.5;
     public static double driveBackwardsRotation = -0.325; 
 
     public Command pauseDrive; 
     public double initialPauseDriveTime; 
     public boolean pauseDriveFinished = false; 
-    public static double pauseDriveTime = 1.0;
+    public static double pauseDriveTime = 0.25;
 
     // Drive back to shooting spot. 
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 2.15; 
-    public static double driveToShootSpeed = 0.25;
+    public static double driveToShootTime = 1.0; 
+    public static double driveToShootSpeed = 0.5;
 
     // Set shooter RPM. 
     public Command setSecondShooterRPM;
     public boolean setSecondShooterRPMFinished = false; 
-    public static double setSecondShootRPMTime = 2.5; 
+    public static double setSecondShootRPMTime = 1.0; 
     public double initialSetSecondShooterRPMTime; 
 
+    // Roll ball up to shooter. 
     public Command feedSecondBall; 
     public double initialFeedSecondBall;
     public boolean feedSecondBallFinished = false; 
-    public static double feedSecondBallTime = 2.5; 
+    public static double feedSecondBallTime = 2.0; 
+
+    // Rotate for third cargo (-90 degrees). 
+    public Command rotateDrive; 
+    public double initialRotateDrive; 
+    public boolean rotateDriveFinished = false; 
+    public static double rotateDriveTime = 1.0; 
+
+    public Command driveThirdCargo; 
+    public double initialDriveThirdCargo; 
+    public boolean driveThirdCargoFinished = false; 
+    public static double driveThirdCargoTime = 3.0;
+
+    // Drive back towards hub.
+    public Command driveShootThird; 
+    public double initialDriveShootThird; 
+    public boolean driveShootThirdFinished = false; 
+    public static double driveShootThirdTime = 2.75;
+
+    // Rotate to align with high hub. 
+    public Command rotateAlign; 
+    public double initialRotateAlign; 
+    public boolean rotateAlignFinished = false; 
+    public static double rotateAlignTime = 0.5;
+
+    public Command setThirdShooterRPM; 
+    public boolean setThirdShooterRPMFinished = false; 
+    public static double setThirdShooterRPMTime = 1.0;
+    public double initialSetThirdShooterRPM;
+
+    public Command feedThirdBall; 
+    public double initialFeedThirdBall; 
+    public static double feedThirdBallTime = 2.0;
+    public boolean feedThirdBallFinished = false; 
 
     public Command stopShooter; 
     public boolean stopShooterFinished = false; 
@@ -92,7 +127,7 @@ public class TwoBallAuto {
      * @param shooterFeeder the shooter rollers. 
      * @param intakeSubsystem the intake subsystem. 
      */
-    public TwoBallAuto(Drivetrain drivetrain, Shooter shooter, ShooterFeederSubsystem shooterFeeder, 
+    public ThreeBallTerminalAuto(Drivetrain drivetrain, Shooter shooter, ShooterFeederSubsystem shooterFeeder, 
         IntakeSubsystem intakeSubsystem) {
         this.drivetrain = drivetrain; 
         this.shooter = shooter;
@@ -175,18 +210,6 @@ public class TwoBallAuto {
             this.drivetrain.arcadeDrive(0, 0);
         }, () -> this.driveBackwardsFinished, this.drivetrain); 
 
-        this.pauseDrive = new FunctionalCommand(() -> {
-            this.initialPauseDriveTime = Timer.getFPGATimestamp(); 
-        }, () -> {
-            if (Timer.getFPGATimestamp() - this.initialPauseDriveTime >= pauseDriveTime) {
-                this.pauseDriveFinished = true; 
-            } else {
-                this.drivetrain.arcadeDrive(0, 0); 
-            }
-        }, (interrupted) -> {
-            this.drivetrain.arcadeDrive(0, 0); 
-        } , () -> this.pauseDriveFinished, this.drivetrain);
-
         this.driveToShoot = new FunctionalCommand(() -> {
             this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
             this.initialDriveToShootTime = Timer.getFPGATimestamp();
@@ -198,7 +221,19 @@ public class TwoBallAuto {
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 
-        }, () -> this.driveToShootFinished, this.drivetrain);  
+        }, () -> this.driveToShootFinished, this.drivetrain); 
+
+        this.pauseDrive = new FunctionalCommand(() -> {
+            this.initialPauseDriveTime = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialPauseDriveTime >= pauseDriveTime) {
+                this.pauseDriveFinished = true; 
+            } else {
+                this.drivetrain.arcadeDrive(0, 0); 
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0); 
+        } , () -> this.pauseDriveFinished, this.drivetrain); 
 
         this.setSecondShooterRPM = new FunctionalCommand(() -> {
             this.shooter.setVelocity(shooterTargetRPM);
@@ -226,6 +261,62 @@ public class TwoBallAuto {
             this.shooter.setVelocity(0);
         }, () -> this.feedSecondBallFinished, this.shooterFeeder);
 
+        this.rotateDrive = new FunctionalCommand(() -> {
+            this.drivetrain.arcadeDrive(0, -0.5);
+            this.initialRotateDrive = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialRotateDrive >= rotateDriveTime) {
+                this.rotateDriveFinished = true;
+            } else {
+                this.drivetrain.arcadeDrive(0, -0.5); 
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0);
+        }, () -> this.rotateDriveFinished, this.drivetrain);
+
+        this.driveThirdCargo = new FunctionalCommand(() -> {
+            this.drivetrain.arcadeDrive(-0.75, driveBackwardsRotation);
+            this.initialDriveThirdCargo = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialDriveThirdCargo >= driveThirdCargoTime) {
+                this.driveThirdCargoFinished = true; 
+            } else {
+                this.drivetrain.arcadeDrive(-0.75, driveBackwardsRotation); 
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0);
+        }, () -> this.driveThirdCargoFinished, this.drivetrain); 
+
+        this.driveShootThird = new FunctionalCommand(() -> {
+            this.initialDriveShootThird = Timer.getFPGATimestamp(); 
+            this.drivetrain.arcadeDrive(driveToShootSpeed, Math.abs(driveBackwardsRotation));
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialDriveShootThird >= driveThirdCargoTime) {
+                this.driveShootThirdFinished = true; 
+            } else {
+                this.drivetrain.arcadeDrive(driveToShootSpeed, Math.abs(driveBackwardsRotation));
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0);
+        }, () -> this.driveShootThirdFinished, this.drivetrain);
+
+        this.rotateAlign = new FunctionalCommand(() -> {
+            this.drivetrain.arcadeDrive(0, -0.25); 
+            this.initialRotateAlign = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialRotateAlign >= rotateAlignTime) {
+                this.rotateAlignFinished = true; 
+            } else {
+                this.drivetrain.arcadeDrive(0, -0.25); 
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0); 
+        }, () ->  this.rotateAlignFinished, this.drivetrain); 
+
+        this.setThirdShooterRPM = this.setSecondShooterRPM; 
+
+        this.feedThirdBall = this.feedSecondBall; 
+
         this.stopShooter = new InstantCommand(() -> {
             this.shooter.setVelocity(0); 
         }, this.shooter);
@@ -241,12 +332,20 @@ public class TwoBallAuto {
                 this.feedShooter, 
                 this.driveBackwards, 
                 this.pauseDrive,
-                this.driveToShoot,
-                this.setSecondShooterRPM, 
+                new ParallelDeadlineGroup(
+                    this.driveToShoot, 
+                    this.setSecondShooterRPM
+                ),
                 this.feedSecondBall,
+                this.rotateDrive, 
+                this.driveThirdCargo,
+                new ParallelCommandGroup(
+                    this.rotateAlign, 
+                    this.setThirdShooterRPM
+                ), 
+                this.feedThirdBall,
                 this.stopShooter
             )
         ); 
     }
-
 }

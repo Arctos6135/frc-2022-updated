@@ -26,7 +26,7 @@ public class Shooter extends SubsystemBase {
 	private final SparkMaxPIDController pidControllerFollower; 
 
 	// Vision System 
-	// private Limelight limelight; 
+	private Limelight limelight; 
 
 	public static final double BASE_SPEED = 0;
 	public static final double VELOCITY_TOLERANCE = 100; 
@@ -81,7 +81,7 @@ public class Shooter extends SubsystemBase {
 		pidControllerFollower.setOutputRange(-1.0, 1.0);
 		pidControllerFollower.setReference(0.0, CANSparkMax.ControlType.kVelocity);
 
-		// this.limelight = new Limelight(); 
+		this.limelight = new Limelight(); 
 	}
 
 	// Vision System 
@@ -90,18 +90,18 @@ public class Shooter extends SubsystemBase {
 	 * 
 	 * @return the limelight. 
 	 */
-	//public Limelight getLimelight() {
-	//	return this.limelight; 
-	//}
+	public Limelight getLimelight() {
+		return this.limelight; 
+	}
 
 	/**
 	 * Return whether the shooter detects the vision tape on the hub.
 	 * 
 	 * @return whether the shooter has a target. 
 	 */
-	//public boolean hasTarget() {
-	//	return limelight.hasValidTargets(); 
-	//}
+	public boolean hasTarget() {
+		return limelight.hasValidTargets(); 
+	}
 
 	/**
 	 * Get the encoder used to measure velocity (in rpm). 
