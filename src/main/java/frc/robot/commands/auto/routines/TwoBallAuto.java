@@ -57,7 +57,7 @@ public class TwoBallAuto {
     public boolean driveBackwardsFinished = false; 
     public static double driveBackwardsTime = 2.25;
     public static double driveBackwardsSpeed = -0.25;
-    public static double driveBackwardsRotation = -0.325; 
+    public static double driveBackwardsRotation = 0; 
 
     public Command pauseDrive; 
     public double initialPauseDriveTime; 
@@ -161,26 +161,26 @@ public class TwoBallAuto {
         }, () -> this.feedShooterFinished, this.shooterFeeder);
 
         this.driveBackwards = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0);
+            this.drivetrain.arcadeDrive(driveBackwardsSpeed, driveBackwardsRotation);
             this.initialDriveBackwardsTime = Timer.getFPGATimestamp();
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveBackwardsTime >= driveBackwardsTime) {
                 this.driveBackwardsFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0); 
+                this.drivetrain.arcadeDrive(driveBackwardsSpeed, driveBackwardsRotation); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0);
         }, () -> this.driveBackwardsFinished, this.drivetrain); 
 
         this.driveToShoot = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
+            this.drivetrain.arcadeDrive(driveToShootSpeed, Math.abs(driveBackwardsRotation)); 
             this.initialDriveToShootTime = Timer.getFPGATimestamp();
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveToShootTime >= driveToShootTime) {
                 this.driveToShootFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
+                this.drivetrain.arcadeDrive(driveToShootSpeed, Math.abs(driveBackwardsRotation)); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 
