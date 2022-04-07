@@ -20,7 +20,9 @@ public class ThreeBallAuto {
     private final IntakeSubsystem intakeSubsystem; 
 
     public static final double shooterTargetRPM = 5000.0;
-    public static final double driveForwardSpeed = 0.75;  
+    public static final double shooterTargetRPMHigh = 6000.0; 
+    public static final double driveForwardSpeed = 0.75;
+    public static final double moveArmSpeed = 0.5;   
 
     // Intake ball for all of autonomous. 
     public Command intakeBall;
@@ -41,7 +43,7 @@ public class ThreeBallAuto {
     // Set shooter RPM. 
     public Command setShooterRPM;
     public boolean setShooterRPMFinished = false; 
-    public static double setShootRPMTime = 1.0; 
+    public static double setShootRPMTime = 1.5; 
     public double initialSetShooterRPMTime; 
 
     // Roll ball up to shooter. 
@@ -56,7 +58,7 @@ public class ThreeBallAuto {
     public boolean driveBackwardsFinished = false; 
     public static double driveBackwardsTime = 1.0;
     public static double driveBackwardsSpeed = -0.5;
-    public static double driveBackwardsRotation = -0.325; 
+    public static double driveBackwardsRotation = 0; 
 
     public Command pauseDrive; 
     public double initialPauseDriveTime; 
@@ -101,7 +103,7 @@ public class ThreeBallAuto {
 
     public Command setThirdShooterRPM; 
     public boolean setThirdShooterRPMFinished = false; 
-    public static double setThirdShooterRPMTime = 1.0;
+    public static double setThirdShooterRPMTime = 2.0;
     public double initialSetThirdShooterRPM;
 
     public Command feedThirdBall; 
@@ -131,17 +133,13 @@ public class ThreeBallAuto {
         this.intakeBall = new FunctionalCommand(() -> {
             this.intakeSubsystem.runIntake(AutoConstants.AUTO_INTAKE_SPEED, AutoConstants.AUTO_INTAKE_SPEED);
         }, () -> {
-            if (Timer.getFPGATimestamp() >= 14.5) {
-                this.intakeBallFinished = true; 
-            } else {
-                this.intakeSubsystem.runIntake(AutoConstants.AUTO_INTAKE_SPEED, AutoConstants.AUTO_INTAKE_SPEED);
-            }
+
         }, (interrupted) -> {
             this.intakeSubsystem.runIntake(0, 0);
         }, () -> this.intakeBallFinished, this.intakeSubsystem);
 
         this.moveArm = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveForwardSpeed, Math.abs(driveBackwardsRotation));
+            this.drivetrain.arcadeDrive(driveForwardSpeed, 0);
             this.initialMoveArmTime = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialMoveArmTime >= moveArmTime) {
@@ -192,7 +190,7 @@ public class ThreeBallAuto {
         }, () -> this.feedShooterFinished, this.shooterFeeder);
 
         this.driveBackwards = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveBackwardsSpeed, driveBackwardsRotation);
+            this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0);
             this.initialDriveBackwardsTime = Timer.getFPGATimestamp();
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveBackwardsTime >= driveBackwardsTime) {
@@ -256,7 +254,7 @@ public class ThreeBallAuto {
         }, () -> this.feedSecondBallFinished, this.shooterFeeder);
 
         this.rotateDrive = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(0, 0.5);
+            this.drivetrain.arcadeDrive(0, 0.25);
             this.initialRotateDrive = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialRotateDrive >= rotateDriveTime) {
@@ -269,13 +267,13 @@ public class ThreeBallAuto {
         }, () -> this.rotateDriveFinished, this.drivetrain);
 
         this.driveThirdCargo = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(-0.5, driveBackwardsRotation);
+            this.drivetrain.arcadeDrive(-0.5, 0);
             this.initialDriveThirdCargo = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveThirdCargo >= driveThirdCargoTime) {
                 this.driveThirdCargoFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(-0.5, driveBackwardsRotation); 
+                this.drivetrain.arcadeDrive(-0.5, 0); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0);
@@ -294,7 +292,16 @@ public class ThreeBallAuto {
             this.drivetrain.arcadeDrive(0, 0); 
         }, () ->  this.rotateAlignFinished, this.drivetrain); 
 
-        this.setThirdShooterRPM = this.setSecondShooterRPM; 
+        this.setThirdShooterRPM = new FunctionalCommand(() -> {
+            this.shooter.setVelocity(shooterTargetRPMHigh);
+            this.initialSetThirdShooterRPM = Timer.getFPGATimestamp(); 
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialSetThirdShooterRPM > setThirdShooterRPMTime) {
+                this.setThirdShooterRPMFinished = true; 
+            }
+        }, (interrupted) -> {
+
+        }, () -> this.setThirdShooterRPMFinished, this.shooter);
 
         this.feedThirdBall = this.feedSecondBall; 
 
@@ -307,21 +314,29 @@ public class ThreeBallAuto {
         return new ParallelCommandGroup(
             this.intakeBall, 
             new SequentialCommandGroup(
-                this.moveArm,
-                this.resetPosition, 
-                this.setShooterRPM,
+                new ParallelCommandGroup(
+                    new SequentialCommandGroup(
+                        this.moveArm,
+                        this.resetPosition
+                    ), 
+                    this.setShooterRPM
+                ), 
                 this.feedShooter, 
                 this.driveBackwards, 
-                this.pauseDrive,
                 new ParallelDeadlineGroup(
-                    this.driveToShoot,
+                    new SequentialCommandGroup(
+                        this.pauseDrive,
+                        this.driveToShoot
+                    ),
                     this.setSecondShooterRPM
                 ),
                 this.feedSecondBall,
                 this.rotateDrive, 
-                this.driveThirdCargo,
                 new ParallelCommandGroup(
-                    this.rotateAlign, 
+                    new SequentialCommandGroup(
+                        this.driveThirdCargo,
+                        this.rotateAlign
+                    ),
                     this.setThirdShooterRPM
                 ), 
                 this.feedThirdBall,

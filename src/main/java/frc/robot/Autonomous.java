@@ -55,6 +55,17 @@ public class Autonomous {
          */
         TWO_BALL_AUTO("Two Ball Auto (High Hub)"), 
         /**
+         * Shoot high hub and drive off the tarmac. 
+         * 
+         * <ul> 
+         * <li>Starts: Edge of Tarmac</li> 
+         * <li>Ends: Off Tarmac</li> 
+         * <li>Scores: 10 Points</li> 
+         * <li>Preload: 1 Ball</li>
+         * </ul>
+         */
+        TWO_BALL_FAST_AUTO("Two Ball Fast Auto (High Hub)"), 
+        /**
          * Shoot high hub, intake two cargo ring balls.
          * 
          * <ul> 
@@ -130,6 +141,8 @@ public class Autonomous {
                 return new OneBallAuto(drivetrain, shooter, shooterFeeder).getAutoCommand(); 
             case TWO_BALL_AUTO: 
                 return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
+            case TWO_BALL_FAST_AUTO:
+                return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getFastAutoCommand(); 
             case THREE_BALL_CARGO_RING_AUTO: 
                 return new ThreeBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
             case THREE_BALL_TERMINAL_AUTO: 

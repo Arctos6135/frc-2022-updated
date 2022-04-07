@@ -166,7 +166,7 @@ public class TwoBallAuto {
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveBackwardsTime >= driveBackwardsTime) {
                 this.driveBackwardsFinished = true; 
-            } else {
+            } else { 
                 this.drivetrain.arcadeDrive(driveBackwardsSpeed, driveBackwardsRotation); 
             }
         }, (interrupted) -> {
@@ -230,7 +230,7 @@ public class TwoBallAuto {
     }
 
     public Command getAutoCommand() {
-        return new ParallelCommandGroup(
+        return new ParallelRaceGroup(
             this.intakeBall, 
             new SequentialCommandGroup(
                 this.moveArm,
@@ -240,11 +240,36 @@ public class TwoBallAuto {
                 this.driveBackwards, 
                 this.pauseDrive,
                 this.driveToShoot,
-                this.setSecondShooterRPM, 
+                this.setSecondShooterRPM,
                 this.feedSecondBall,
                 this.stopShooter
             )
         ); 
     }
 
+    public Command getFastAutoCommand() {
+        return new ParallelRaceGroup(
+            this.intakeBall, 
+            new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                    new SequentialCommandGroup(
+                        this.moveArm,
+                        this.resetPosition 
+                    ), 
+                    this.setShooterRPM
+                ),
+                this.feedShooter, 
+                this.driveBackwards, 
+                new ParallelCommandGroup(
+                    new SequentialCommandGroup(
+                        this.pauseDrive,
+                        this.driveToShoot
+                    ), 
+                    this.setSecondShooterRPM
+                ),
+                this.feedSecondBall,
+                this.stopShooter
+            )
+        ); 
+    }
 }

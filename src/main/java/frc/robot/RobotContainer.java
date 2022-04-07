@@ -78,6 +78,7 @@ public class RobotContainer {
 	public final ShuffleboardTab colorTab; 
 	public final ShuffleboardTab prematchTab;
 	public final ShuffleboardTab debugTab;
+	public final ShuffleboardTab limelightTab; 
 
 	// Network Tables for Smart Dashboard
 	public NetworkTableEntry driveReversedEntry;
@@ -145,6 +146,7 @@ public class RobotContainer {
 		colorTab = Shuffleboard.getTab("Color"); 
 		prematchTab = Shuffleboard.getTab("Pre-match");
 		debugTab = Shuffleboard.getTab("Debug");
+		limelightTab = Shuffleboard.getTab("Limelight"); 
 
 		configureDashboard();
 
@@ -243,6 +245,11 @@ public class RobotContainer {
 		.addListener(notif -> {
 			shooterFeederSubsystem.setRollSpeed(notif.value.getDouble());
 		}, EntryListenerFlags.kUpdate); 
+
+		// Vision System
+		shooterSubsystem.getLimelight().setStreamingMode(Limelight.StreamingMode.STANDARD); 
+		limelightTab.add("Camera", Limelight.STREAM_URL).withWidget(StdPlugWidgets.MJPEG_STREAM_VIEWER)
+			.withPosition(0, 0).withSize(10, 10); 
 		
 		// Climbing Configurations
 		InstantCommand climbOverrideCommand = new InstantCommand(() -> {
@@ -302,16 +309,11 @@ public class RobotContainer {
 			DriverStation.reportError(error, true);
 		});
 
-		// Vision System
-		/* shooterSubsystem.getLimelight().setStreamingMode(Limelight.StreamingMode.STANDARD); 
-		driveTab.add("Camera", Limelight.STREAM_URL).withWidget(StdPlugWidgets.MJPEG_STREAM_VIEWER)
-			.withPosition(5, 5).withSize(10, 10); */ 
-		
 		// Autonomous Mode 
 		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5); 
 		
 		lastError = driveTab.add("Last Error", "").withPosition(10, 15).withSize(10, 4).getEntry();
-		lastWarning = driveTab.add("Last Warning", "").withPosition(0, 4).withSize(10, 4).getEntry();
+		lastWarning = driveTab.add("Last Warning", "").withPosition(0, 10).withSize(10, 4).getEntry();
 		
 		debugTab.add(drivetrain).withPosition(0, 0).withSize(10, 8); 
 	}

@@ -444,7 +444,7 @@ public class Drivetrain extends SubsystemBase {
     leftFollowerMotor.follow(leftMotor);
 
     rightMotor.setInverted(true);
-    leftMotor.setInverted(false);
+    leftMotor.setInverted(false); 
 
     rightMotor.stopMotor();
     leftMotor.stopMotor();
@@ -483,7 +483,8 @@ public class Drivetrain extends SubsystemBase {
     m_differentialOdometry.update(
         ahrs.getRotation2d(),
         leftEncoder.getPosition(),
-        rightEncoder.getPosition());
+        rightEncoder.getPosition()
+    );
   }
 
   @Override
