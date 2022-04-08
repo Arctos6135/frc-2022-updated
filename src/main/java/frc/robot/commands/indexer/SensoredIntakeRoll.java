@@ -57,7 +57,7 @@ public class SensoredIntakeRoll extends CommandBase {
     @Override 
     public void initialize() {
         shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
-        intakeSubsystem.runIntake(Constants.INTAKE_SPEED, Constants.INTAKE_SPEED);
+        intakeSubsystem.runIntake(Constants.BOTTOM_INTAKE_ROLLER_SPEED, Constants.MECANUM_INTAKE_SPEED);
 
         this.outtake = false; 
         this.outtakeFinished = false; 
@@ -91,7 +91,7 @@ public class SensoredIntakeRoll extends CommandBase {
         
         if (this.outtake) {
             shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
-            intakeSubsystem.runIntake(-Constants.INTAKE_SPEED, -Constants.INTAKE_SPEED);
+            intakeSubsystem.runIntake(-Constants.BOTTOM_INTAKE_ROLLER_SPEED, -Constants.MECANUM_INTAKE_SPEED);
             
             if (Math.abs(Timer.getFPGATimestamp() - this.initialOuttakeTime) >= 1.75) {
                 this.outtakeFinished = true; 

@@ -16,7 +16,7 @@ public class DeployHook extends CommandBase {
     private final XboxController driverController; 
 
     public static final double hookDeploymentSpeed = 0.75;
-    public static final double hookRetractionSpeed = 0.5; 
+    public static final double hookRetractionSpeed = -0.75; 
 
     /**
      * Creates a new hook deployment command. 
@@ -41,13 +41,15 @@ public class DeployHook extends CommandBase {
         boolean deployHook = driverController.getRawButton(Constants.DEPLOY_CLIMB_HOOK);
         boolean retractHook = driverController.getRawButton(Constants.RETRACT_CLIMB_HOOK); 
 
-        if (DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME || ClimbSubsystem.getClimbTimeOverride()) {
-            if (deployHook) {
-                this.hookSubsystem.setHookMotorSpeed(hookDeploymentSpeed);
-            } else if (retractHook) {
-                this.hookSubsystem.setHookMotorSpeed(-hookRetractionSpeed); 
-            } else {
-                this.hookSubsystem.setHookMotorSpeed(0);
+        if (!DriverStation.isAutonomous()) {
+            if (DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME || ClimbSubsystem.getClimbTimeOverride()) {
+                if (deployHook) {
+                    this.hookSubsystem.setHookMotorSpeed(hookDeploymentSpeed);
+                } else if (retractHook) {
+                    this.hookSubsystem.setHookMotorSpeed(hookRetractionSpeed); 
+                } else {
+                    this.hookSubsystem.setHookMotorSpeed(0);
+                }
             }
         }
     }

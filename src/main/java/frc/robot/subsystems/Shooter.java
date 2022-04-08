@@ -29,7 +29,7 @@ public class Shooter extends SubsystemBase {
 	private Limelight limelight; 
 
 	public static final double BASE_SPEED = 0;
-	public static final double VELOCITY_TOLERANCE = 250; 
+	public static final double VELOCITY_TOLERANCE = 300; 
 	public static final double AUTO_VELOCITY_TOLERANCE = 200; 
 	public double shooterDist;
 	private double velocity = 0;

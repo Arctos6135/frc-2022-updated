@@ -29,9 +29,9 @@ public class Intake extends CommandBase {
         boolean outtake = controller.getRawButton(outtakeButton);
 
         if (intake & !outtake) {
-            intakeSubsystem.runIntake(Constants.INTAKE_SPEED, Constants.INTAKE_SPEED); 
+            intakeSubsystem.runIntake(Constants.BOTTOM_INTAKE_ROLLER_SPEED, Constants.MECANUM_INTAKE_SPEED); 
         } else if (!intake & outtake) {
-            intakeSubsystem.runIntake(-Constants.INTAKE_SPEED, -Constants.INTAKE_SPEED);
+            intakeSubsystem.runIntake(-Constants.BOTTOM_INTAKE_ROLLER_SPEED, -Constants.MECANUM_INTAKE_SPEED);
         } else {
             intakeSubsystem.runIntake(0, 0);
         }

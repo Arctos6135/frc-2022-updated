@@ -68,22 +68,21 @@ public class Climb extends CommandBase {
     @Override 
     public void execute() {
         double climbSpeed = operatorController.getRawAxis(this.deployClimbAxis);
-        // Only climb upwards, do not climb downwards. 
-        // climbSpeed = climbSpeed > 0 ? TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE) : 0; 
-        // climbSpeed = precisionClimb ? climbSpeed * precisionFactor : climbSpeed * normalPrecision; 
 
-        climbSpeed = Math.abs(climbSpeed) > 0.5 ? 0.01 : 0;
+        climbSpeed = climbSpeed >= 0 ? climbSpeed : 0;
 
-        // Nearing the end of the match, climb system is activated. 
-        if (!overrideTime && DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME) {
-            this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
-        } 
-        // Override climb time. 
-        else if (overrideTime) {
-            this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
-        } 
-        else {
-            RobotContainer.getLogger().logInfo("Cannot activate climb susbsystem."); 
+        if (!DriverStation.isAutonomous()) {
+            // Nearing the end of the match, climb system is activated. 
+            if (!overrideTime && DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME) {
+                this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
+            } 
+            // Override climb time. 
+            else if (overrideTime) {
+                this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
+            } 
+            else {
+                RobotContainer.getLogger().logInfo("Cannot activate climb susbsystem."); 
+            }
         }
     }
 

@@ -38,13 +38,15 @@ public class PIDShoot extends CommandBase {
         this.shooterFeederSubsystem = shooterFeederSubsystem; 
         this.lowerHub = lowerHub; 
 
+        this.rpmReached = false; 
+
         addRequirements(shooter, shooterFeederSubsystem);
     }
 
     @Override 
     public void initialize() {
         if (!shooter.getOverheatShutoffOverride() && shooter.getMonitorGroup().getOverheatShutoff()) {
-            rpmReached = true; 
+            finished = true; 
             RobotContainer.getLogger().logError("Shooter is overheating, cannot shoot."); 
         } 
         
