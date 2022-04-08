@@ -165,12 +165,6 @@ public class TeleopDrive extends CommandBase {
         x = Math.copySign(x * x, x) * Constants.LEFT_RIGHT_DAMPENING;
 
         drivetrain.arcadeDrive(y, x, precisionDrive ? precisionFactor : 1.0);
-
-        drivetrain.getDifferentialDriveOdometry().update(
-            drivetrain.getAHRS().getRotation2d(), 
-            drivetrain.getLeftEncoder().getPosition(), 
-            drivetrain.getRightEncoder().getPosition()
-        );
     }
 
     @Override 

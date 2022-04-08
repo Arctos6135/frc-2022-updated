@@ -67,7 +67,7 @@ public class PathFinder extends CommandBase {
                 startPosition, waypoints, endPosition, this.config
         );
         
-        this.autoCommand = new RamseteCommand(autoTrajectory, drivetrain::getPose,
+        /* this.autoCommand = new RamseteCommand(autoTrajectory, drivetrain::getPose,
             new RamseteController(
                 AutoConstants.kRamseteB,
                 AutoConstants.kRamseteZeta),
@@ -79,7 +79,7 @@ public class PathFinder extends CommandBase {
             new PIDController(AutoConstants.kPDriveVel, AutoConstants.kDDriveVel, 0),
             new PIDController(AutoConstants.kPDriveVel, AutoConstants.kDDriveVel, 0),
             drivetrain::tankDriveVolts,
-            drivetrain);
+            drivetrain); */ 
     }
 
     /**
@@ -96,7 +96,7 @@ public class PathFinder extends CommandBase {
 
         PathFinder.autoTrajectory = TrajectoryGenerator.generateTrajectory(waypoints, this.config);
 
-        this.autoCommand = new RamseteCommand(autoTrajectory, drivetrain::getPose,
+        /* this.autoCommand = new RamseteCommand(autoTrajectory, drivetrain::getPose,
             new RamseteController(
                 AutoConstants.kRamseteB,
                 AutoConstants.kRamseteZeta),
@@ -108,7 +108,7 @@ public class PathFinder extends CommandBase {
             new PIDController(AutoConstants.kPDriveVel, 0, 0),
             new PIDController(AutoConstants.kPDriveVel, 0, 0),
             drivetrain::tankDriveVolts,
-            drivetrain);
+            drivetrain); */ 
     }
 
     /**
@@ -116,7 +116,7 @@ public class PathFinder extends CommandBase {
      */
     public Command resetInitialPosition() {
         return new InstantCommand(() -> {
-            drivetrain.resetOdometry(autoTrajectory.getInitialPose());
+            // drivetrain.resetOdometry(autoTrajectory.getInitialPose());
         });
     }
 
