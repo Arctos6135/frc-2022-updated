@@ -16,6 +16,7 @@ public class DistanceAim extends CommandBase {
      */
     public DistanceAim(Shooter shooter) {
         this.shooter = shooter; 
+        addRequirements(shooter);
     }
 
     @Override 
@@ -25,14 +26,16 @@ public class DistanceAim extends CommandBase {
 
     @Override 
     public void execute() {
-        /* double distance = shooter.getLimelight().estimateDistance(
+        if (shooter.getLimelight().hasValidTargets()) {
+            double distance = shooter.getLimelight().estimateDistance(
             Constants.LIMELIGHT_HEIGHT, Constants.TARGET_HEIGHT, Constants.LIMELIGHT_ANGLE);
         
-        if (Math.abs(Constants.TARGET_DISTANCE - distance) <= Constants.TARGET_DISTANCE_TOLERANCE) {
-            DistanceAim.shooterDistance = true; 
-        } else {
-            DistanceAim.shooterDistance = false; 
-        } */ 
+            if (Math.abs(Constants.TARGET_DISTANCE - distance) <= Constants.TARGET_DISTANCE_TOLERANCE) {
+                DistanceAim.shooterDistance = true; 
+            } else {
+                DistanceAim.shooterDistance = false; 
+            } 
+        }  
     }
 
     @Override 

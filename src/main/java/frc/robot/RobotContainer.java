@@ -86,7 +86,7 @@ public class RobotContainer {
 	public NetworkTableEntry overrideModeEntry;
 	public NetworkTableEntry shooterRPMEntry; 
 	public NetworkTableEntry shooterBottomRPMEntry; 
-	// public NetworkTableEntry shooterDistance; 
+	public NetworkTableEntry shooterDistance; 
 	
 	// Logging Related
 	public NetworkTableEntry lastError;
@@ -122,9 +122,9 @@ public class RobotContainer {
 		); 
 
 		shooterSubsystem = new Shooter(Constants.MAIN_SHOOTER_MOTOR, Constants.AUXILLIARY_SHOOTER_MOTOR);
-		/* shooterSubsystem.setDefaultCommand(
+		shooterSubsystem.setDefaultCommand(
 			new DistanceAim(shooterSubsystem)
-		); */ 
+		); 
 
 		/* climbSubsystem = new ClimbSubsystem(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
 		climbSubsystem.setDefaultCommand(
@@ -221,8 +221,8 @@ public class RobotContainer {
 		precisionDriveEntry = driveTab.add("Precision", TeleopDrive.isPrecisionDrive()).withWidget(BuiltInWidgets.kBooleanBox)
 		.withPosition(2, 0).withSize(2, 2).getEntry();
 
-		/* shooterDistance = driveTab.add("Shooter Distance", DistanceAim.shooterDistance).withWidget(BuiltInWidgets.kBooleanBox)
-		.withPosition(4, 0).withSize(2, 2).getEntry(); */ 
+		shooterDistance = driveTab.add("Shooter Distance", DistanceAim.shooterDistance).withWidget(BuiltInWidgets.kBooleanBox)
+		.withPosition(4, 0).withSize(2, 2).getEntry();
 
 		// Shooting Configurations
 		shooterRPMEntry = shooterTab.add("Shooter RPM (Top Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
@@ -248,7 +248,7 @@ public class RobotContainer {
 
 		// Vision System
 		shooterSubsystem.getLimelight().setStreamingMode(Limelight.StreamingMode.STANDARD); 
-		limelightTab.add("Camera", Limelight.STREAM_URL).withWidget(StdPlugWidgets.MJPEG_STREAM_VIEWER)
+		limelightTab.add("Camera", Limelight.STREAM_URL).withWidget(BuiltInWidgets.kCameraStream)
 			.withPosition(0, 0).withSize(10, 10); 
 		
 		// Climbing Configurations

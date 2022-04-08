@@ -42,7 +42,7 @@ public class TwoBallAuto {
     // Set shooter RPM. 
     public Command setShooterRPM;
     public boolean setShooterRPMFinished = false; 
-    public static double setShootRPMTime = 1.5; 
+    public static double setShootRPMTime = 2.0; 
     public double initialSetShooterRPMTime; 
 
     // Roll ball up to shooter. 
@@ -68,13 +68,13 @@ public class TwoBallAuto {
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 2.00; 
+    public static double driveToShootTime = 1.75; 
     public static double driveToShootSpeed = 0.25;
 
     // Set shooter RPM. 
     public Command setSecondShooterRPM;
     public boolean setSecondShooterRPMFinished = false; 
-    public static double setSecondShootRPMTime = 2.5; 
+    public static double setSecondShootRPMTime = 3.00; 
     public double initialSetSecondShooterRPMTime; 
 
     public Command feedSecondBall; 
@@ -174,13 +174,13 @@ public class TwoBallAuto {
         }, () -> this.driveBackwardsFinished, this.drivetrain); 
 
         this.driveToShoot = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveToShootSpeed, Math.abs(driveBackwardsRotation)); 
+            this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
             this.initialDriveToShootTime = Timer.getFPGATimestamp();
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveToShootTime >= driveToShootTime) {
                 this.driveToShootFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(driveToShootSpeed, Math.abs(driveBackwardsRotation)); 
+                this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 
