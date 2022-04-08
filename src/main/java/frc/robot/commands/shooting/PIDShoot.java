@@ -1,6 +1,7 @@
 package frc.robot.commands.shooting;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -21,6 +22,10 @@ public class PIDShoot extends CommandBase {
     private boolean lowerHub;
 
     private boolean rpmReached = false;  
+
+    private double initialRPMReachedTime;
+
+    private boolean finished = false; 
 
     /**
      * Creates a new command for shooting with PID control.
@@ -55,23 +60,19 @@ public class PIDShoot extends CommandBase {
 
     @Override 
     public void execute() { 
-        DriverStation.reportWarning(Double.toString(shooter.getActualVelocity()), true);
-        
-        // double distance = shooter.getLimelight().estimateDistance(
-        //    Constants.LIMELIGHT_HEIGHT, Constants.TARGET_HEIGHT, Constants.LIMELIGHT_ANGLE); 
-
-        // if (Math.abs(distance - Constants.TARGET_DISTANCE) < Constants.TARGET_DISTANCE_TOLERANCE) {
-            if (!rpmReached) {
-                this.shooter.setVelocity(this.targetVelocity);
-
-                if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) <= Shooter.VELOCITY_TOLERANCE) {
-                    rpmReached = true;
-                    RobotContainer.shooterRumbleOperator.execute();
+        if (!rpmReached) {
+            if (Math.abs(shooter.getActualVelocity() - this.targetVelocity) <= Shooter.VELOCITY_TOLERANCE) {
+                rpmReached = true;
+                this.initialRPMReachedTime = Timer.getFPGATimestamp();
+                RobotContainer.shooterRumbleOperator.execute();
                     
-                    this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
-                } 
+                this.shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED);
+            } 
+        } else {
+            if (Timer.getFPGATimestamp() - this.initialRPMReachedTime >= 3.0) {
+                this.finished = true;
             }
-        // }
+        }
     }
 
     @Override 
@@ -83,6 +84,6 @@ public class PIDShoot extends CommandBase {
 
     @Override 
     public boolean isFinished() {
-        return false; 
+        return finished; 
     }
 }

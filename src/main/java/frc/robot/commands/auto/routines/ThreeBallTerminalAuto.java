@@ -42,7 +42,7 @@ public class ThreeBallTerminalAuto {
     // Set shooter RPM. 
     public Command setShooterRPM;
     public boolean setShooterRPMFinished = false; 
-    public static double setShootRPMTime = 1.0; 
+    public static double setShootRPMTime = 1.00; 
     public double initialSetShooterRPMTime; 
 
     // Roll ball up to shooter. 
@@ -74,7 +74,7 @@ public class ThreeBallTerminalAuto {
     // Set shooter RPM. 
     public Command setSecondShooterRPM;
     public boolean setSecondShooterRPMFinished = false; 
-    public static double setSecondShootRPMTime = 1.0; 
+    public static double setSecondShootRPMTime = 2.75; 
     public double initialSetSecondShooterRPMTime; 
 
     // Roll ball up to shooter. 
@@ -88,11 +88,13 @@ public class ThreeBallTerminalAuto {
     public double initialRotateDrive; 
     public boolean rotateDriveFinished = false; 
     public static double rotateDriveTime = 1.0; 
+    public double rotationFactor = -0.25;
 
     public Command driveThirdCargo; 
     public double initialDriveThirdCargo; 
     public boolean driveThirdCargoFinished = false; 
     public static double driveThirdCargoTime = 3.0;
+    public double driveThirdCargoSpeed = -0.75;
 
     // Drive back towards hub.
     public Command driveShootThird; 
@@ -105,12 +107,13 @@ public class ThreeBallTerminalAuto {
     public double initialRotateAlign; 
     public boolean rotateAlignFinished = false; 
     public static double rotateAlignTime = 0.5;
+    public double rotateAlignSpeed = 0.25;
 
     public Command setThirdShooterRPM; 
     public boolean setThirdShooterRPMFinished = false; 
-    public static double setThirdShooterRPMTime = 1.0;
+    public static double setThirdShooterRPMTime = 3.25;
     public double initialSetThirdShooterRPM;
-
+ 
     public Command feedThirdBall; 
     public double initialFeedThirdBall; 
     public static double feedThirdBallTime = 2.0;
@@ -259,26 +262,26 @@ public class ThreeBallTerminalAuto {
         }, () -> this.feedSecondBallFinished, this.shooterFeeder);
 
         this.rotateDrive = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(0, -0.25);
+            this.drivetrain.arcadeDrive(0, this.rotationFactor);
             this.initialRotateDrive = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialRotateDrive >= rotateDriveTime) {
                 this.rotateDriveFinished = true;
             } else {
-                this.drivetrain.arcadeDrive(0, -0.25); 
+                this.drivetrain.arcadeDrive(0, this.rotationFactor); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0);
         }, () -> this.rotateDriveFinished, this.drivetrain);
 
         this.driveThirdCargo = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(-0.75, 0);
+            this.drivetrain.arcadeDrive(this.driveThirdCargoSpeed, 0);
             this.initialDriveThirdCargo = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveThirdCargo >= driveThirdCargoTime) {
                 this.driveThirdCargoFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(-0.75, 0); 
+                this.drivetrain.arcadeDrive(this.driveThirdCargoSpeed, 0); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0);
@@ -298,13 +301,13 @@ public class ThreeBallTerminalAuto {
         }, () -> this.driveShootThirdFinished, this.drivetrain);
 
         this.rotateAlign = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(0, 0.25); 
+            this.drivetrain.arcadeDrive(0, this.rotateAlignSpeed); 
             this.initialRotateAlign = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialRotateAlign >= rotateAlignTime) {
                 this.rotateAlignFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(0, 0.25); 
+                this.drivetrain.arcadeDrive(0, this.rotateAlignSpeed); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 

@@ -212,17 +212,17 @@ public class RobotContainer {
 		configTab.add("Burn Spark Motors", burnFlashCommand).withWidget(BuiltInWidgets.kCommand).withSize(3, 4).withPosition(3, 4); 
 
 		// Drive Tabs
-		driveTab.add("Gyro", drivetrain.getAHRS()).withWidget(BuiltInWidgets.kGyro).withPosition(0, 2).withSize(3, 4);
+		driveTab.add("Gyro", drivetrain.getAHRS()).withWidget(BuiltInWidgets.kGyro).withPosition(0, 2).withSize(2, 2);
 
 		// Driving Related Entries
 		driveReversedEntry = driveTab.add("Reversed", TeleopDrive.isReversed()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 0)
-		.withSize(2, 2).getEntry();
+		.withSize(1, 1).getEntry();
 		
 		precisionDriveEntry = driveTab.add("Precision", TeleopDrive.isPrecisionDrive()).withWidget(BuiltInWidgets.kBooleanBox)
-		.withPosition(2, 0).withSize(2, 2).getEntry();
+		.withPosition(1, 0).withSize(1, 1).getEntry();
 
 		shooterDistance = driveTab.add("Shooter Distance", DistanceAim.shooterDistance).withWidget(BuiltInWidgets.kBooleanBox)
-		.withPosition(4, 0).withSize(2, 2).getEntry();
+		.withPosition(2, 0).withSize(1, 1).getEntry();
 
 		// Shooting Configurations
 		shooterRPMEntry = shooterTab.add("Shooter RPM (Top Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
@@ -233,11 +233,11 @@ public class RobotContainer {
 
 		drivetrainMotorStatus = driveTab.add("Drivetrain", true).withWidget(BuiltInWidgets.kBooleanBox)
                 // Set the size and custom colours
-                .withPosition(8, 0).withSize(4, 4).withProperties(Map.of("color when true", Constants.COLOR_MOTOR_OK,
+                .withPosition(0, 1).withSize(1, 1).withProperties(Map.of("color when true", Constants.COLOR_MOTOR_OK,
                         "color when false", Constants.COLOR_MOTOR_WARNING));
 
-        shooterMotorStatus = driveTab.add("Shooter", true).withWidget(BuiltInWidgets.kBooleanBox).withPosition(12, 0)
-                .withSize(4, 4).withProperties(Map.of("color when true", Constants.COLOR_MOTOR_OK, "color when false",
+        shooterMotorStatus = driveTab.add("Shooter", true).withWidget(BuiltInWidgets.kBooleanBox).withPosition(1, 1)
+                .withSize(1, 1).withProperties(Map.of("color when true", Constants.COLOR_MOTOR_OK, "color when false",
                         Constants.COLOR_MOTOR_WARNING));
 
 		shooterTab.add("Shooter Roller Speed", shooterFeederSubsystem.getRollSpeed()).withWidget(BuiltInWidgets.kNumberSlider).withPosition(0, 3)
@@ -248,7 +248,7 @@ public class RobotContainer {
 
 		// Vision System
 		shooterSubsystem.getLimelight().setStreamingMode(Limelight.StreamingMode.STANDARD); 
-		limelightTab.add("Camera", Limelight.STREAM_URL).withWidget(BuiltInWidgets.kCameraStream)
+		limelightTab.add("Limelight", Limelight.STREAM_URL).withWidget(BuiltInWidgets.kCameraStream)
 			.withPosition(0, 0).withSize(10, 10); 
 		
 		// Climbing Configurations
@@ -312,8 +312,8 @@ public class RobotContainer {
 		// Autonomous Mode 
 		prematchTab.add("Autonomous Mode", autonomous.getChooser()).withPosition(0, 0).withSize(10, 5); 
 		
-		lastError = driveTab.add("Last Error", "").withPosition(10, 15).withSize(10, 4).getEntry();
-		lastWarning = driveTab.add("Last Warning", "").withPosition(0, 10).withSize(10, 4).getEntry();
+		lastError = driveTab.add("Last Error", "").withPosition(0, 4).withSize(3, 2).getEntry();
+		lastWarning = driveTab.add("Last Warning", "").withPosition(3, 4).withSize(3, 2).getEntry();
 		
 		debugTab.add(drivetrain).withPosition(0, 0).withSize(10, 8); 
 	}

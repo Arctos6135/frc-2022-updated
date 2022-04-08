@@ -1,0 +1,46 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Drivetrain": "Subsystem",
+      "/LiveWindow/IntakeSubsystem": "Subsystem",
+      "/LiveWindow/Shooter": "Subsystem",
+      "/LiveWindow/ShooterFeederSubsystem": "Subsystem",
+      "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[1]": "Gyro",
+      "/Shuffleboard/Climb/Override Climb Time": "Command",
+      "/Shuffleboard/Config/Burn Spark Motors": "Command",
+      "/Shuffleboard/Config/Shooter PID": "PIDController",
+      "/Shuffleboard/Debug/Drivetrain": "Subsystem",
+      "/Shuffleboard/Drive/Gyro": "Gyro",
+      "/Shuffleboard/Pre-match/Autonomous Mode": "String Chooser"
+    }
+  },
+  "NetworkTables": {
+    "FMSInfo": {
+      "open": true
+    },
+    "LiveWindow": {
+      "Shooter": {
+        "open": true
+      },
+      "ShooterFeederSubsystem": {
+        "open": true
+      },
+      "Ungrouped": {
+        "DifferentialDrive[1]": {
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
+    },
+    "Shuffleboard": {
+      "open": true
+    },
+    "limelight": {
+      "open": true
+    }
+  }
+}

@@ -28,7 +28,8 @@ public class DistanceAim extends CommandBase {
     public void execute() {
         if (shooter.getLimelight().hasValidTargets()) {
             double distance = shooter.getLimelight().estimateDistance(
-            Constants.LIMELIGHT_HEIGHT, Constants.TARGET_HEIGHT, Constants.LIMELIGHT_ANGLE);
+                Constants.LIMELIGHT_HEIGHT, Constants.TARGET_HEIGHT, Constants.LIMELIGHT_ANGLE
+            );
         
             if (Math.abs(Constants.TARGET_DISTANCE - distance) <= Constants.TARGET_DISTANCE_TOLERANCE) {
                 DistanceAim.shooterDistance = true; 
