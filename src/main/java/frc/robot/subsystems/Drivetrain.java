@@ -13,10 +13,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,9 +34,6 @@ public class Drivetrain extends SubsystemBase {
 
   private final MotorControllerGroup m_leftMotors;
   private final MotorControllerGroup m_rightMotors;
-
-  private final DifferentialDrive m_differentialDrive;
-  private final DifferentialDriveOdometry m_differentialOdometry;
 
   // Encoders
   private final RelativeEncoder rightEncoder;
@@ -313,25 +307,6 @@ public class Drivetrain extends SubsystemBase {
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftMotors.setVoltage(leftVolts);
     m_rightMotors.setVoltage(rightVolts);
-    m_differentialDrive.feed();
-  }
-
-  /**
-   * Set the maximum output of the differential drive.
-   * 
-   * @param maxOutput factor for output percentage.
-   */
-  public void setMaxOutput(double maxOutput) {
-    m_differentialDrive.setMaxOutput(maxOutput);
-  }
-
-  /**
-   * Get the estimated pose of the robot in its current state.
-   * 
-   * @return the pose as a Pose2d object.
-   */
-  public Pose2d getPose() {
-    return m_differentialOdometry.getPoseMeters();
   }
 
   /**
@@ -341,16 +316,6 @@ public class Drivetrain extends SubsystemBase {
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity());
-  }
-
-  /**
-   * Resets the odometry to the specified pose.
-   * 
-   * @param pose the pose to which to set the odometry.
-   */
-  public void resetOdometry(Pose2d pose) {
-    resetEncoders();
-    m_differentialOdometry.resetPosition(pose, ahrs.getRotation2d());
   }
 
   /**
@@ -410,15 +375,6 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Get the differential drive of the drivetrain. 
-   * 
-   * @return the differential drive. 
-   */
-  public DifferentialDriveOdometry getDifferentialDriveOdometry() {
-    return this.m_differentialOdometry;
-  }
-
-  /**
    * Creates a new drivetrain.
    * 
    * @param rightMaster   the corresponding PDP port for the right motor
@@ -453,10 +409,6 @@ public class Drivetrain extends SubsystemBase {
     m_rightMotors = new MotorControllerGroup(rightMotor, rightFollowerMotor);
     m_leftMotors = new MotorControllerGroup(leftMotor, leftFollowerMotor);
 
-    // Differential Drive and Odometry 
-    m_differentialDrive = new DifferentialDrive(m_leftMotors, m_rightMotors);
-    m_differentialOdometry = new DifferentialDriveOdometry(ahrs.getRotation2d());
-
     // Encoder Instantiation 
     rightEncoder = rightMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
     leftEncoder = leftMotor.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, Constants.COUNTS_PER_REVOLUTION);
@@ -479,12 +431,6 @@ public class Drivetrain extends SubsystemBase {
     if (motorMonitorGroup.getOverheatShutoff()) {
       setMotors(0, 0);
     }
-
-    m_differentialOdometry.update(
-        ahrs.getRotation2d(),
-        leftEncoder.getPosition(),
-        rightEncoder.getPosition()
-    );
   }
 
   @Override
