@@ -26,4 +26,5 @@ public class AutoConstants {
 
     public static final double AUTO_INTAKE_SPEED = 0.5; 
     public static final double AUTO_ROLL_SPEED = 0.6;
+    public static final double THREE_BALL_AUTO_ROLL_SPEED = 1.0; 
 }
