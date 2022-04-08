@@ -13,6 +13,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterFeederSubsystem;
 
+/**
+ * Starts at the top left blue tarmac or bottom right red tarmac. 
+ */
 public class ThreeBallTerminalAuto {
     private final Drivetrain drivetrain; 
     private final Shooter shooter; 
@@ -83,11 +86,17 @@ public class ThreeBallTerminalAuto {
     public boolean feedSecondBallFinished = false; 
     public static double feedSecondBallTime = 2.0; 
 
+    public Command terminalDriveBackwards; 
+    public double initialTerminalDriveBackwards; 
+    public boolean terminalDriveBackwardsFinished = false; 
+    public static double terminalDriveBackwardsTime = 1.0;
+    public static double terminalDriveBackwardsSpeed = -0.25; 
+
     // Rotate for third cargo (-90 degrees). 
     public Command rotateDrive; 
     public double initialRotateDrive; 
     public boolean rotateDriveFinished = false; 
-    public static double rotateDriveTime = 1.0; 
+    public static double rotateDriveTime = 0.5; 
     public double rotationFactor = -0.25;
 
     public Command driveThirdCargo; 
@@ -242,7 +251,6 @@ public class ThreeBallTerminalAuto {
             if (Timer.getFPGATimestamp() - this.initialSetSecondShooterRPMTime >= setSecondShootRPMTime) {
                 this.setSecondShooterRPMFinished = true;
             } 
-
         }, (interrupted) -> {
 
         }, () -> this.setSecondShooterRPMFinished, this.shooter); 
@@ -260,6 +268,19 @@ public class ThreeBallTerminalAuto {
             this.shooterFeeder.setRollSpeed(0); 
             this.shooter.setVelocity(0);
         }, () -> this.feedSecondBallFinished, this.shooterFeeder);
+
+        this.terminalDriveBackwards = new FunctionalCommand(() -> {
+            this.drivetrain.arcadeDrive(terminalDriveBackwardsSpeed, 0);
+            this.initialTerminalDriveBackwards = Timer.getFPGATimestamp();  
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialTerminalDriveBackwards >= terminalDriveBackwardsTime) {
+                this.terminalDriveBackwardsFinished = true; 
+            } else {
+                this.drivetrain.arcadeDrive(terminalDriveBackwardsSpeed, 0); 
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0);
+        }, () -> this.terminalDriveBackwardsFinished, this.drivetrain);
 
         this.rotateDrive = new FunctionalCommand(() -> {
             this.drivetrain.arcadeDrive(0, this.rotationFactor);
@@ -352,6 +373,7 @@ public class ThreeBallTerminalAuto {
                     this.setSecondShooterRPM
                 ),
                 this.feedSecondBall,
+                this.terminalDriveBackwards,
                 this.rotateDrive, 
                 new ParallelCommandGroup(
                     new SequentialCommandGroup(

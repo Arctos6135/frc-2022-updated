@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.auto.routines.DriveDistance;
 import frc.robot.commands.auto.routines.OneBallAuto;
 import frc.robot.commands.auto.routines.ThreeBallAuto;
 import frc.robot.commands.auto.routines.ThreeBallTerminalAuto;
@@ -85,26 +84,7 @@ public class Autonomous {
          * <li>Scores: 14 Points</li> 
          * <li>Preload: 1 Ball</li> 
          */
-        THREE_BALL_TERMINAL_AUTO("Three Ball Auto (Terminal)"), 
-        /**
-         * <ul> 
-         * <li>Starts: Anywhere</li> 
-         * <li>Ends: Forwards</li> 
-         * <li>Scores: Nothing</li> 
-         * <li>Preload: Any</li>
-         * </ul>   
-         */
-        INIT_FORWARD("Drive Forwards (Towards Hub)"), 
-        /**
-         * Drive away from hub and off the tarmac. 
-         * 
-         * <ul> 
-         * <li>Starts: Anywhere</li> 
-         * <li>Ends: Backwards</li> 
-         * <li>Scores: 2 Match Points</li> 
-         * <li>Preload: Any</li>
-         */
-        INIT_REVERSE("Drive Backwards (Off Tarmac)");
+        THREE_BALL_TERMINAL_AUTO("Three Ball Auto (Terminal)");
         
         String autoName; 
 
@@ -147,10 +127,6 @@ public class Autonomous {
                 return new ThreeBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
             case THREE_BALL_TERMINAL_AUTO: 
                 return new ThreeBallTerminalAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
-            case INIT_FORWARD:
-                return new DriveDistance(drivetrain, 2).getAutoCommand();
-            case INIT_REVERSE:
-                return new DriveDistance(drivetrain, -2).getAutoCommand();  
             default:
                 return null;
         }
