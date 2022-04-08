@@ -3,7 +3,6 @@ package frc.robot.commands.shooting;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.Shooter;
 
 /**
@@ -33,6 +32,7 @@ public class PrepareShooterPID extends CommandBase {
     @Override 
     public void initialize() {
         DriverStation.reportWarning("Shooter PID has started.", true); 
+
         if (!shooter.getOverheatShutoffOverride() && shooter.getMonitorGroup().getOverheatShutoff()) {
             rpmReached = true; 
             RobotContainer.getLogger().logError("Shooter is overheating, cannot shoot.");
@@ -44,21 +44,14 @@ public class PrepareShooterPID extends CommandBase {
 
     @Override 
     public void execute() {
-        // double distance = shooter.getLimelight().estimateDistance(
-        //    Constants.LIMELIGHT_HEIGHT, Constants.TARGET_HEIGHT, Constants.LIMELIGHT_ANGLE); 
-
-        // if (Math.abs(distance - Constants.TARGET_DISTANCE) < Constants.TARGET_DISTANCE_TOLERANCE) {
-            if (!rpmReached) {
-                this.shooter.setVelocity(this.targetRPM);
+        if (!rpmReached) {
+            this.shooter.setVelocity(this.targetRPM);
     
-                if (Math.abs(shooter.getActualVelocity() - targetRPM) < VELOCITY_TOLERANCE) {
-                    rpmReached = true;
-                    RobotContainer.shooterRumbleOperator.execute(); 
-                }
+            if (Math.abs(shooter.getActualVelocity() - targetRPM) < VELOCITY_TOLERANCE) {
+                rpmReached = true;
+                RobotContainer.shooterRumbleOperator.execute(); 
             }
-        /* } else {
-            RobotContainer.shooterRumbleOperator.execute();
-        } */ 
+        }
     }
 
     @Override 

@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import com.arctos6135.robotlib.logging.RobotLogger;
 import com.arctos6135.robotlib.newcommands.triggers.AnalogTrigger;
 import com.arctos6135.robotlib.oi.Rumble;
-import com.arctos6135.stdplug.api.StdPlugWidgets;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTableEntry;
