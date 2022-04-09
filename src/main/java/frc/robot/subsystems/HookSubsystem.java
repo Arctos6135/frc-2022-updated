@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * The hook deployment system for rung climbing. 
- * Note that this subsystem is separated from {@link ClimbSubsystem} due to 
+ * Note that this subsystem is separated from {@link Elevator} due to 
  * the requirement of default commands in {@link frc.robot.RobotContainer}.
  */
 public class HookSubsystem extends SubsystemBase {

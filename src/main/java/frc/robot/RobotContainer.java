@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import frc.robot.commands.climbing.Climb;
-import frc.robot.commands.climbing.DeployHook;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
@@ -29,9 +28,8 @@ import frc.robot.commands.shooting.PIDShoot;
 import frc.robot.commands.shooting.PrepareShooter;
 import frc.robot.commands.shooting.PrepareShooterPID;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.HookSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.Limelight;
@@ -43,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+// http://172.22.11.2/
 /**
  * This class is w here the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -56,8 +55,7 @@ public class RobotContainer {
 	private final IntakeSubsystem intakeSubsystem;
 	private final ShooterFeederSubsystem shooterFeederSubsystem; 
 	private final Shooter shooterSubsystem;
-	private final ClimbSubsystem climbSubsystem; 
-	private final HookSubsystem hookSubsystem; 
+	private final Elevator climbSubsystem; 
 
 	// Controllers
 	private static final XboxController driverController = new XboxController(Constants.XBOX_DRIVER);
@@ -128,15 +126,10 @@ public class RobotContainer {
 			new DistanceAim(shooterSubsystem)
 		); 
 
-		climbSubsystem = new ClimbSubsystem(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
+		climbSubsystem = new Elevator(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
 		climbSubsystem.setDefaultCommand(
 			new Climb(climbSubsystem, operatorController, Constants.CLIMB_RUNG_AXIS)
 		);
-		
-		hookSubsystem = new HookSubsystem(Constants.HOOK_DEPLOYMENT_MOTOR); 
-		hookSubsystem.setDefaultCommand(
-			new DeployHook(hookSubsystem, driverController)
-		); 
 
 		autonomous = new Autonomous(); 
 
@@ -350,8 +343,7 @@ public class RobotContainer {
 		Button autoAimButton = new JoystickButton(operatorController, Constants.AUTO_AIM_BUTTON);
 
 		// Climb Related 
-		Button toggleClimbPrecision = new JoystickButton(operatorController, Constants.TOGGLE_CLIMB_PRECISION); 
-		Button overrideClimbTimeButton = new JoystickButton(driverController, Constants.OVERRIDE_CLIMB_TIME_BUTTON); 
+		Button overrideClimbTimeButton = new JoystickButton(operatorController, Constants.OVERRIDE_CLIMB_TIME_BUTTON); 
 
 		// Driver Button Bindings
 		reverseDriveButton.whenPressed(() -> {
@@ -432,12 +424,8 @@ public class RobotContainer {
  
 		// Climber Button Bindings 
 		overrideClimbTimeButton.whenPressed(() -> {
-			ClimbSubsystem.toggleClimbTimeOverride();
+			Elevator.toggleClimbTimeOverride();
 		});
-
-		toggleClimbPrecision.whenPressed(() -> {
-			Climb.togglePrecisionClimb();
-		}); 
 	}
 
 	/**

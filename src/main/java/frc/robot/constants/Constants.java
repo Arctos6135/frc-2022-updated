@@ -25,12 +25,8 @@ public final class Constants {
 	public static final int MECANUM_INTAKE_MOTOR = 9;
 
 	// Climb Motors 
-	public static final int HOOK_DEPLOYMENT_MOTOR = 9; 
 	public static final int LEFT_CLIMB_MOTOR = 10; 
 	public static final int RIGHT_CLIMB_MOTOR = 11; 
-
-	// Intake Arm Motors
-	public static final int INTAKE_ARM_MOTOR = 13;
 
 	// Indexer Constants
 	public static final double MECANUM_INTAKE_SPEED = 0.5; 
@@ -74,12 +70,10 @@ public final class Constants {
 	public static final int REVERSE_DRIVE_DIRECTION = XboxController.Button.kLeftStick.value;
 	public static final int OVERRIDE_MOTOR_PROTECTION = XboxController.Button.kB.value;
 	public static final int PRECISION_DRIVE_TOGGLE = XboxController.Button.kX.value;
-	public static final int DEPLOY_CLIMB_HOOK = XboxController.Axis.kRightTrigger.value; 
 	public static final int RETRACT_CLIMB_HOOK = XboxController.Button.kY.value; 
 	public static final int PRECISION_DRIVE_HOLD = XboxController.Axis.kLeftTrigger.value;
 	public static final int INTAKE_BUTTON = XboxController.Button.kRightBumper.value;
 	public static final int OUTTAKE_BUTTON = XboxController.Button.kLeftBumper.value;
-	public static final int OVERRIDE_CLIMB_TIME_BUTTON = XboxController.Button.kStart.value; 
 	
 	// Operator Controller 
 	public static final int XBOX_OPERATOR = 1;
@@ -94,7 +88,7 @@ public final class Constants {
 	public static final int TELEOP_ROLL_UP_TRIGGER = XboxController.Button.kRightBumper.value;
 	public static final int TELEOP_ROLL_DOWN_TRIGGER = XboxController.Button.kLeftBumper.value; 
 	public static final int CLIMB_RUNG_AXIS = XboxController.Axis.kLeftY.value;
-	public static final int TOGGLE_CLIMB_PRECISION = XboxController.Button.kLeftStick.value;
+	public static final int OVERRIDE_CLIMB_TIME_BUTTON = XboxController.Button.kLeftStick.value;
 	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
 	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value;
 
