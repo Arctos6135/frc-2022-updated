@@ -21,8 +21,8 @@ public class ThreeBallTerminalAuto {
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    public static final double shooterTargetRPM = 5000.0;
-    public static final double shooterTargetRPMHigh = 6000.0; 
+    public static final double shooterTargetRPM = 4750.0;
+    public static final double shooterTargetRPMHigh = 5250.0; 
     public static final double driveForwardSpeed = 0.75;  
 
     // Intake ball for all of autonomous. 

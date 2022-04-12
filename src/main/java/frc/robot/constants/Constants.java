@@ -70,15 +70,16 @@ public final class Constants {
 	public static final int REVERSE_DRIVE_DIRECTION = XboxController.Button.kLeftStick.value;
 	public static final int OVERRIDE_MOTOR_PROTECTION = XboxController.Button.kB.value;
 	public static final int PRECISION_DRIVE_TOGGLE = XboxController.Button.kX.value;
-	public static final int RETRACT_CLIMB_HOOK = XboxController.Button.kY.value; 
+	public static final int ADJUST_SHOOTER_RPM_HIGHER = XboxController.Button.kY.value; 
+	public static final int ADJUST_SHOOTER_RPM_LOWER = XboxController.Button.kA.value; 
 	public static final int PRECISION_DRIVE_HOLD = XboxController.Axis.kLeftTrigger.value;
 	public static final int INTAKE_BUTTON = XboxController.Button.kRightBumper.value;
 	public static final int OUTTAKE_BUTTON = XboxController.Button.kLeftBumper.value;
 	
 	// Operator Controller 
 	public static final int XBOX_OPERATOR = 1;
-	public static final int DEPLOY_SHOOTER_LOWER_BUTTON = XboxController.Axis.kRightTrigger.value;
-	public static final int DEPLOY_SHOOTER_UPPER_BUTTON = XboxController.Axis.kLeftTrigger.value; 
+	public static final int ADJUST_SHOOTER_HIGHER_BUTTON = XboxController.Axis.kRightTrigger.value;
+	public static final int ADJUST_SHOOTER_LOWER_BUTTON = XboxController.Axis.kLeftTrigger.value; 
 	public static final int SHOOT_LOW_RPM_BUTTON = XboxController.Button.kX.value;
 	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Button.kY.value;
 	public static final int AUTO_AIM_BUTTON = XboxController.Button.kA.value;
@@ -114,13 +115,14 @@ public final class Constants {
 
 	public static final double BALL_MASS = 9.5;
 
-	// Colors 
+	// Colors ./
 	// TODO: change if necessary
 	public static final Color OUR_ALLIANCE = Color.kRed; 
 	public static final Color OPPOSING_ALLIANCE = Color.kBlue; 
 
 	public static final double LOW_HUB_RPM = 2500.0; 
 	public static final double HIGH_HUB_RPM = 4750.0; 
+	public static final double SHOOTER_ANGLE_ADJUSTMENT = 500.0;
 
 	// Direct Shooter Velocity 
 	public static final double LOW_HUB_RPM_DIRECT = 0.5; 

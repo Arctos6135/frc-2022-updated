@@ -24,11 +24,9 @@ import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooting.AutoAim;
 import frc.robot.commands.shooting.DistanceAim;
-import frc.robot.commands.shooting.PIDShoot;
 import frc.robot.commands.shooting.PrepareShooter;
 import frc.robot.commands.shooting.PrepareShooterPID;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
@@ -55,7 +53,6 @@ public class RobotContainer {
 	private final IntakeSubsystem intakeSubsystem;
 	private final ShooterFeederSubsystem shooterFeederSubsystem; 
 	private final Shooter shooterSubsystem;
-	private final Elevator climbSubsystem; 
 
 	// Controllers
 	private static final XboxController driverController = new XboxController(Constants.XBOX_DRIVER);
@@ -125,11 +122,6 @@ public class RobotContainer {
 		shooterSubsystem.setDefaultCommand(
 			new DistanceAim(shooterSubsystem)
 		); 
-
-		climbSubsystem = new Elevator(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
-		climbSubsystem.setDefaultCommand(
-			new Climb(climbSubsystem, operatorController, Constants.CLIMB_RUNG_AXIS)
-		);
 
 		autonomous = new Autonomous(); 
 
@@ -330,8 +322,8 @@ public class RobotContainer {
 		AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, Constants.PRECISION_DRIVE_HOLD, 0.5);
 		
 		// Shooter Related 
-		AnalogTrigger deployShooterLowerButton = new AnalogTrigger(operatorController, Constants.DEPLOY_SHOOTER_LOWER_BUTTON, 0.5);
-		AnalogTrigger deployShooterUpperButton = new AnalogTrigger(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON, 0.5);
+		Button adjustShooterRPMHigherButton = new JoystickButton(driverController, Constants.ADJUST_SHOOTER_HIGHER_BUTTON);
+		Button adjustShooterRPMLowerButton = new JoystickButton(driverController, Constants.ADJUST_SHOOTER_LOWER_BUTTON);
 		Button stopShooterButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_BUTTON); 
 
 		Button shootLowHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_LOW_RPM_BUTTON);
@@ -341,9 +333,6 @@ public class RobotContainer {
 		Button stopShooterFeederButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_FEEDER_BUTTON); 
 
 		Button autoAimButton = new JoystickButton(operatorController, Constants.AUTO_AIM_BUTTON);
-
-		// Climb Related 
-		Button overrideClimbTimeButton = new JoystickButton(operatorController, Constants.OVERRIDE_CLIMB_TIME_BUTTON); 
 
 		// Driver Button Bindings
 		reverseDriveButton.whenPressed(() -> {
@@ -393,14 +382,14 @@ public class RobotContainer {
 			infoRumbleOperator.execute(); 
 		}); 
 
-		// Shooting 
-		deployShooterLowerButton.whenActive(
-			new PIDShoot(shooterSubsystem, shooterFeederSubsystem, true)
-		);
+		// Shooting 	
+		adjustShooterRPMHigherButton.whenPressed(() -> {
+			shooterSubsystem.increaseShooterRPM();
+		});
 
-		deployShooterUpperButton.whenActive(
-			new PIDShoot(shooterSubsystem, shooterFeederSubsystem, false)
-		); 
+		adjustShooterRPMLowerButton.whenPressed(() -> {
+			shooterSubsystem.decreaseShooterRPM();
+		});
 
 		stopShooterButton.whenPressed(
 			new PrepareShooter(shooterSubsystem, shooterFeederSubsystem, 0)
@@ -421,11 +410,6 @@ public class RobotContainer {
 		stopShooterFeederButton.whenPressed(new InstantCommand(() -> {
 			shooterFeederSubsystem.stopRoller();
 		}, shooterFeederSubsystem));
- 
-		// Climber Button Bindings 
-		overrideClimbTimeButton.whenPressed(() -> {
-			Elevator.toggleClimbTimeOverride();
-		});
 	}
 
 	/**
