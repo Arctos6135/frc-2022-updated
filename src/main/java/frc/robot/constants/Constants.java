@@ -133,8 +133,8 @@ public final class Constants {
 
 	// Vision Targets and Settings (Inches and Degrees) 
 	public static final double TARGET_HEIGHT = 104; 
-	public static final double LIMELIGHT_HEIGHT = 38; 
+	public static final double LIMELIGHT_HEIGHT = 37; 
 	public static final double LIMELIGHT_ANGLE = 15; 
-	public static final double TARGET_DISTANCE = 80;
+	public static final double TARGET_DISTANCE = 110;
 	public static final double TARGET_DISTANCE_TOLERANCE = 24;
 }

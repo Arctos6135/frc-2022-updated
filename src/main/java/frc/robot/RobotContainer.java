@@ -84,6 +84,8 @@ public class RobotContainer {
 	public NetworkTableEntry shooterRPMEntry; 
 	public NetworkTableEntry shooterBottomRPMEntry; 
 	public NetworkTableEntry shooterDistance; 
+	public NetworkTableEntry limelightDetected; 
+	public NetworkTableEntry shotDistance;
 	
 	// Logging Related
 	public NetworkTableEntry lastError;
@@ -202,8 +204,13 @@ public class RobotContainer {
 		precisionDriveEntry = driveTab.add("Precision", TeleopDrive.isPrecisionDrive()).withWidget(BuiltInWidgets.kBooleanBox)
 		.withPosition(1, 0).withSize(1, 1).getEntry();
 
-		shooterDistance = driveTab.add("Shooter Distance", DistanceAim.shooterDistance).withWidget(BuiltInWidgets.kBooleanBox)
+		shooterDistance = driveTab.add("Shooter Distance", DistanceAim.getShooterRightDistance()).withWidget(BuiltInWidgets.kBooleanBox)
 		.withPosition(2, 0).withSize(1, 1).getEntry();
+
+		limelightDetected = driveTab.add("Target", DistanceAim.getLimelightDetected()).withWidget(BuiltInWidgets.kBooleanBox)
+		.withPosition(2, 1).withSize(1, 1).getEntry();
+
+		shotDistance = driveTab.add("Shot Distance", DistanceAim.getShotDistance()).withPosition(2, 2).withSize(1, 1).getEntry();
 
 		// Shooting Configurations
 		shooterRPMEntry = shooterTab.add("Shooter RPM (Top Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
@@ -302,10 +309,14 @@ public class RobotContainer {
 	/**
 	 * Update the shooter RPM entries on Shuffleboard. 
 	 * @see {@link frc.robot.commands.shooting.PIDShoot}
+	 * @see {@link frc.robot.commands.shooting.DistanceAim}
 	 */
 	public void updateDashboard() {
 		shooterRPMEntry.setNumber(shooterSubsystem.getTopWheelVelocity());
 		shooterBottomRPMEntry.setNumber(shooterSubsystem.getBottomWheelVelocity()); 
+		shooterDistance.setBoolean(DistanceAim.getShooterRightDistance());
+		shotDistance.setNumber(DistanceAim.getShotDistance()); 
+		limelightDetected.setBoolean(DistanceAim.getLimelightDetected()); 
 	}
 
 	/**
