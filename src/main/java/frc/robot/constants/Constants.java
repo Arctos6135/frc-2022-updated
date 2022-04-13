@@ -94,7 +94,6 @@ public final class Constants {
 	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value;
 
 	// Robot Dimensions
-	// TODO: change these to match robot
 	public static final double ROBOT_MAX_VELOCITY = 0;
 	public static final double ROBOT_MAX_ACCELERATION = 0;
 	public static final double ROBOT_BASE_WIDTH = 0; // inches
@@ -115,8 +114,7 @@ public final class Constants {
 
 	public static final double BALL_MASS = 9.5;
 
-	// Colors ./
-	// TODO: change if necessary
+	// Colors 
 	public static final Color OUR_ALLIANCE = Color.kRed; 
 	public static final Color OPPOSING_ALLIANCE = Color.kBlue; 
 
