@@ -152,7 +152,7 @@ public class Shooter extends SubsystemBase {
 		this.pidControllerMaster.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
 			? 0 : rpm, CANSparkMax.ControlType.kVelocity);
 		this.pidControllerFollower.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
-			? 0 : rpm, CANSparkMax.ControlType.kVelocity);
+			? 0 : rpm + 500, CANSparkMax.ControlType.kVelocity);
 		this.velocity = rpm;
 	}
 
