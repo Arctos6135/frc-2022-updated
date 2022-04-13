@@ -121,8 +121,8 @@ public final class Constants {
 	public static final Color OPPOSING_ALLIANCE = Color.kBlue; 
 
 	public static final double LOW_HUB_RPM = 2500.0; 
-	public static final double HIGH_HUB_RPM = 4750.0; 
-	public static final double SHOOTER_ANGLE_ADJUSTMENT = 500.0;
+	public static final double HIGH_HUB_RPM = 4500.0; 
+	public static final double SHOOTER_ANGLE_ADJUSTMENT = 600.0;
 
 	// Direct Shooter Velocity 
 	public static final double LOW_HUB_RPM_DIRECT = 0.5; 
@@ -134,7 +134,7 @@ public final class Constants {
 	// Vision Targets and Settings (Inches and Degrees) 
 	public static final double TARGET_HEIGHT = 104; 
 	public static final double LIMELIGHT_HEIGHT = 37; 
-	public static final double LIMELIGHT_ANGLE = 15; 
-	public static final double TARGET_DISTANCE = 110;
-	public static final double TARGET_DISTANCE_TOLERANCE = 24;
+	public static final double LIMELIGHT_ANGLE = 25; 
+	public static final double TARGET_DISTANCE = 96;
+	public static final double TARGET_DISTANCE_TOLERANCE = 12;
 }
