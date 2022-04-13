@@ -86,6 +86,7 @@ public class RobotContainer {
 	public NetworkTableEntry shooterDistance; 
 	public NetworkTableEntry limelightDetected; 
 	public NetworkTableEntry shotDistance;
+	public NetworkTableEntry shooterRPMDriveTab;
 	
 	// Logging Related
 	public NetworkTableEntry lastError;
@@ -196,6 +197,8 @@ public class RobotContainer {
 
 		// Drive Tabs
 		driveTab.add("Gyro", drivetrain.getAHRS()).withWidget(BuiltInWidgets.kGyro).withPosition(0, 2).withSize(2, 2);
+
+		shooterRPMDriveTab = driveTab.add("Shooter RPM", Shooter.shooterAdjustment).withPosition(2, 3).withSize(1, 1).getEntry(); 
 
 		// Driving Related Entries
 		driveReversedEntry = driveTab.add("Reversed", TeleopDrive.isReversed()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(0, 0)
@@ -317,6 +320,7 @@ public class RobotContainer {
 		shooterDistance.setBoolean(DistanceAim.getShooterRightDistance());
 		shotDistance.setNumber(DistanceAim.getShotDistance()); 
 		limelightDetected.setBoolean(DistanceAim.getLimelightDetected()); 
+		shooterRPMDriveTab.setNumber(Shooter.shooterAdjustment);
 	}
 
 	/**
