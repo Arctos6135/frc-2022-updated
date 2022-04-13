@@ -68,7 +68,7 @@ public class TwoBallWallAuto {
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 1.0; 
+    public static double driveToShootTime = 1.75; 
     public static double driveToShootSpeed = 0.25;
 
     // Set shooter RPM. 
@@ -192,7 +192,7 @@ public class TwoBallWallAuto {
             if (Timer.getFPGATimestamp() - this.initialPauseDriveTime >= pauseDriveTime) {
                 this.pauseDriveFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(0, 0.25); 
+                this.drivetrain.arcadeDrive(0, 0.10); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 

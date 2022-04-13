@@ -19,7 +19,7 @@ public class TwoBallAuto {
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    public static final double shooterTargetRPM = 5000.0;
+    public static final double shooterTargetRPM = 4750.0;
     public static final double driveForwardSpeed = 0.75;  
     public static final double moveArmSpeed = 0.5; 
 

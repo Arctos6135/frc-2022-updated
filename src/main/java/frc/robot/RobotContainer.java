@@ -19,19 +19,15 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import frc.robot.commands.climbing.Climb;
-import frc.robot.commands.climbing.DeployHook;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooting.AutoAim;
 import frc.robot.commands.shooting.DistanceAim;
-import frc.robot.commands.shooting.PIDShoot;
 import frc.robot.commands.shooting.PrepareShooter;
 import frc.robot.commands.shooting.PrepareShooterPID;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.HookSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.util.Limelight;
@@ -43,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+// http://172.22.11.2/
 /**
  * This class is w here the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -56,8 +53,6 @@ public class RobotContainer {
 	private final IntakeSubsystem intakeSubsystem;
 	private final ShooterFeederSubsystem shooterFeederSubsystem; 
 	private final Shooter shooterSubsystem;
-	private final ClimbSubsystem climbSubsystem; 
-	private final HookSubsystem hookSubsystem; 
 
 	// Controllers
 	private static final XboxController driverController = new XboxController(Constants.XBOX_DRIVER);
@@ -89,6 +84,8 @@ public class RobotContainer {
 	public NetworkTableEntry shooterRPMEntry; 
 	public NetworkTableEntry shooterBottomRPMEntry; 
 	public NetworkTableEntry shooterDistance; 
+	public NetworkTableEntry limelightDetected; 
+	public NetworkTableEntry shotDistance;
 	
 	// Logging Related
 	public NetworkTableEntry lastError;
@@ -126,16 +123,6 @@ public class RobotContainer {
 		shooterSubsystem = new Shooter(Constants.MAIN_SHOOTER_MOTOR, Constants.AUXILLIARY_SHOOTER_MOTOR);
 		shooterSubsystem.setDefaultCommand(
 			new DistanceAim(shooterSubsystem)
-		); 
-
-		climbSubsystem = new ClimbSubsystem(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
-		climbSubsystem.setDefaultCommand(
-			new Climb(climbSubsystem, operatorController, Constants.CLIMB_RUNG_AXIS)
-		);
-		
-		hookSubsystem = new HookSubsystem(Constants.HOOK_DEPLOYMENT_MOTOR); 
-		hookSubsystem.setDefaultCommand(
-			new DeployHook(hookSubsystem, driverController)
 		); 
 
 		autonomous = new Autonomous(); 
@@ -217,8 +204,13 @@ public class RobotContainer {
 		precisionDriveEntry = driveTab.add("Precision", TeleopDrive.isPrecisionDrive()).withWidget(BuiltInWidgets.kBooleanBox)
 		.withPosition(1, 0).withSize(1, 1).getEntry();
 
-		shooterDistance = driveTab.add("Shooter Distance", DistanceAim.shooterDistance).withWidget(BuiltInWidgets.kBooleanBox)
+		shooterDistance = driveTab.add("Shooter Distance", DistanceAim.getShooterRightDistance()).withWidget(BuiltInWidgets.kBooleanBox)
 		.withPosition(2, 0).withSize(1, 1).getEntry();
+
+		limelightDetected = driveTab.add("Target", DistanceAim.getLimelightDetected()).withWidget(BuiltInWidgets.kBooleanBox)
+		.withPosition(2, 1).withSize(1, 1).getEntry();
+
+		shotDistance = driveTab.add("Shot Distance", DistanceAim.getShotDistance()).withPosition(2, 2).withSize(1, 1).getEntry();
 
 		// Shooting Configurations
 		shooterRPMEntry = shooterTab.add("Shooter RPM (Top Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
@@ -317,10 +309,14 @@ public class RobotContainer {
 	/**
 	 * Update the shooter RPM entries on Shuffleboard. 
 	 * @see {@link frc.robot.commands.shooting.PIDShoot}
+	 * @see {@link frc.robot.commands.shooting.DistanceAim}
 	 */
 	public void updateDashboard() {
 		shooterRPMEntry.setNumber(shooterSubsystem.getTopWheelVelocity());
 		shooterBottomRPMEntry.setNumber(shooterSubsystem.getBottomWheelVelocity()); 
+		shooterDistance.setBoolean(DistanceAim.getShooterRightDistance());
+		shotDistance.setNumber(DistanceAim.getShotDistance()); 
+		limelightDetected.setBoolean(DistanceAim.getLimelightDetected()); 
 	}
 
 	/**
@@ -337,8 +333,8 @@ public class RobotContainer {
 		AnalogTrigger precisionDriveTrigger = new AnalogTrigger(driverController, Constants.PRECISION_DRIVE_HOLD, 0.5);
 		
 		// Shooter Related 
-		AnalogTrigger deployShooterLowerButton = new AnalogTrigger(operatorController, Constants.DEPLOY_SHOOTER_LOWER_BUTTON, 0.5);
-		AnalogTrigger deployShooterUpperButton = new AnalogTrigger(operatorController, Constants.DEPLOY_SHOOTER_UPPER_BUTTON, 0.5);
+		Button adjustShooterRPMHigherButton = new JoystickButton(driverController, Constants.ADJUST_SHOOTER_HIGHER_BUTTON);
+		Button adjustShooterRPMLowerButton = new JoystickButton(driverController, Constants.ADJUST_SHOOTER_LOWER_BUTTON);
 		Button stopShooterButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_BUTTON); 
 
 		Button shootLowHubRPMButton = new JoystickButton(operatorController, Constants.SHOOT_LOW_RPM_BUTTON);
@@ -348,10 +344,6 @@ public class RobotContainer {
 		Button stopShooterFeederButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_FEEDER_BUTTON); 
 
 		Button autoAimButton = new JoystickButton(operatorController, Constants.AUTO_AIM_BUTTON);
-
-		// Climb Related 
-		Button toggleClimbPrecision = new JoystickButton(operatorController, Constants.TOGGLE_CLIMB_PRECISION); 
-		Button overrideClimbTimeButton = new JoystickButton(driverController, Constants.OVERRIDE_CLIMB_TIME_BUTTON); 
 
 		// Driver Button Bindings
 		reverseDriveButton.whenPressed(() -> {
@@ -401,14 +393,14 @@ public class RobotContainer {
 			infoRumbleOperator.execute(); 
 		}); 
 
-		// Shooting 
-		deployShooterLowerButton.whenActive(
-			new PIDShoot(shooterSubsystem, shooterFeederSubsystem, true)
-		);
+		// Shooting 	
+		adjustShooterRPMHigherButton.whenPressed(() -> {
+			shooterSubsystem.increaseShooterRPM();
+		});
 
-		deployShooterUpperButton.whenActive(
-			new PIDShoot(shooterSubsystem, shooterFeederSubsystem, false)
-		); 
+		adjustShooterRPMLowerButton.whenPressed(() -> {
+			shooterSubsystem.decreaseShooterRPM();
+		});
 
 		stopShooterButton.whenPressed(
 			new PrepareShooter(shooterSubsystem, shooterFeederSubsystem, 0)
@@ -429,15 +421,6 @@ public class RobotContainer {
 		stopShooterFeederButton.whenPressed(new InstantCommand(() -> {
 			shooterFeederSubsystem.stopRoller();
 		}, shooterFeederSubsystem));
- 
-		// Climber Button Bindings 
-		overrideClimbTimeButton.whenPressed(() -> {
-			ClimbSubsystem.toggleClimbTimeOverride();
-		});
-
-		toggleClimbPrecision.whenPressed(() -> {
-			Climb.togglePrecisionClimb();
-		}); 
 	}
 
 	/**

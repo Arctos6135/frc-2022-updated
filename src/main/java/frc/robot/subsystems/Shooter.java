@@ -41,6 +41,8 @@ public class Shooter extends SubsystemBase {
 	public static final double kP = 0.00020, kI = 0, kD = 0.00125, kF = 0.00015, kIz = 0, maxRPM = 7500;
 	public static final double kP2 = 0.00020, kI2 = 0, kD2 = 0.00125, kF2 = 0.00015, kIz2 = 0, maxRPM2 = 7500;
 
+	public static double shooterAdjustment = 0; 
+
 	/**
 	 * Creates new instance of the shooter subsystem. 
 
@@ -111,6 +113,14 @@ public class Shooter extends SubsystemBase {
 	public RelativeEncoder getEncoder() {
 		return this.shooterEncoderMaster;
 	}
+
+	public void increaseShooterRPM() {
+		Shooter.shooterAdjustment += 250; 
+	}
+
+	public void decreaseShooterRPM() {
+		Shooter.shooterAdjustment -= 250;
+	}
 	
 	/**
 	 * Get the velocity that the shooter wheels are spinning at. 
@@ -149,11 +159,25 @@ public class Shooter extends SubsystemBase {
 	 * @param rpm the desired velocity of the shooter. 
 	 */
 	public void setVelocity(double rpm) {
-		this.pidControllerMaster.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
+		if (Shooter.shooterAdjustment == 0) {
+			this.pidControllerMaster.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
 			? 0 : rpm, CANSparkMax.ControlType.kVelocity);
-		this.pidControllerFollower.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
-			? 0 : rpm + 500, CANSparkMax.ControlType.kVelocity);
-		this.velocity = rpm;
+			this.pidControllerFollower.setReference(monitorGroup.getOverheatShutoff() && !protectionOverridden
+				? 0 : rpm + Constants.SHOOTER_ANGLE_ADJUSTMENT, CANSparkMax.ControlType.kVelocity);
+			this.velocity = rpm;
+		} else {
+			if (monitorGroup.getOverheatShutoff() && !protectionOverridden) {
+				this.pidControllerMaster.setReference(0, CANSparkMax.ControlType.kVelocity);
+				this.pidControllerFollower.setReference(0, CANSparkMax.ControlType.kVelocity); 
+			} else {
+				this.pidControllerMaster.setReference(rpm + Shooter.shooterAdjustment >= 0 ? 
+					rpm + Shooter.shooterAdjustment : rpm, CANSparkMax.ControlType.kVelocity);
+				this.pidControllerFollower.setReference(rpm + Shooter.shooterAdjustment >= 0 ? 
+					rpm + Shooter.shooterAdjustment + Constants.SHOOTER_ANGLE_ADJUSTMENT : rpm + Constants.SHOOTER_ANGLE_ADJUSTMENT,
+					CANSparkMax.ControlType.kVelocity); 
+			}
+		}
+		
 	}
 
 	/**

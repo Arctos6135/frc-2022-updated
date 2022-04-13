@@ -4,17 +4,18 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.Elevator;
 
 /**
  * Pulls the robot up using two motors on the climb subsystem to roll the winch.    
  * This is the default command for 
- * @see ClimbSubsystem.java 
+ * @see Elevator.java 
  */
 public class Climb extends CommandBase {
     
-    private final ClimbSubsystem climbSubsystem; 
+    private final Elevator climbSubsystem; 
     private final XboxController operatorController;
     private final int deployClimbAxis; 
 
@@ -29,7 +30,7 @@ public class Climb extends CommandBase {
      * @param climbSubsystem the climb subsystem with the climb and hook motors. 
      * @param operatorController the controller used to interact with the climb commands. 
      */
-    public Climb(ClimbSubsystem climbSubsystem, XboxController operatorController, int deployClimbAxis) {
+    public Climb(Elevator climbSubsystem, XboxController operatorController, int deployClimbAxis) {
         this.climbSubsystem = climbSubsystem; 
         this.operatorController = operatorController;
         this.deployClimbAxis = deployClimbAxis;
@@ -69,7 +70,7 @@ public class Climb extends CommandBase {
     public void execute() {
         double climbSpeed = operatorController.getRawAxis(this.deployClimbAxis);
 
-        climbSpeed = climbSpeed >= 0 ? climbSpeed : 0;
+        climbSpeed = TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE);
 
         if (!DriverStation.isAutonomous()) {
             // Nearing the end of the match, climb system is activated. 
@@ -81,7 +82,7 @@ public class Climb extends CommandBase {
                 this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
             } 
             else {
-                RobotContainer.getLogger().logInfo("Cannot activate climb susbsystem."); 
+                RobotContainer.getLogger().logInfo("Cannot activate climb subsystem."); 
             }
         }
     }

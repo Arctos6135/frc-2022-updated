@@ -6,6 +6,7 @@ import frc.robot.commands.auto.routines.OneBallAuto;
 import frc.robot.commands.auto.routines.ThreeBallAuto;
 import frc.robot.commands.auto.routines.ThreeBallTerminalAuto;
 import frc.robot.commands.auto.routines.TwoBallAuto;
+import frc.robot.commands.auto.routines.TwoBallWallAuto;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Shooter;
@@ -64,6 +65,7 @@ public class Autonomous {
          * </ul>
          */
         TWO_BALL_FAST_AUTO("Two Ball Fast Auto (High Hub)"), 
+        TWO_BALL_WALL_AUTO("Two Ball Wall Auto (High Hub)"),
         /**
          * Shoot high hub, intake two cargo ring balls.
          * 
@@ -123,6 +125,8 @@ public class Autonomous {
                 return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
             case TWO_BALL_FAST_AUTO:
                 return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getFastAutoCommand(); 
+            case TWO_BALL_WALL_AUTO:
+                return new TwoBallWallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
             case THREE_BALL_CARGO_RING_AUTO: 
                 return new ThreeBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
             case THREE_BALL_TERMINAL_AUTO: 

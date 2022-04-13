@@ -7,7 +7,9 @@ import frc.robot.subsystems.Shooter;
 public class DistanceAim extends CommandBase {
     private final Shooter shooter; 
 
-    public static boolean shooterDistance; 
+    public static boolean shooterRightDistance; 
+    public static double shotDistance;
+    public static boolean limelightDetected;
 
     /**
      * Create a new Limelight aiming command. 
@@ -21,20 +23,27 @@ public class DistanceAim extends CommandBase {
 
     @Override 
     public void initialize() {
-
+        DistanceAim.limelightDetected = shooter.getLimelight().hasValidTargets(); 
+        DistanceAim.shotDistance = shooter.getLimelight().estimateDistance(
+            Constants.LIMELIGHT_HEIGHT, Constants.TARGET_HEIGHT, Constants.LIMELIGHT_ANGLE
+        );
     }
 
     @Override 
     public void execute() {
         if (shooter.getLimelight().hasValidTargets()) {
+            DistanceAim.limelightDetected = true; 
+            
             double distance = shooter.getLimelight().estimateDistance(
                 Constants.LIMELIGHT_HEIGHT, Constants.TARGET_HEIGHT, Constants.LIMELIGHT_ANGLE
             );
+
+            DistanceAim.shotDistance = distance;
         
             if (Math.abs(Constants.TARGET_DISTANCE - distance) <= Constants.TARGET_DISTANCE_TOLERANCE) {
-                DistanceAim.shooterDistance = true; 
+                DistanceAim.shooterRightDistance = true; 
             } else {
-                DistanceAim.shooterDistance = false; 
+                DistanceAim.shooterRightDistance = false; 
             } 
         }  
     }
@@ -47,5 +56,17 @@ public class DistanceAim extends CommandBase {
     @Override 
     public boolean isFinished() {
         return false; 
+    }
+
+    public static boolean getLimelightDetected() {
+        return DistanceAim.limelightDetected;
+    }
+
+    public static double getShotDistance() {
+        return DistanceAim.shotDistance; 
+    }
+
+    public static boolean getShooterRightDistance() {
+        return DistanceAim.shooterRightDistance;
     }
 }
