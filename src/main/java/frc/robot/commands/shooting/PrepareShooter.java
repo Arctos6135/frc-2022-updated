@@ -44,6 +44,7 @@ public class PrepareShooter extends CommandBase {
 
         if (this.rpm == 0) {
             this.shooterFeederSubsystem.stopRoller(); 
+            this.shooter.stopShooter();
         }
         rpmReached = true;
     }

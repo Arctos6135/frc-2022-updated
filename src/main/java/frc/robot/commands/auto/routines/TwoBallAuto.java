@@ -19,7 +19,7 @@ public class TwoBallAuto {
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    public static final double shooterTargetRPM = 4750.0;
+    public static final double shooterTargetRPM = 4500.0;
     public static final double driveForwardSpeed = 0.75;  
     public static final double moveArmSpeed = 0.5; 
 
@@ -38,6 +38,7 @@ public class TwoBallAuto {
     public double initialResetPositionTime; 
     public static double resetPositionTime = 0.20; 
     public boolean resetPositionFinished = false;
+    public static double resetPositionSpeed = -0.5;
 
     // Set shooter RPM. 
     public Command setShooterRPM;
@@ -63,12 +64,13 @@ public class TwoBallAuto {
     public double initialPauseDriveTime; 
     public boolean pauseDriveFinished = false; 
     public static double pauseDriveTime = 1.0;
+    public double pauseDriveRollSpeed = 0.25;
 
     // Drive back to shooting spot. 
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 1.75; 
+    public static double driveToShootTime = 2.25; 
     public static double driveToShootSpeed = 0.25;
 
     // Set shooter RPM. 
@@ -123,13 +125,13 @@ public class TwoBallAuto {
         }, () -> this.moveArmFinished, this.drivetrain);
 
         this.resetPosition = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0); 
+            this.drivetrain.arcadeDrive(resetPositionSpeed, 0); 
             this.initialResetPositionTime = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialResetPositionTime >= resetPositionTime) {
                 this.resetPositionFinished = true;
             } else {
-                this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0); 
+                this.drivetrain.arcadeDrive(resetPositionSpeed, 0); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 
@@ -191,11 +193,13 @@ public class TwoBallAuto {
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialPauseDriveTime >= pauseDriveTime) {
                 this.pauseDriveFinished = true; 
+                this.shooterFeeder.setRollSpeed(pauseDriveRollSpeed);
             } else {
                 this.drivetrain.arcadeDrive(0, 0); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 
+            this.shooterFeeder.setRollSpeed(0);
         } , () -> this.pauseDriveFinished, this.drivetrain); 
 
         this.setSecondShooterRPM = new FunctionalCommand(() -> {

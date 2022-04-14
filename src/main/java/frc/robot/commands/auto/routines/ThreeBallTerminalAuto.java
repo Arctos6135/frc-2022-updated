@@ -3,7 +3,6 @@ package frc.robot.commands.auto.routines;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.constants.AutoConstants;
@@ -21,7 +20,7 @@ public class ThreeBallTerminalAuto {
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    public static final double shooterTargetRPM = 4750.0;
+    public static final double shooterTargetRPM = 4500.0;
     public static final double shooterTargetRPMHigh = 5250.0; 
     public static final double driveForwardSpeed = 0.75;  
 
@@ -34,12 +33,14 @@ public class ThreeBallTerminalAuto {
     public double initialMoveArmTime; 
     public static double moveArmTime = 0.20; 
     public boolean moveArmFinished = false; 
+    public static double moveArmSpeed = 0.5;
 
     // Drive forwards to reset position. 
     public Command resetPosition; 
     public double initialResetPositionTime; 
     public static double resetPositionTime = 0.20; 
     public boolean resetPositionFinished = false;
+    public static double resetPositionSpeed = -0.5;
 
     // Set shooter RPM for all of autonomous. 
     public Command setShooterRPM;
@@ -51,28 +52,29 @@ public class ThreeBallTerminalAuto {
     // Preload the ball higher.
     public Command feedShooter; 
     public double initialFeedShooterTime; 
-    public static double feedShooterTime = 1.0;
+    public static double feedShooterTime = 1.75;
     public boolean feedShooterFinished = false; 
 
     // Drive backwards off the tarmac to retrieve ball. 
     public Command driveBackwards; 
     public double initialDriveBackwardsTime; 
     public boolean driveBackwardsFinished = false; 
-    public static double driveBackwardsTime = 1.0;
-    public static double driveBackwardsSpeed = -0.5;
-    public static double driveBackwardsRotation = -0.325; 
+    public static double driveBackwardsTime = 1.125;
+    public static double driveBackwardsSpeed = -0.5; 
 
     public Command pauseDrive; 
     public double initialPauseDriveTime; 
     public boolean pauseDriveFinished = false; 
-    public static double pauseDriveTime = 0.10;
+    public static double pauseDriveTime = 0.50;
 
     // Drive back to shooting spot. 
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 0.75; 
+    public static double driveToShootTime = 1.125; 
     public static double driveToShootSpeed = 0.5;
+
+    public Command pauseBeforeShooting; 
 
     // Roll ball up to shooter. 
     public Command feedSecondBall; 
@@ -91,19 +93,19 @@ public class ThreeBallTerminalAuto {
     public double initialRotateDrive; 
     public boolean rotateDriveFinished = false; 
     public static double rotateDriveTime = 0.5; 
-    public double rotationFactor = -0.25;
+    public double rotationFactor = -0.5;
 
     public Command driveThirdCargo; 
     public double initialDriveThirdCargo; 
     public boolean driveThirdCargoFinished = false; 
-    public static double driveThirdCargoTime = 3.0;
-    public double driveThirdCargoSpeed = -0.75;
+    public static double driveThirdCargoTime = 2.0;
+    public double driveThirdCargoSpeed = -0.5;
 
     // Drive back towards hub.
     public Command driveShootThird; 
     public double initialDriveShootThird; 
     public boolean driveShootThirdFinished = false; 
-    public static double driveShootThirdTime = 2.75;
+    public static double driveShootThirdTime = 2.0;
 
     // Rotate to align with high hub. 
     public Command rotateAlign; 
@@ -114,7 +116,7 @@ public class ThreeBallTerminalAuto {
 
     public Command feedThirdBall; 
     public double initialFeedThirdBall; 
-    public static double feedThirdBallTime = 1.5;
+    public static double feedThirdBallTime = 1.75;
     public boolean feedThirdBallFinished = false; 
 
     public Command stopShooter; 
@@ -145,26 +147,26 @@ public class ThreeBallTerminalAuto {
         }, () -> this.intakeBallFinished, this.intakeSubsystem);
 
         this.moveArm = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveForwardSpeed, 0);
+            this.drivetrain.arcadeDrive(moveArmSpeed, 0);
             this.initialMoveArmTime = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialMoveArmTime >= moveArmTime) {
                 this.moveArmFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(driveForwardSpeed, 0);
+                this.drivetrain.arcadeDrive(moveArmSpeed, 0);
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0);
         }, () -> this.moveArmFinished, this.drivetrain);
 
         this.resetPosition = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0); 
+            this.drivetrain.arcadeDrive(resetPositionSpeed, 0); 
             this.initialResetPositionTime = Timer.getFPGATimestamp(); 
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialResetPositionTime >= resetPositionTime) {
                 this.resetPositionFinished = true;
             } else {
-                this.drivetrain.arcadeDrive(driveBackwardsSpeed, 0); 
+                this.drivetrain.arcadeDrive(resetPositionSpeed, 0); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 
@@ -310,11 +312,18 @@ public class ThreeBallTerminalAuto {
             this.drivetrain.arcadeDrive(0, 0); 
         }, () ->  this.rotateAlignFinished, this.drivetrain); 
 
-        this.feedThirdBall = this.feedSecondBall; 
-
-        this.stopShooter = new InstantCommand(() -> {
-            this.shooter.setVelocity(0); 
-        }, this.shooter);
+        this.feedThirdBall = new FunctionalCommand(() -> {
+            this.shooterFeeder.setRollSpeed(AutoConstants.THREE_BALL_AUTO_ROLL_SPEED);
+            this.initialFeedThirdBall = Timer.getFPGATimestamp();
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialFeedThirdBall >= feedShooterTime) {
+                this.feedThirdBallFinished = true; 
+            } else {
+                this.shooterFeeder.setRollSpeed(AutoConstants.THREE_BALL_AUTO_ROLL_SPEED);
+            }
+        }, (interrupted) -> {
+            this.shooterFeeder.setRollSpeed(0); 
+        }, () -> this.feedThirdBallFinished, this.shooterFeeder);
     }
 
     public Command getAutoCommand() {
@@ -330,11 +339,11 @@ public class ThreeBallTerminalAuto {
                 this.driveToShoot,
                 this.feedSecondBall,
                 this.terminalDriveBackwards,
-                this.rotateDrive, 
-                this.driveThirdCargo,
+                this.rotateDrive
+                /* this.driveThirdCargo,
+                this.driveShootThird,
                 this.rotateAlign,
-                this.feedThirdBall,
-                this.stopShooter
+                this.feedThirdBall */ 
             )
         ); 
     }
