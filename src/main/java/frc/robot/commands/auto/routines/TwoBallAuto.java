@@ -229,7 +229,7 @@ public class TwoBallAuto {
         }, () -> this.feedSecondBallFinished, this.shooterFeeder);
 
         this.stopShooter = new InstantCommand(() -> {
-            this.shooter.setVelocity(0); 
+            this.shooter.stopShooter(); 
         }, this.shooter);
     }
 
