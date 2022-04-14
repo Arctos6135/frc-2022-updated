@@ -76,7 +76,7 @@ public class TwoBallAuto {
     // Set shooter RPM. 
     public Command setSecondShooterRPM;
     public boolean setSecondShooterRPMFinished = false; 
-    public static double setSecondShootRPMTime = 3.00; 
+    public static double setSecondShootRPMTime = 2.00; 
     public double initialSetSecondShooterRPMTime; 
 
     public Command feedSecondBall; 
