@@ -313,7 +313,7 @@ public class ThreeBallTerminalAuto {
         }, () ->  this.rotateAlignFinished, this.drivetrain); 
 
         this.feedThirdBall = new FunctionalCommand(() -> {
-            this.shooterFeeder.setRollSpeed(AutoConstants.THREE_BALL_AUTO_ROLL_SPEED);
+            this.shooterFeeder.setRollSpeed(AutoConstants.AUTO_ROLL_SPEED);
             this.initialFeedThirdBall = Timer.getFPGATimestamp();
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialFeedThirdBall >= feedShooterTime) {
