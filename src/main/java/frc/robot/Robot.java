@@ -34,6 +34,8 @@ public class Robot extends TimedRobot {
     PortForwarder.add(5804, "limelight.local", 5804);
     PortForwarder.add(5805, "limelight.local", 5805);
 
+    PortForwarder.add(8888, "wpilibpi.local", 80);
+
     CameraServer.startAutomaticCapture("Back Camera", 0);
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
