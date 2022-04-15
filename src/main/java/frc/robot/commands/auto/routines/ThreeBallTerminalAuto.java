@@ -339,11 +339,11 @@ public class ThreeBallTerminalAuto {
                 this.driveToShoot,
                 this.feedSecondBall,
                 this.terminalDriveBackwards,
-                this.rotateDrive
-                /* this.driveThirdCargo,
+                this.rotateDrive,
+                this.driveThirdCargo,
                 this.driveShootThird,
                 this.rotateAlign,
-                this.feedThirdBall */ 
+                this.feedThirdBall
             )
         ); 
     }
