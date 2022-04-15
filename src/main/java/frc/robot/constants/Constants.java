@@ -30,7 +30,7 @@ public final class Constants {
 
 	// Indexer Constants
 	public static final double MECANUM_INTAKE_SPEED = 0.5; 
-	public static final double BOTTOM_INTAKE_ROLLER_SPEED = 0.75;
+	public static final double BOTTOM_INTAKE_ROLLER_SPEED = 1.0;
 	public static final double ROLL_SPEED = 0.75;
 	public static final double ROLL_SPEED_SENSING = 0.25;
 	public static final double OUTTAKE_TIME = 0.002;

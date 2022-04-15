@@ -94,7 +94,7 @@ public class TwoBallAutoTrajectory {
         ); 
         
         autoIntake = new FunctionalCommand(() -> {
-            this.intakeSubsystem.runIntake(AutoConstants.AUTO_INTAKE_SPEED, AutoConstants.AUTO_INTAKE_SPEED);
+            this.intakeSubsystem.runIntake(AutoConstants.AUTO_INTAKE_ROLLER_SPEED, AutoConstants.AUTO_MECANUM_SPEED);
         }, () -> {
 
         }, (interrupted) -> {
