@@ -19,9 +19,9 @@ public class TwoBallAuto {
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    public static final double shooterTargetRPM = 4500.0;
+    public static final double shooterTargetRPM = 4250.0;
     public static final double driveForwardSpeed = 0.75;  
-    public static final double moveArmSpeed = 0.5; 
+    public static final double moveArmSpeed = 0.4; 
 
     // Intake ball for all of autonomous. 
     public Command intakeBall;
@@ -70,7 +70,7 @@ public class TwoBallAuto {
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 2.25; 
+    public static double driveToShootTime = 2.00; 
     public static double driveToShootSpeed = 0.25;
 
     // Set shooter RPM. 
@@ -82,7 +82,7 @@ public class TwoBallAuto {
     public Command feedSecondBall; 
     public double initialFeedSecondBall;
     public boolean feedSecondBallFinished = false; 
-    public static double feedSecondBallTime = 2.5; 
+    public static double feedSecondBallTime = 3.5; 
 
     public Command stopShooter; 
     public boolean stopShooterFinished = false; 

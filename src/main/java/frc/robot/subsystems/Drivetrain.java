@@ -280,14 +280,14 @@ public class Drivetrain extends SubsystemBase {
    */
   public double getHeading() {
     return ahrs.getRotation2d().getDegrees();
-  }
+  } 
 
   /**
    * Reset the heading of the robot.
    */
   public void zeroHeading() {
     ahrs.reset();
-  }
+  } 
 
   /**
    * Get the turn rate of the robot. 
@@ -296,7 +296,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public double getTurnRate() {
     return -this.ahrs.getRate(); 
-  }
+  } 
 
   /**
    * Set the motor controllers using direct voltage.
