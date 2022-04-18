@@ -192,7 +192,7 @@ public class ThreeBallAutoDCMP {
                 this.setShooterRPMFinished = true;
             } 
         }, (interrupted) -> {
-
+            this.shooter.stopShooter();
         }, () -> this.setShooterRPMFinished, this.shooter); 
 
         this.feedShooter = new FunctionalCommand(() -> {
