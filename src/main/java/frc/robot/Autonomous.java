@@ -5,8 +5,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auto.routines.OneBallAuto;
 import frc.robot.commands.auto.routines.ThreeBallAuto;
 import frc.robot.commands.auto.routines.ThreeBallAutoDCMP;
+import frc.robot.commands.auto.routines.ThreeBallAutoWorlds;
 import frc.robot.commands.auto.routines.ThreeBallTerminalAuto;
 import frc.robot.commands.auto.routines.TwoBallAuto;
+import frc.robot.commands.auto.routines.TwoBallExitAuto;
 import frc.robot.commands.auto.routines.TwoBallWallAuto;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -65,8 +67,18 @@ public class Autonomous {
          * <li>Preload: 1 Ball</li>
          * </ul>
          */
-        TWO_BALL_FAST_AUTO("Two Ball Fast Auto (High Hub)"), 
         TWO_BALL_WALL_AUTO("Two Ball Wall Auto (High Hub)"),
+        /**
+         * Shoot high hub and drive off the tarmac. 
+         * 
+         * <ul> 
+         * <li>Starts: Edge of Tarmac, Under the Upper Exit</li> 
+         * <li>Ends: Off Tarmac</li> 
+         * <li>Scores: 10 Points</li> 
+         * <li>Preload: 1 Ball</li>
+         * </ul>
+         */
+        TWO_BALL_EXIT_AUTO("Two Ball Exit Auto (High Hub)"), 
         /**
          * Shoot high hub, intake two cargo ring balls.
          * 
@@ -88,7 +100,8 @@ public class Autonomous {
          * <li>Preload: 1 Ball</li> 
          */
         THREE_BALL_TERMINAL_AUTO("Three Ball Auto (Terminal)"), 
-        THREE_BALL_DCMP_AUTO("Three Ball Auto (DCMP)");
+        THREE_BALL_DCMP_AUTO("Three Ball Auto (DCMP)"), 
+        THREE_BALL_WORLDS_AUTO("Three Ball Auto (Worlds)"); 
         
         String autoName; 
 
@@ -125,16 +138,18 @@ public class Autonomous {
                 return new OneBallAuto(drivetrain, shooter, shooterFeeder).getAutoCommand(); 
             case TWO_BALL_AUTO: 
                 return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
-            case TWO_BALL_FAST_AUTO:
-                return new TwoBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getFastAutoCommand(); 
             case TWO_BALL_WALL_AUTO:
                 return new TwoBallWallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
+            case TWO_BALL_EXIT_AUTO: 
+                return new TwoBallExitAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand(); 
             case THREE_BALL_CARGO_RING_AUTO: 
                 return new ThreeBallAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
             case THREE_BALL_TERMINAL_AUTO: 
                 return new ThreeBallTerminalAuto(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
             case THREE_BALL_DCMP_AUTO: 
                 return new ThreeBallAutoDCMP(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand();
+            case THREE_BALL_WORLDS_AUTO: 
+                return new ThreeBallAutoWorlds(drivetrain, shooter, shooterFeeder, intakeSubsystem).getAutoCommand(); 
             default:
                 return null;
         }
