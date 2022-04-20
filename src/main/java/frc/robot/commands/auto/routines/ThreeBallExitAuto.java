@@ -47,7 +47,7 @@ public class ThreeBallExitAuto {
     // Roll ball up to shooter. 
     public Command feedShooter; 
     public double initialFeedShooterTime; 
-    public static double feedShooterTime = 2.5;
+    public static double feedShooterTime = 0.5;
     public boolean feedShooterFinished = false; 
 
     // Drive backwards off the tarmac to retrieve ball. 
@@ -61,7 +61,7 @@ public class ThreeBallExitAuto {
     public Command pauseDrive; 
     public double initialPauseDriveTime; 
     public boolean pauseDriveFinished = false; 
-    public static double pauseDriveTime = 1.0;
+    public static double pauseDriveTime = 0.25;
     public double pauseDriveRollSpeed = 0.25;
 
     // Drive back to shooting spot. 
@@ -101,12 +101,12 @@ public class ThreeBallExitAuto {
     public Command pauseDriveShootThird; 
     public double initialPauseDriveShootThird; 
     public boolean pauseDriveShootThirdFinished;
-    public static double pauseDriveShootThirdTime = 0.25;
+    public static double pauseDriveShootThirdTime = 0.5;
 
     public Command feedThirdShot; 
     public double initialFeedThirdShot; 
     public boolean feedThirdShotFinished = false;
-    public static double feedThirdShotTime = 1.5; 
+    public static double feedThirdShotTime = 0.5; 
     
     /**
      * Creates a new instance of the Two Ball Auto Command. 

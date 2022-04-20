@@ -119,8 +119,8 @@ public final class Constants {
 	public static final Color OPPOSING_ALLIANCE = Color.kBlue; 
 
 	public static final double LOW_HUB_RPM = 2000.0; 
-	public static final double HIGH_HUB_RPM = 4500.0; 
-	public static final double SHOOTER_ANGLE_ADJUSTMENT = 850.0;
+	public static final double HIGH_HUB_RPM = 4250.0; 
+	public static final double SHOOTER_ANGLE_ADJUSTMENT = 1000.0;
 
 	// Direct Shooter Velocity 
 	public static final double LOW_HUB_RPM_DIRECT = 0.5; 

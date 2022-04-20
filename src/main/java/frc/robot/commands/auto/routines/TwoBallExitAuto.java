@@ -17,7 +17,7 @@ public class TwoBallExitAuto {
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    public static final double shooterTargetRPM = 5000.0;
+    public static final double shooterTargetRPM = 4250.0;
     public static final double driveForwardSpeed = 0.75;  
     public static final double moveArmSpeed = 0.4; 
 
@@ -68,7 +68,7 @@ public class TwoBallExitAuto {
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 2.00; 
+    public static double driveToShootTime = 1.5; 
     public static double driveToShootSpeed = 0.25; 
 
     public Command pauseToShoot; 
