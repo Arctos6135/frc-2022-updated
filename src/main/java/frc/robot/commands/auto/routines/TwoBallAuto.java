@@ -27,7 +27,7 @@ public class TwoBallAuto {
     public Command intakeBall;
     public boolean intakeBallFinished = false;
 
-    // Drive backwards off the tarmac to move the arm down. 
+    // Drive forwards to move the arm down. 
     public Command moveArm; 
     public double initialMoveArmTime; 
     public static double moveArmTime = 0.20; 
@@ -36,9 +36,9 @@ public class TwoBallAuto {
     // Drive forwards to reset position. 
     public Command resetPosition; 
     public double initialResetPositionTime; 
-    public static double resetPositionTime = 0.20; 
+    public static double resetPositionTime = 0.35; 
     public boolean resetPositionFinished = false;
-    public static double resetPositionSpeed = -0.5;
+    public static double resetPositionSpeed = -0.25;
 
     // Set shooter RPM. 
     public Command setShooterRPM;
@@ -56,7 +56,7 @@ public class TwoBallAuto {
     public Command driveBackwards; 
     public double initialDriveBackwardsTime; 
     public boolean driveBackwardsFinished = false; 
-    public static double driveBackwardsTime = 2.25;
+    public static double driveBackwardsTime = 1.00;
     public static double driveBackwardsSpeed = -0.25;
     public static double driveBackwardsRotation = 0; 
 
@@ -70,7 +70,7 @@ public class TwoBallAuto {
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 2.00; 
+    public static double driveToShootTime = 1.25; 
     public static double driveToShootSpeed = 0.25;
 
     // Set shooter RPM. 

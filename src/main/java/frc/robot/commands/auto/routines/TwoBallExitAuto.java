@@ -17,7 +17,7 @@ public class TwoBallExitAuto {
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    public static final double shooterTargetRPM = 3750.0;
+    public static final double shooterTargetRPM = 4250.0;
     public static final double driveForwardSpeed = 0.75;  
     public static final double moveArmSpeed = 0.4; 
 
@@ -25,16 +25,16 @@ public class TwoBallExitAuto {
     public Command intakeBall;
     public boolean intakeBallFinished = false;
 
-    // Drive backwards off the tarmac to move the arm down. 
+    // Drive forwards to move the arm down. 
     public Command moveArm; 
     public double initialMoveArmTime; 
     public static double moveArmTime = 0.20; 
     public boolean moveArmFinished = false; 
 
-    // Drive forwards to reset position. 
+    // Drive backwards to reset position. 
     public Command resetPosition; 
     public double initialResetPositionTime; 
-    public static double resetPositionTime = 0.20; 
+    public static double resetPositionTime = 0.35; 
     public boolean resetPositionFinished = false;
     public static double resetPositionSpeed = -0.25;
 
@@ -44,38 +44,49 @@ public class TwoBallExitAuto {
     public static double setShootRPMTime = 15.0; 
     public double initialSetShooterRPMTime; 
 
+    public Command pause; 
+    public boolean pauseFinished = false;
+    public static double pauseTime = 1.0;
+    public double initialPause;
+
     // Roll ball up to shooter. 
     public Command feedShooter; 
     public double initialFeedShooterTime; 
     public static double feedShooterTime = 2.5;
     public boolean feedShooterFinished = false; 
 
+    // Roll ball up to shooter. 
+    public Command feedSecondShooter; 
+    public double initialFeedSecondShooterTime; 
+    public static double feedSecondShooterTime = 2.5;
+    public boolean feedSecondShooterFinished = false; 
+
     // Drive backwards off the tarmac to retrieve ball. 
     public Command driveBackwards; 
     public double initialDriveBackwardsTime; 
     public boolean driveBackwardsFinished = false; 
-    public static double driveBackwardsTime = 2.25;
-    public static double driveBackwardsSpeed = -0.25;
-    public static double driveBackwardsRotation = 0.25; 
+    public static double driveBackwardsTime = 1.5;
+    public static double driveBackwardsSpeed = -0.125;
+    public static double driveBackwardsRotation = 0.125; 
 
     public Command pauseDrive; 
     public double initialPauseDriveTime; 
     public boolean pauseDriveFinished = false; 
     public static double pauseDriveTime = 1.0;
-    public double pauseDriveRollSpeed = 0.25;
+    public double pauseDriveRollSpeed = 0.5;
 
     // Drive back to shooting spot. 
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
     public static double driveToShootTime = 1.5; 
-    public static double driveToShootSpeed = 0.25; 
-    public static double driveToShootRotation = -0.25;
+    public static double driveToShootSpeed = 0.125; 
+    public static double driveToShootRotation = -0.125;
 
     public Command pauseToShoot; 
     public double initialPauseToShoot; 
     public boolean pauseToShootFinished = false; 
-    public static double pauseToShootTime = 0.5;
+    public static double pauseToShootTime = 1.0;
 
     public Command stopShooter; 
     public boolean stopShooterFinished = false; 
@@ -129,6 +140,19 @@ public class TwoBallExitAuto {
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 
         }, () -> this.resetPositionFinished, this.drivetrain);
+
+        this.pause = new FunctionalCommand(() -> {
+            this.drivetrain.arcadeDrive(0, 0);
+            this.initialPause = Timer.getFPGATimestamp();
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialPause >= pauseTime) {
+                this.pauseFinished = true;
+            } else {
+                this.drivetrain.arcadeDrive(0, 0);
+            }
+        }, (interrupted) -> {
+            this.drivetrain.arcadeDrive(0, 0);
+        }, () -> this.pauseFinished, this.drivetrain); 
 
         this.setShooterRPM = new FunctionalCommand(() -> {
             this.shooter.setVelocity(shooterTargetRPM);
@@ -187,7 +211,7 @@ public class TwoBallExitAuto {
             if (Timer.getFPGATimestamp() - this.initialPauseToShoot >= pauseToShootTime) {
                 this.pauseToShootFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(-0.125, 0); 
+                this.drivetrain.arcadeDrive(0, 0); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0);
@@ -204,8 +228,22 @@ public class TwoBallExitAuto {
             }
         }, (interrupted) -> {
             this.shooterFeeder.setRollSpeed(0); 
-            this.shooter.setVelocity(0);
         }, () -> this.feedShooterFinished, this.shooterFeeder);
+
+        this.feedSecondShooter = new FunctionalCommand(() -> {
+            this.shooterFeeder.setRollSpeed(AutoConstants.AUTO_ROLL_SPEED);
+            this.initialFeedSecondShooterTime = Timer.getFPGATimestamp();
+        }, () -> {
+            if (Timer.getFPGATimestamp() - this.initialFeedSecondShooterTime >= feedSecondShooterTime) {
+                this.feedSecondShooterFinished = true; 
+            } else {
+                this.shooterFeeder.setRollSpeed(AutoConstants.AUTO_ROLL_SPEED);
+            }
+        }, (interrupted) -> {
+            this.shooterFeeder.setRollSpeed(0); 
+            this.shooter.setVelocity(0);
+        }, () -> this.feedSecondShooterFinished, this.shooterFeeder);
+
     }
 
     public Command getAutoCommand() {
@@ -214,12 +252,14 @@ public class TwoBallExitAuto {
             this.setShooterRPM,
             new SequentialCommandGroup(
                 this.moveArm,
-                this.resetPosition, 
+                this.resetPosition,
+                this.pause,
+                this.feedShooter,
                 this.driveBackwards, 
                 this.pauseDrive,
                 this.driveToShoot,
-                this.pauseToShoot,
-                this.feedShooter
+                this.pauseToShoot, 
+                this.feedSecondShooter
             )
         ); 
     }

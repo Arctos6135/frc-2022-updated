@@ -17,7 +17,7 @@ public class ThreeBallExitAuto {
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    public static final double shooterTargetRPM = 4750.0;
+    public static final double shooterTargetRPM = 4250.0;
     public static final double driveForwardSpeed = 0.75;  
     public static final double moveArmSpeed = 0.4; 
 
@@ -34,7 +34,7 @@ public class ThreeBallExitAuto {
     // Drive forwards to reset position. 
     public Command resetPosition; 
     public double initialResetPositionTime; 
-    public static double resetPositionTime = 0.20; 
+    public static double resetPositionTime = 0.35; 
     public boolean resetPositionFinished = false;
     public static double resetPositionSpeed = -0.25;
 
@@ -47,29 +47,30 @@ public class ThreeBallExitAuto {
     // Roll ball up to shooter. 
     public Command feedShooter; 
     public double initialFeedShooterTime; 
-    public static double feedShooterTime = 0.5;
+    public static double feedShooterTime = 2.5;
     public boolean feedShooterFinished = false; 
 
     // Drive backwards off the tarmac to retrieve ball. 
     public Command driveBackwards; 
     public double initialDriveBackwardsTime; 
     public boolean driveBackwardsFinished = false; 
-    public static double driveBackwardsTime = 2.25;
-    public static double driveBackwardsSpeed = -0.25;
-    public static double driveBackwardsRotation = 0; 
+    public static double driveBackwardsTime = 1.5;
+    public static double driveBackwardsSpeed = -0.125;
+    public static double driveBackwardsRotation = 0.125; 
 
     public Command pauseDrive; 
     public double initialPauseDriveTime; 
     public boolean pauseDriveFinished = false; 
     public static double pauseDriveTime = 0.25;
-    public double pauseDriveRollSpeed = 0.25;
+    public double pauseDriveRollSpeed = 0.5;
 
     // Drive back to shooting spot. 
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 1.75; 
-    public static double driveToShootSpeed = 0.25; 
+    public static double driveToShootTime = 1.5; 
+    public static double driveToShootSpeed = 0.125; 
+    public static double driveToShootRotation = -0.125;
 
     public Command pauseToShoot; 
     public double initialPauseToShoot; 
@@ -196,13 +197,13 @@ public class ThreeBallExitAuto {
         } , () -> this.pauseDriveFinished, this.drivetrain); 
 
         this.driveToShoot = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
+            this.drivetrain.arcadeDrive(driveToShootSpeed, driveToShootRotation); 
             this.initialDriveToShootTime = Timer.getFPGATimestamp();
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveToShootTime >= driveToShootTime) {
                 this.driveToShootFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
+                this.drivetrain.arcadeDrive(driveToShootSpeed, driveToShootRotation); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 
