@@ -17,7 +17,7 @@ public class TwoBallExitAuto {
     private final ShooterFeederSubsystem shooterFeeder; 
     private final IntakeSubsystem intakeSubsystem; 
 
-    public static final double shooterTargetRPM = 4250.0;
+    public static final double shooterTargetRPM = 3750.0;
     public static final double driveForwardSpeed = 0.75;  
     public static final double moveArmSpeed = 0.4; 
 
@@ -56,7 +56,7 @@ public class TwoBallExitAuto {
     public boolean driveBackwardsFinished = false; 
     public static double driveBackwardsTime = 2.25;
     public static double driveBackwardsSpeed = -0.25;
-    public static double driveBackwardsRotation = 0; 
+    public static double driveBackwardsRotation = 0.25; 
 
     public Command pauseDrive; 
     public double initialPauseDriveTime; 
@@ -70,6 +70,7 @@ public class TwoBallExitAuto {
     public boolean driveToShootFinished = false; 
     public static double driveToShootTime = 1.5; 
     public static double driveToShootSpeed = 0.25; 
+    public static double driveToShootRotation = -0.25;
 
     public Command pauseToShoot; 
     public double initialPauseToShoot; 
@@ -168,13 +169,13 @@ public class TwoBallExitAuto {
         } , () -> this.pauseDriveFinished, this.drivetrain); 
 
         this.driveToShoot = new FunctionalCommand(() -> {
-            this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
+            this.drivetrain.arcadeDrive(driveToShootSpeed, driveToShootRotation); 
             this.initialDriveToShootTime = Timer.getFPGATimestamp();
         }, () -> {
             if (Timer.getFPGATimestamp() - this.initialDriveToShootTime >= driveToShootTime) {
                 this.driveToShootFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(driveToShootSpeed, 0); 
+                this.drivetrain.arcadeDrive(driveToShootSpeed, driveToShootRotation); 
             }
         }, (interrupted) -> {
             this.drivetrain.arcadeDrive(0, 0); 
@@ -186,10 +187,10 @@ public class TwoBallExitAuto {
             if (Timer.getFPGATimestamp() - this.initialPauseToShoot >= pauseToShootTime) {
                 this.pauseToShootFinished = true; 
             } else {
-                this.drivetrain.arcadeDrive(0, 0); 
+                this.drivetrain.arcadeDrive(-0.125, 0); 
             }
         }, (interrupted) -> {
-
+            this.drivetrain.arcadeDrive(0, 0);
         } , () -> this.pauseToShootFinished, this.drivetrain); 
 
         this.feedShooter = new FunctionalCommand(() -> {
