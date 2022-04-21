@@ -62,6 +62,7 @@ public final class Constants {
 	public static final double CONTROLLER_DEADZONE = 0.15;
 	public static final double FWD_REV_DAMPENING = 0.75; 
 	public static final double LEFT_RIGHT_DAMPENING = 0.75; 
+	public static final double LEFT_RIGHT_BOOST_DAMPENING = 0.5; 
 
 	// Driver Controller
 	public static final int XBOX_DRIVER = 0;

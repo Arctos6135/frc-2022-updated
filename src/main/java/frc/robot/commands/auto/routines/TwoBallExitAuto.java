@@ -58,7 +58,7 @@ public class TwoBallExitAuto {
     // Roll ball up to shooter. 
     public Command feedSecondShooter; 
     public double initialFeedSecondShooterTime; 
-    public static double feedSecondShooterTime = 2.5;
+    public static double feedSecondShooterTime = 4.0;
     public boolean feedSecondShooterFinished = false; 
 
     // Drive backwards off the tarmac to retrieve ball. 
