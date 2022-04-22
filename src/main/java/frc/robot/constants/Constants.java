@@ -31,7 +31,7 @@ public final class Constants {
 	// Indexer Constants
 	public static final double MECANUM_INTAKE_SPEED = 0.5; 
 	public static final double BOTTOM_INTAKE_ROLLER_SPEED = 1.0;
-	public static final double ROLL_SPEED = 0.75;
+	public static final double ROLL_SPEED = 0.5;
 	public static final double ROLL_SPEED_SENSING = 0.25;
 	public static final double OUTTAKE_TIME = 0.002;
   
@@ -40,6 +40,7 @@ public final class Constants {
 	public static final double CLIMB_DRIVE_TIME = 0.1; 
 	public static final double RAISE_HALFWAY = 4.1; 
 	public static final double CLIMB_SPEED = 0.5; 
+
 
 	public static final double INTAKE_ARM_LOWERED = 1.2; 
 	public static final double INTAKE_ARM_RAISED = 0; 
@@ -120,8 +121,8 @@ public final class Constants {
 	public static final Color OPPOSING_ALLIANCE = Color.kBlue; 
 
 	public static final double LOW_HUB_RPM = 2000.0; 
-	public static final double HIGH_HUB_RPM = 4250.0; 
-	public static final double SHOOTER_ANGLE_ADJUSTMENT = 1000.0;
+	public static final double HIGH_HUB_RPM = 3900.0; 
+	public static final double SHOOTER_ANGLE_ADJUSTMENT = 1250.0;
 
 	// Direct Shooter Velocity 
 	public static final double LOW_HUB_RPM_DIRECT = 0.5; 

@@ -56,7 +56,7 @@ public class TwoBallAuto {
     public Command driveBackwards; 
     public double initialDriveBackwardsTime; 
     public boolean driveBackwardsFinished = false; 
-    public static double driveBackwardsTime = 1.00;
+    public static double driveBackwardsTime = 1.25;
     public static double driveBackwardsSpeed = -0.25;
     public static double driveBackwardsRotation = 0; 
 
