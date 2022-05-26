@@ -32,6 +32,7 @@ public final class Constants {
 	public static final double MECANUM_INTAKE_SPEED = 0.5; 
 	public static final double BOTTOM_INTAKE_ROLLER_SPEED = 1.0;
 	public static final double ROLL_SPEED = 0.5;
+	public static final double SHOOT_ROLL_SPEED = 0.25;
 	public static final double ROLL_SPEED_SENSING = 0.25;
 	public static final double OUTTAKE_TIME = 0.002;
   
@@ -84,7 +85,7 @@ public final class Constants {
 	public static final int ADJUST_SHOOTER_LOWER_BUTTON = XboxController.Axis.kLeftTrigger.value; 
 	public static final int SHOOT_LOW_RPM_BUTTON = XboxController.Button.kX.value;
 	public static final int SHOOT_HIGH_RPM_BUTTON = XboxController.Button.kY.value;
-	public static final int AUTO_AIM_BUTTON = XboxController.Button.kA.value;
+	public static final int SHOOT_ROLL_BUTTON = XboxController.Button.kA.value;
 	public static final int STOP_SHOOTER_BUTTON = XboxController.Button.kB.value;
 	public static final int OVERRIDE_SHOOTER_PROTECTION_BUTTON = XboxController.Button.kBack.value; 
 	public static final int STOP_SHOOTER_FEEDER_BUTTON = XboxController.Button.kStart.value; 
@@ -121,8 +122,8 @@ public final class Constants {
 	public static final Color OPPOSING_ALLIANCE = Color.kBlue; 
 
 	public static final double LOW_HUB_RPM = 2000.0; 
-	public static final double HIGH_HUB_RPM = 3900.0; 
-	public static final double SHOOTER_ANGLE_ADJUSTMENT = 1250.0;
+	public static final double HIGH_HUB_RPM = 4000.0; 
+	public static final double SHOOTER_ANGLE_ADJUSTMENT = 1000.0;
 
 	// Direct Shooter Velocity 
 	public static final double LOW_HUB_RPM_DIRECT = 0.5; 

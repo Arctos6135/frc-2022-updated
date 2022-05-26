@@ -79,7 +79,7 @@ public class TwoBallExitAuto {
     public Command driveToShoot; 
     public double initialDriveToShootTime; 
     public boolean driveToShootFinished = false; 
-    public static double driveToShootTime = 1.5; 
+    public static double driveToShootTime = 1.75; 
     public static double driveToShootSpeed = 0.125; 
     public static double driveToShootRotation = -0.125;
 

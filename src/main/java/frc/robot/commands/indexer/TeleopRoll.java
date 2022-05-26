@@ -14,6 +14,7 @@ public class TeleopRoll extends CommandBase {
     private final XboxController operatorController;
     private final int rollUpButton;
     private final int rollDownButton;  
+    private final int rollShootButton; 
 
     public static double rollPrecisionFactor = 0.5; 
 
@@ -24,11 +25,12 @@ public class TeleopRoll extends CommandBase {
      * @param operatorController the controller interacting with the shooter feeder subsystem. 
      */
     public TeleopRoll(ShooterFeederSubsystem shooterFeederSubsystem, XboxController operatorController, 
-        int rollUpButton, int rollDownButton) {
+        int rollUpButton, int rollDownButton, int rollShootButton) {
         this.shooterFeederSubsystem = shooterFeederSubsystem; 
         this.operatorController = operatorController;
         this.rollUpButton = rollUpButton;
         this.rollDownButton = rollDownButton;  
+        this.rollShootButton = rollShootButton; 
 
         addRequirements(shooterFeederSubsystem);
     }
@@ -36,15 +38,21 @@ public class TeleopRoll extends CommandBase {
     @Override 
     public void execute() {
         boolean rollSpeedUp = operatorController.getRawButton(this.rollUpButton); 
-        boolean rollSpeedDown = operatorController.getRawButton(this.rollDownButton); 
-
-        if (rollSpeedUp && !rollSpeedDown) {
-            shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED); 
-        } else if (!rollSpeedUp && rollSpeedDown) {
-            shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
+        boolean rollSpeedDown = operatorController.getRawButton(this.rollDownButton);
+        boolean rollShoot = operatorController.getRawButton(this.rollShootButton);
+        
+        if (rollShoot) {
+            shooterFeederSubsystem.setRollSpeed(Constants.SHOOT_ROLL_SPEED);
         } else {
-            shooterFeederSubsystem.setRollSpeed(0);
-        } 
+            if (rollSpeedUp && !rollSpeedDown) {
+                shooterFeederSubsystem.setRollSpeed(Constants.ROLL_SPEED); 
+            } else if (!rollSpeedUp && rollSpeedDown) {
+                shooterFeederSubsystem.setRollSpeed(-Constants.ROLL_SPEED);
+            } else {
+                shooterFeederSubsystem.setRollSpeed(0);
+            } 
+        }
+        
     }
 
     @Override 

@@ -22,7 +22,6 @@ import frc.robot.commands.climbing.Climb;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.commands.indexer.TeleopRoll;
 import frc.robot.commands.intake.Intake;
-import frc.robot.commands.shooting.AutoAim;
 import frc.robot.commands.shooting.DistanceAim;
 import frc.robot.commands.shooting.PrepareShooter;
 import frc.robot.commands.shooting.PrepareShooterPID;
@@ -118,7 +117,7 @@ public class RobotContainer {
 
 		shooterFeederSubsystem = new ShooterFeederSubsystem(Constants.TOP_ROLLER_MOTOR); 
 		shooterFeederSubsystem.setDefaultCommand(
-			new TeleopRoll(shooterFeederSubsystem, operatorController, Constants.TELEOP_ROLL_UP_TRIGGER, Constants.TELEOP_ROLL_DOWN_TRIGGER) 
+			new TeleopRoll(shooterFeederSubsystem, operatorController, Constants.TELEOP_ROLL_UP_TRIGGER, Constants.TELEOP_ROLL_DOWN_TRIGGER, Constants.SHOOT_ROLL_BUTTON) 
 		); 
 
 		shooterSubsystem = new Shooter(Constants.MAIN_SHOOTER_MOTOR, Constants.AUXILLIARY_SHOOTER_MOTOR);
@@ -347,8 +346,6 @@ public class RobotContainer {
 		Button shooterOverheatOverrideButton = new JoystickButton(operatorController, Constants.OVERRIDE_SHOOTER_PROTECTION_BUTTON); 
 		Button stopShooterFeederButton = new JoystickButton(operatorController, Constants.STOP_SHOOTER_FEEDER_BUTTON); 
 
-		Button autoAimButton = new JoystickButton(operatorController, Constants.AUTO_AIM_BUTTON);
-
 		// Driver Button Bindings
 		reverseDriveButton.whenPressed(() -> {
 			TeleopDrive.toggleReverseDrive();
@@ -418,9 +415,7 @@ public class RobotContainer {
 			new PrepareShooterPID(shooterSubsystem, Constants.HIGH_HUB_RPM)
 		);
 
-		autoAimButton.whenHeld(
-			new AutoAim(drivetrain, shooterSubsystem)
-		);
+
 
 		stopShooterFeederButton.whenPressed(new InstantCommand(() -> {
 			shooterFeederSubsystem.stopRoller();
