@@ -75,6 +75,7 @@ public class RobotContainer {
 	public final ShuffleboardTab prematchTab;
 	public final ShuffleboardTab debugTab;
 	public final ShuffleboardTab limelightTab; 
+	public final ShuffleboardTab pidControlTab; 
 
 	// Network Tables for Smart Dashboard
 	public NetworkTableEntry driveReversedEntry;
@@ -86,6 +87,8 @@ public class RobotContainer {
 	public NetworkTableEntry limelightDetected; 
 	public NetworkTableEntry shotDistance;
 	public NetworkTableEntry shooterRPMDriveTab;
+	public NetworkTableEntry shooterRPMErrorTop;
+	public NetworkTableEntry shooterRPMErrorBottom;  
 	
 	// Logging Related
 	public NetworkTableEntry lastError;
@@ -136,6 +139,7 @@ public class RobotContainer {
 		prematchTab = Shuffleboard.getTab("Pre-match");
 		debugTab = Shuffleboard.getTab("Debug");
 		limelightTab = Shuffleboard.getTab("Limelight"); 
+		pidControlTab = Shuffleboard.getTab("PID Control"); 
 
 		configureDashboard();
 
@@ -215,11 +219,17 @@ public class RobotContainer {
 		shotDistance = driveTab.add("Shot Distance", DistanceAim.getShotDistance()).withPosition(2, 2).withSize(1, 1).getEntry();
 
 		// Shooting Configurations
-		shooterRPMEntry = shooterTab.add("Shooter RPM (Top Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(0, 0)
-		.withSize(3, 3).withProperties(Map.of("min", 0, "max", Shooter.maxRPM)).getEntry();
+		shooterRPMEntry = shooterTab.add("Shooter RPM (Top Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kGraph).withPosition(0, 0)
+		.withSize(5, 5).withProperties(Map.of("min", 0, "max", Shooter.maxRPM)).getEntry();
 
-		shooterBottomRPMEntry = shooterTab.add("Shooter RPM (Bottom Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kDial).withPosition(3, 0)
-		.withSize(3, 3).withProperties(Map.of("min", 0, "max", Shooter.maxRPM2)).getEntry();
+		shooterBottomRPMEntry = shooterTab.add("Shooter RPM (Bottom Wheel)", shooterSubsystem.getActualVelocity()).withWidget(BuiltInWidgets.kGraph).withPosition(5, 0)
+		.withSize(5, 5).withProperties(Map.of("min", 0, "max", Shooter.maxRPM2)).getEntry();
+
+		shooterRPMErrorTop = pidControlTab.add("Top Wheel Error", Constants.HIGH_HUB_RPM - shooterSubsystem.getTopWheelVelocity()).withWidget(BuiltInWidgets.kGraph).withPosition(0, 0)
+		.withSize(5, 5).withProperties(Map.of("min", 0, "max", Shooter.maxRPM)).getEntry(); 
+		
+		shooterRPMErrorBottom = pidControlTab.add("Bottom Wheel Error", Constants.HIGH_HUB_RPM + Constants.SHOOTER_ANGLE_ADJUSTMENT - shooterSubsystem.getBottomWheelVelocity()).withWidget(BuiltInWidgets.kGraph)
+		.withPosition(5, 0).withSize(5, 5).withProperties(Map.of("min", 0, "max", Shooter.maxRPM)).getEntry(); 
 
 		drivetrainMotorStatus = driveTab.add("Drivetrain", true).withWidget(BuiltInWidgets.kBooleanBox)
                 // Set the size and custom colours
@@ -306,6 +316,8 @@ public class RobotContainer {
 		lastWarning = driveTab.add("Last Warning", "").withPosition(3, 4).withSize(3, 2).getEntry();
 		
 		debugTab.add(drivetrain).withPosition(0, 0).withSize(10, 8); 
+
+
 	}
 
 	/**
@@ -414,8 +426,6 @@ public class RobotContainer {
 		shootHighHubRPMButton.whenPressed(
 			new PrepareShooterPID(shooterSubsystem, Constants.HIGH_HUB_RPM)
 		);
-
-
 
 		stopShooterFeederButton.whenPressed(new InstantCommand(() -> {
 			shooterFeederSubsystem.stopRoller();

@@ -6,7 +6,9 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.util.Limelight;
 import frc.robot.util.MonitoredCANSparkMaxGroup;
@@ -233,6 +235,9 @@ public class Shooter extends SubsystemBase {
 			masterShooterMotor.stopMotor();
 			followerShooterMotor.stopMotor(); 
 		}
+
+		SmartDashboard.putNumber("Top Shooter Wheel Encoder", shooterEncoderMaster.getVelocity()); 
+		SmartDashboard.putNumber("Bottom Shooter Wheel Encoder", shooterEncoderFollower.getVelocity());
 	}
 
 	// Settings of the shooter SPARK MAX motors.
