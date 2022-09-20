@@ -31,7 +31,7 @@ public class Shooter extends SubsystemBase {
 	private Limelight limelight; 
 
 	public static final double BASE_SPEED = 0;
-	public static final double VELOCITY_TOLERANCE = 300; 
+	public static final double VELOCITY_TOLERANCE = 100; 
 	public static final double AUTO_VELOCITY_TOLERANCE = 200; 
 	public double shooterDist;
 	private double velocity = 0;
@@ -40,8 +40,9 @@ public class Shooter extends SubsystemBase {
 	
 	boolean protectionOverridden = false;
 
-	public static final double kP = 0.00025, kI = 0, kD = 0.0075, kF = 0.00015, kIz = 0, maxRPM = 7500;
-	public static final double kP2 = 0.00025, kI2 = 0, kD2 = 0.0075, kF2 = 0.00015, kIz2 = 0, maxRPM2 = 7500;
+	// 0.0075  0.0150
+	public static final double kP = 0.00025, kI = 0.000001, kD = 0.0150, kF = 0, kIz = 0, maxRPM = 7500;
+	public static final double kP2 = 0.00025, kI2 = 0.000001, kD2 = 0.0150, kF2 = 0, kIz2 = 0, maxRPM2 = 7500;
 
 	public static double shooterAdjustment = 0; 
 

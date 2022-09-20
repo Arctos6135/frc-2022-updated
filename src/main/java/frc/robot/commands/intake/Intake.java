@@ -44,7 +44,7 @@ public class Intake extends CommandBase {
    
     @Override
     public void end(boolean interrupted) { 
-        // intakeSubsystem.setMecanumWheelMotor(0);
+        intakeSubsystem.setMecanumWheelMotor(0);
         intakeSubsystem.runIntake(0, 0);
     }
    
