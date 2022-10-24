@@ -12,6 +12,10 @@ public final class Constants {
 	public static final int LEFT_CANSPARKMAX = 2;
 	public static final int RIGHT_CANSPARKMAX_FOLLOWER = 3;
 	public static final int LEFT_CANSPARKMAX_FOLLOWER = 4;
+	
+	// Elevator Motors
+	public static final int LEFT_TALONSRX = -1;
+	public static final int RIGHT_TALONSRX = -1;
 
 	// Shooter Motors 
 	public static final int MAIN_SHOOTER_MOTOR = 5;

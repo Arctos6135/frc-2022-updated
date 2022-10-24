@@ -32,6 +32,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.util.Limelight;
 import frc.robot.util.SendableCANPIDController;
 import frc.robot.subsystems.ShooterFeederSubsystem;
+import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -52,6 +53,7 @@ public class RobotContainer {
 	private final IntakeSubsystem intakeSubsystem;
 	private final ShooterFeederSubsystem shooterFeederSubsystem; 
 	private final Shooter shooterSubsystem;
+	private final Elevator elevatorSubsystem;
 
 	// Controllers
 	private static final XboxController driverController = new XboxController(Constants.XBOX_DRIVER);
@@ -89,6 +91,7 @@ public class RobotContainer {
 	public NetworkTableEntry shooterRPMDriveTab;
 	public NetworkTableEntry shooterRPMErrorTop;
 	public NetworkTableEntry shooterRPMErrorBottom;  
+	public NetworkTableEntry climbTimeOverrideEntry;
 	
 	// Logging Related
 	public NetworkTableEntry lastError;
@@ -111,6 +114,11 @@ public class RobotContainer {
 			Constants.RIGHT_CANSPARKMAX_FOLLOWER, Constants.LEFT_CANSPARKMAX_FOLLOWER);
 		drivetrain.setDefaultCommand(
 			new TeleopDrive(drivetrain, driverController, Constants.DRIVE_FWD_REV, Constants.DRIVE_LEFT_RIGHT)
+		);
+		
+		elevatorSubsystem = new Elevator(Constants.LEFT_TALONSRX, Constants.RIGHT_TALONSRX);
+		elevatorSubsystem.setDefaultCommand(
+			new Climb(elevatorSubsystem, operatorController, Constants.CLIMB_RUNG_AXIS)
 		);
 
 		intakeSubsystem = new IntakeSubsystem(Constants.BOTTOM_ROLLER_MOTOR, Constants.MECANUM_INTAKE_MOTOR);
@@ -253,13 +261,14 @@ public class RobotContainer {
 		
 		// Climbing Configurations
 		InstantCommand climbOverrideCommand = new InstantCommand(() -> {
-			Climb.toggleTimeOverride();
+			Elevator.toggleClimbTimeOverride();
+			climbTimeOverrideEntry.setBoolean(Elevator.getClimbTimeOverride());
 		});
 		climbOverrideCommand.setName("Override");
 		climbTab.add("Override Climb Time", climbOverrideCommand).withWidget(BuiltInWidgets.kCommand).withPosition(0, 0).withSize(4, 4);
 
 		climbTab.add("Precision Climb", Climb.isPrecisionClimb()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(4, 0).withSize(2, 2).getEntry(); 
-		climbTab.add("Override Climb Time Boolean", Climb.overrideTime).withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0).withSize(2, 2).getEntry(); 
+		climbTimeOverrideEntry = climbTab.add("Override Climb Time Boolean", Elevator.getClimbTimeOverride()).withWidget(BuiltInWidgets.kBooleanBox).withPosition(6, 0).withSize(2, 2).getEntry(); 
 		
 		// Color Detection of Balls 
 		colorTab.add("Red Color", shooterFeederSubsystem.getColorSensor().getRed());

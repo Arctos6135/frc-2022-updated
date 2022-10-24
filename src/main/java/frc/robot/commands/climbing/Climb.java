@@ -15,14 +15,20 @@ import frc.robot.subsystems.Elevator;
  */
 public class Climb extends CommandBase {
     
-    private final Elevator climbSubsystem; 
+    private final Elevator climbSubsystem;
     private final XboxController operatorController;
-    private final int deployClimbAxis; 
+    // the Xbox axis that controls the elevator
+    private final int deployClimbAxis;
 
-    public static boolean overrideTime = false; 
+    // whether precision drive is enabled. Precision drive causes the elevator to climb at half speed
     public static boolean precisionClimb = false; 
-    public static double normalPrecision = 0.5; 
+    // the normal elevator speed
+    public static double normalPrecision = 0.5;
+    // the elevator speed when precision drive is enabled
     public static double precisionFactor = 0.25; 
+    // whether to climb even if the game is not in endgame
+    public static boolean overrideClimbTime = false;
+
 
     /**
      * Create an instance of the climb command. 
@@ -36,13 +42,6 @@ public class Climb extends CommandBase {
         this.deployClimbAxis = deployClimbAxis;
 
         addRequirements(climbSubsystem);
-    }
-
-    /**
-     * Toggle whether to override the time restriction on the climb command.
-     */
-    public static void toggleTimeOverride() {
-        Climb.overrideTime = !Climb.overrideTime; 
     }
 
     /**
@@ -71,19 +70,16 @@ public class Climb extends CommandBase {
         double climbSpeed = operatorController.getRawAxis(this.deployClimbAxis);
 
         climbSpeed = TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE);
+        
+        if (this.precisionClimb) {
+            climbSpeed = climbSpeed * precisionFactor;
+        } else {
+            climbSpeed = climbSpeed * normalPrecision;
+        }
 
         if (!DriverStation.isAutonomous()) {
-            // Nearing the end of the match, climb system is activated. 
-            if (!overrideTime && DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME) {
-                this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
-            } 
-            // Override climb time. 
-            else if (overrideTime) {
-                this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
-            } 
-            else {
-                RobotContainer.getLogger().logInfo("Cannot activate climb subsystem."); 
-            }
+            // this will only activate the elevator if the match is in endgame or if Elevator.overrideClimbTime is true
+            this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
         }
     }
 

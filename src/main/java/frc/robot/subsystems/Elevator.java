@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
+
 
 /**
  * The climb subsystem consists of two motors (brushed) and two TALON SRX motor
@@ -16,8 +19,8 @@ public class Elevator extends SubsystemBase {
     // Motors for Pulling Robot Up 
     private final TalonSRX climbMotorUpLeft;
     private final TalonSRX climbMotorUpRight;  
-
-    public static boolean overrideClimbTime = false; 
+    
+    private static boolean overrideClimbTime;
 
     /**
      * Creates new instance of the climbing subsystem. 
@@ -33,15 +36,17 @@ public class Elevator extends SubsystemBase {
         this.climbMotorUpRight.setInverted(false); 
 
         setNeutralModeClimb(NeutralMode.Brake);
+        
+        this.stopClimbMotors();
     }
 
     /**
-     * Toggle time override.
+     * Toggle the climb timer override
      */
     public static void toggleClimbTimeOverride() {
         Elevator.overrideClimbTime = !Elevator.overrideClimbTime;
     }
-
+    
     /**
      * Get whether climb time protection has been overrided.
      * 
@@ -63,13 +68,30 @@ public class Elevator extends SubsystemBase {
     }
 
     /**
-     * Set the speed of the climbing motors. 
+     * Set the speed of the climbing motors. This does nothing if the Elevator is not enabled.
      * 
      * @param climbSpeed the speed of the robot during climbing.
      */
     public void setClimbMotorSpeed(double climbSpeed) {
-        this.climbMotorUpRight.set(ControlMode.PercentOutput, climbSpeed); 
-        this.climbMotorUpLeft.set(ControlMode.PercentOutput, climbSpeed);
+        if (this.enabled()) {
+            this.climbMotorUpRight.set(ControlMode.PercentOutput, climbSpeed); 
+            this.climbMotorUpLeft.set(ControlMode.PercentOutput, climbSpeed);
+        } else {
+            this.stopClimbMotors();
+        }
+    }
+    
+    /**
+     * Check if the elevator should be able to move based off of the timer and the timer override.
+     */
+    private boolean enabled() {
+        if (Elevator.overrideClimbTime) {
+            return true;
+        } else if (DriverStation.getMatchTime() <= Constants.START_CLIMB_TIME) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
