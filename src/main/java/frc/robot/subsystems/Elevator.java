@@ -32,7 +32,7 @@ public class Elevator extends SubsystemBase {
         this.climbMotorUpLeft = new TalonSRX(climbMotorUpLeft); 
         this.climbMotorUpRight = new TalonSRX(climbMotorUpRight); 
 
-        this.climbMotorUpLeft.setInverted(false);
+        this.climbMotorUpLeft.setInverted(true);
         this.climbMotorUpRight.setInverted(false); 
 
         setNeutralModeClimb(NeutralMode.Brake);
