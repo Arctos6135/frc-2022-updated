@@ -118,7 +118,8 @@ public class RobotContainer {
 		
 		elevatorSubsystem = new Elevator(Constants.LEFT_CLIMB_MOTOR, Constants.RIGHT_CLIMB_MOTOR);
 		elevatorSubsystem.setDefaultCommand(
-			new Climb(elevatorSubsystem, operatorController, Constants.CLIMB_RUNG_AXIS)
+			//new Climb(elevatorSubsystem, driverController, Constants.ELEVATOR_TRIGGER)
+			new Climb(elevatorSubsystem, operatorController, Constants.CLIMB_RUNG_AXIS_RIGHT, Constants.CLIMB_RUNG_AXIS_LEFT)
 		);
 
 		intakeSubsystem = new IntakeSubsystem(Constants.BOTTOM_ROLLER_MOTOR, Constants.MECANUM_INTAKE_MOTOR);

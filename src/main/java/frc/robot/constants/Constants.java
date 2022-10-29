@@ -78,7 +78,8 @@ public final class Constants {
 	public static final int PRECISION_DRIVE_HOLD = XboxController.Axis.kLeftTrigger.value;
 	public static final int INTAKE_BUTTON = XboxController.Button.kRightBumper.value;
 	public static final int OUTTAKE_BUTTON = XboxController.Button.kLeftBumper.value;
-	
+	public static final int ELEVATOR_TRIGGER = XboxController.Axis.kRightTrigger.value;
+
 	// Operator Controller 
 	public static final int XBOX_OPERATOR = 1;
 	public static final int ADJUST_SHOOTER_HIGHER_BUTTON = XboxController.Axis.kRightTrigger.value;
@@ -91,7 +92,8 @@ public final class Constants {
 	public static final int STOP_SHOOTER_FEEDER_BUTTON = XboxController.Button.kStart.value; 
 	public static final int TELEOP_ROLL_UP_TRIGGER = XboxController.Button.kRightBumper.value;
 	public static final int TELEOP_ROLL_DOWN_TRIGGER = XboxController.Button.kLeftBumper.value; 
-	public static final int CLIMB_RUNG_AXIS = XboxController.Axis.kLeftY.value;
+	public static final int CLIMB_RUNG_AXIS_RIGHT = XboxController.Axis.kRightY.value;
+	public static final int CLIMB_RUNG_AXIS_LEFT = XboxController.Axis.kLeftY.value; 
 	public static final int OVERRIDE_CLIMB_TIME_BUTTON = XboxController.Button.kLeftStick.value;
 	public static final int INTAKE_ARM_ROTATE = XboxController.Axis.kRightY.value;
 	public static final int INTAKE_ARM_REVERSE_BUTTON = XboxController.Button.kRightStick.value;

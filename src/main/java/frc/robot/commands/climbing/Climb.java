@@ -3,7 +3,6 @@ package frc.robot.commands.climbing;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.commands.driving.TeleopDrive;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Elevator;
@@ -18,14 +17,15 @@ public class Climb extends CommandBase {
     private final Elevator climbSubsystem;
     private final XboxController operatorController;
     // the Xbox axis that controls the elevator
-    private final int deployClimbAxis;
+    private final int deployClimbAxisRight;
+    private final int deployClimbAxisLeft; 
 
     // whether precision drive is enabled. Precision drive causes the elevator to climb at half speed
     public static boolean precisionClimb = false; 
     // the normal elevator speed
-    public static double normalPrecision = 0.5;
+    public static double normalPrecision = 0.6;
     // the elevator speed when precision drive is enabled
-    public static double precisionFactor = 0.25; 
+    public static double precisionFactor = 0.025; 
     // whether to climb even if the game is not in endgame
     public static boolean overrideClimbTime = false;
 
@@ -36,10 +36,11 @@ public class Climb extends CommandBase {
      * @param climbSubsystem the climb subsystem with the climb and hook motors. 
      * @param operatorController the controller used to interact with the climb commands. 
      */
-    public Climb(Elevator climbSubsystem, XboxController operatorController, int deployClimbAxis) {
+    public Climb(Elevator climbSubsystem, XboxController operatorController, int deployClimbAxisRight, int deployClimbAxisLeft) {
         this.climbSubsystem = climbSubsystem; 
         this.operatorController = operatorController;
-        this.deployClimbAxis = deployClimbAxis;
+        this.deployClimbAxisRight = deployClimbAxisRight;
+        this.deployClimbAxisLeft = deployClimbAxisLeft; 
 
         addRequirements(climbSubsystem);
     }
@@ -67,19 +68,23 @@ public class Climb extends CommandBase {
 
     @Override 
     public void execute() {
-        double climbSpeed = operatorController.getRawAxis(this.deployClimbAxis);
+        double climbSpeedRight = operatorController.getRawAxis(this.deployClimbAxisRight);
+        double climbSpeedLeft = operatorController.getRawAxis(this.deployClimbAxisLeft);
 
-        climbSpeed = TeleopDrive.applyDeadband(climbSpeed, Constants.CONTROLLER_DEADZONE);
+        climbSpeedRight = TeleopDrive.applyDeadband(climbSpeedRight, Constants.CONTROLLER_DEADZONE);
+        climbSpeedLeft = TeleopDrive.applyDeadband(climbSpeedLeft, Constants.CONTROLLER_DEADZONE);
         
-        if (this.precisionClimb) {
-            climbSpeed = climbSpeed * precisionFactor;
+        if (Climb.precisionClimb) {
+            climbSpeedRight = climbSpeedRight * precisionFactor;
+            climbSpeedLeft = climbSpeedLeft * precisionFactor;
         } else {
-            climbSpeed = climbSpeed * normalPrecision;
+            climbSpeedRight = climbSpeedRight * normalPrecision;
+            climbSpeedLeft = climbSpeedLeft * normalPrecision;
         }
 
         if (!DriverStation.isAutonomous()) {
             // this will only activate the elevator if the match is in endgame or if Elevator.overrideClimbTime is true
-            this.climbSubsystem.setClimbMotorSpeed(climbSpeed);
+            this.climbSubsystem.setClimbMotorSpeed(climbSpeedRight, climbSpeedLeft);
         }
     }
 

@@ -18,9 +18,9 @@ import frc.robot.constants.Constants;
 public class Elevator extends SubsystemBase {
     // Motors for Pulling Robot Up 
     private final TalonSRX climbMotorUpLeft;
-    private final TalonSRX climbMotorUpRight;  
+    private final TalonSRX climbMotorUpRight;
     
-    private static boolean overrideClimbTime;
+    private static boolean overrideClimbTime = true;
 
     /**
      * Creates new instance of the climbing subsystem. 
@@ -72,10 +72,10 @@ public class Elevator extends SubsystemBase {
      * 
      * @param climbSpeed the speed of the robot during climbing.
      */
-    public void setClimbMotorSpeed(double climbSpeed) {
+    public void setClimbMotorSpeed(double climbSpeedRight, double climbSpeedLeft) {
         if (this.enabled()) {
-            this.climbMotorUpRight.set(ControlMode.PercentOutput, climbSpeed); 
-            this.climbMotorUpLeft.set(ControlMode.PercentOutput, climbSpeed);
+            this.climbMotorUpRight.set(ControlMode.PercentOutput, climbSpeedRight); 
+            this.climbMotorUpLeft.set(ControlMode.PercentOutput, climbSpeedLeft);
         } else {
             this.stopClimbMotors();
         }
